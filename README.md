@@ -1,6 +1,17 @@
 # keras2ncnn
 ## Description
 Export Keras model to Tencent/NCNN.
+### Supported Keras layer List
+* InputLayer
+* ReLU/LeakyReLU/Softmax/Sigmoid
+* MaxPooling2D/AveragePooling2D/MaxPool2D/AvgPool2D
+* Conv2D/DepthwiseConv2D/Conv2DTranspose
+* Concatenate/Add/Multiply
+* UpSampling2D
+* BatchNormalization(In Progress :: Fusion with Convolution)
+* ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
+* SeparableConv2D(In Progress :: Split in to Convolutions)
+
 ## Requirements installation
 The code was tested with python3.7 with TensorFlow 1.x. The code should work with python3.x . The behaviour with TensorFlow 2.x is unclear.
 ```

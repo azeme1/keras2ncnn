@@ -11,7 +11,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
-                      'Conv2DTranspose': 'Deconvolution'}
+                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding'}
 
 def fix_axis_value(in_dict, axis):
     if axis < 0:
@@ -150,6 +150,28 @@ def get_inputlayer_mapping(in_dict):
     layer_config = in_dict['layer'].get_config()
     N, H, W, C = layer_config['batch_input_shape']
     parameter_mapping = OrderedDict({0: W, 1: H, 2: C})
+    return parameter_mapping
+
+def get_zeropadding2d_mapping(in_dict):
+    #   Padding
+    #   0	top	0
+    #	1	bottom	0
+    #   2	left	0
+    #   3	right	0
+    #   4	type	0
+    #   5	value	0.f
+    #   6	per_channel_pad_data_size	0
+    #   7	front	0
+    #   8	behind	0
+    layer_config = in_dict['layer'].get_config()
+    per_channel_pad_data_size = 0
+    front = behind = 0
+    pad_type = 0
+    pad_value = float("{0:.2f}".format(0.))
+    top_pad, bottom_pad, left_pad, right_pad = np.array(layer_config['padding']).flatten()
+    parameter_mapping = OrderedDict({0: top_pad, 1: bottom_pad, 2: left_pad, 3: right_pad,
+                                     4: pad_type, 5: pad_value, 6: per_channel_pad_data_size,
+                                     7: front, 8: behind})
     return parameter_mapping
 
 def get_pooling2d_mapping(in_dict):
@@ -340,9 +362,11 @@ def get_conv2d_mapping(in_dict):
         w = np.transpose(w, (3, 2, 0, 1))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
     else:
-        assert False, "This branch was not verified"
-        w = layer.get_weights()
-        in_dict['weight_list'] += [w.flatten()]
+        # TODO :: Try to skip bias add, currently zero bias added
+        w, = layer.get_weights()
+        _, _, c_size, f_size = w.shape
+        b = np.zeros((f_size,))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
 
     num_output = layer_config['filters']
     kernel_h, kernel_w = layer_config['kernel_size']
@@ -407,9 +431,11 @@ def get_depthwiseconv2d_mapping(in_dict):
         w = np.transpose(w, (3, 2, 0, 1))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
     else:
-        assert False, "This branch was not verified"
-        w = layer.get_weights()
-        in_dict['weight_list'] += [w.flatten()]
+        # TODO :: Try to skip bias add, currently zero bias added
+        w, = layer.get_weights()
+        _, _, c_size, f_size = w.shape
+        b = np.zeros((c_size,))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
 
     kernel_h, kernel_w = layer_config['kernel_size']
     dilation_h, dilation_w = layer_config['dilation_rate']
