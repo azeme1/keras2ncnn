@@ -30,10 +30,11 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 * Tensorflow 2.x support
 * Layer Fusion
 * Auto compile python bindings for the project
+* Add Padding support
 ### Upcoming Models 
-[https://github.com/thangtran480/hair-segmentation]
-[https://github.com/ItchyHiker/Hair_Segmentation_Keras]
-[https://github.com/gaelkt/HairNets]
-[https://github.com/JungUnYun/Hair_segmentation]
-[https://github.com/YawenSun9/deep-hair-segmentation]
-[https://github.com/mostafa-shalaby84/hair_segmentation_matting]
+* [https://github.com/thangtran480/hair-segmentation]
+* [https://github.com/ItchyHiker/Hair_Segmentation_Keras]
+* [https://github.com/gaelkt/HairNets]
+* [https://github.com/JungUnYun/Hair_segmentation]
+* [https://github.com/YawenSun9/deep-hair-segmentation]
+* [https://github.com/mostafa-shalaby84/hair_segmentation_matting]
