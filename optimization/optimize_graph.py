@@ -32,7 +32,7 @@ def apply_transformations(in_model):
                 transfer_weights(in_model, src_model, {})
             print(info_txt)
             src_model_config = src_model.get_config()
-            dst_model_config, weight_transfer_rule_dict = apply_transform_SeparableConv2D(src_model_config)
+            dst_model_config, weight_transfer_rule_dict = apply_func(src_model_config)
             dst_model = Model.from_config(dst_model_config)
             print('Weight transfer...\n')
             transfer_weights(src_model, dst_model, weight_transfer_rule_dict)
