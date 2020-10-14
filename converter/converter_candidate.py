@@ -3,6 +3,7 @@
 # https://github.com/Tencent/ncnn/wiki/operation-param-weight-table
 
 import numpy as np
+from tqdm import tqdm
 from collections import OrderedDict
 
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
@@ -614,9 +615,9 @@ def conver_model(model):
 
     split_info = {}
 
-    # Проходим по слоям и для кажого слоя вызывает конвертер
+    print("Export graph and weights")
     string_list = []
-    for layer in model.layers:
+    for layer in tqdm(model.layers):
         export_function_name = 'get_layer_string'
         export_function = globals()[export_function_name]
         config_dict = {'layer': layer, 'array_key': array_key, 'batch_size': batch_size,

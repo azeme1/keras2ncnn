@@ -3,11 +3,18 @@ from tensorflow.keras.models import load_model
 from unit_test.helper import save_config, save_layer_unit_test, get_test_item_mean_std
 from converter.converter_candidate import conver_model
 from converter.model_adaptation import adapt_keras_model
+from optimization.optimize_graph import apply_transformations
+
 import argparse
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 if __name__ == '__main__':
+    """
+    Quick command lines
+    --model_path=model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5
+    --model_path=model_zoo/segmentation/hair/model_001/checkpoint.hdf5
+    """
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model_path', help='The path to the Keras model file (usually *.hdf5) ')
     parser.add_argument('--export_path', default=None, help='The path for the script result output')
@@ -24,6 +31,8 @@ if __name__ == '__main__':
         export_model_name = '.'.join(os.path.basename(model_path).split('.')[:-1])
 
     keras_model = load_model(model_path)
+    keras_model = apply_transformations(keras_model)
+
     adapted_keras_model = adapt_keras_model(keras_model, export_model_name)
     target_shape = keras_model.input_shape[1:3]
     x_in_item = get_test_item_mean_std(target_shape)

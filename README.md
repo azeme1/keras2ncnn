@@ -5,12 +5,14 @@ Export Keras model to Tencent/NCNN.
 * InputLayer
 * ReLU/LeakyReLU/Softmax/Sigmoid
 * MaxPooling2D/AveragePooling2D/MaxPool2D/AvgPool2D
-* Conv2D/DepthwiseConv2D/Conv2DTranspose
+* Conv2D/DepthwiseConv2D/Conv2DTranspose/SeparableConv2D
 * Concatenate/Add/Multiply
 * UpSampling2D
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
-* SeparableConv2D(In Progress :: Split in to Convolutions)
+
+### Preconverted models
+Some 'preconverted' models can be downloaded from [DropBox](https://www.dropbox.com/sh/8anok3k3jxjj81i/AADWMLad_V0MKs4ySN2mgPPda?dl=0)
 
 ## Requirements installation
 The code was tested with python3.7 with TensorFlow 1.x. The code should work with python3.x . The behaviour with TensorFlow 2.x is unclear.
