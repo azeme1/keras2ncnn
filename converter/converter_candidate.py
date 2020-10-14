@@ -598,6 +598,11 @@ def get_layer_string(in_dict):
     parameter_string = get_parameter_string(in_dict)
     array_key = str(in_dict['array_key'])
 
+    #TODO :: autodetect line length
+    max_line_length = 36
+    assert len(layer_type) < max_line_length
+    assert len(layer_name) < max_line_length
+
     string_list = []
     string_list.append(
         f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
