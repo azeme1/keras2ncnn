@@ -20,6 +20,7 @@ tensorboard==1.15.0
 tensorflow==1.15.0
 tensorflow-estimator==1.15.1
 termcolor==1.1.0
+tqdm
 Werkzeug==1.0.1
 wincertstore==0.2
 wrapt==1.12.1
