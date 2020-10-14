@@ -3,10 +3,12 @@ import numpy as np
 from tensorflow.keras.models import Model
 from optimization.graph.SeparableConv2D_split import check_SeparableConv2D_transfrom, apply_transform_SeparableConv2D, \
     info_SeparableConv2D
+from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchNormalization, \
+    apply_transform_Conv2DBatchNormalization, info_Conv2DBatchNormalization
 
-info_list = [info_SeparableConv2D]
-check_transform_list = [check_SeparableConv2D_transfrom]
-apply_transform_list = [apply_transform_SeparableConv2D]
+info_list = [info_SeparableConv2D, info_Conv2DBatchNormalization]
+check_transform_list = [check_SeparableConv2D_transfrom, check_Conv2DBatchNormalization]
+apply_transform_list = [apply_transform_SeparableConv2D, apply_transform_Conv2DBatchNormalization]
 
 
 def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
@@ -38,7 +40,7 @@ def apply_transformations(in_model):
             print("Checking Transfer :: Random value check\n")
             x_in = np.random.uniform(size=(1,) + dst_model.input_shape[1:])
             transform_error = np.abs(dst_model.predict(x_in) - src_model.predict(x_in)).sum()
-            print(f"         Transform Error :: {transform_error}")
+            print(f"         Transform Error (is less 10e-4) :: {transform_error} , {transform_error < 10e-4}")
 
             del src_model
             src_model = dst_model
