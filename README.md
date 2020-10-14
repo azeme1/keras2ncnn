@@ -10,6 +10,7 @@ Export Keras model to Tencent/NCNN.
 * UpSampling2D
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
+* Fix layer name length issue
 
 ### Preconverted models
 Some 'preconverted' models can be downloaded from [DropBox](https://www.dropbox.com/sh/8anok3k3jxjj81i/AADWMLad_V0MKs4ySN2mgPPda?dl=0)

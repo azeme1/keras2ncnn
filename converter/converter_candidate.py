@@ -600,7 +600,7 @@ def get_layer_string(in_dict):
 
     string_list = []
     string_list.append(
-        f'{layer_type: <24}{layer_name: <24}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
+        f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
     if split_string is not None:
         string_list.append(split_string)
     return string_list
