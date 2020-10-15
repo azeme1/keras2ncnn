@@ -1,0 +1,1 @@
+This folder contains sample for developing layer fusion merging operations over Keras config. 
