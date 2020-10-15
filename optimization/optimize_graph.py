@@ -38,7 +38,7 @@ def apply_transformations(in_model):
             print('Weight transfer...\n')
             transfer_weights(src_model, dst_model, weight_transfer_rule_dict)
 
-            print("Checking Transfer :: Random value check\n")
+            print("Checking Transfer :: Random value check")
             x_in = np.random.uniform(size=(1,) + dst_model.input_shape[1:])
             transform_error = np.abs(dst_model.predict(x_in) - src_model.predict(x_in)).sum()
             print(f"         Transform Error (is less 10e-4) :: {transform_error} , {transform_error < 10e-4}")

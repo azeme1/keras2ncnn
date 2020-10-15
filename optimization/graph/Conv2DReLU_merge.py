@@ -2,7 +2,7 @@ import numpy as np
 
 from converter.model_adaptation import rename_layer
 
-info_Conv2DReLU = 'Conv2D->ReLU: Subsequent linear operations can be easily merged for inference'
+info_Conv2DReLU = 'Conv2D->ReLU: Inline operations should be merged'
 
 
 def transfer_Conv2DReLU_Conv2D(src_model, dst_model, transfer_rule):
