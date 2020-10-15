@@ -1,196 +1,141 @@
 7767517
-194 194
-Input                   data                    0 1 data -23330=4,3,256,256,3 0=256 1=256 2=3
-Convolution             conv2d_1                1 1 data conv2d_1 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=432 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-ReLU                    re_lu_1                 1 1 conv2d_1 re_lu_1 -23330=4,3,256,256,16 0=0.0 1=6.0
-Split                   ncnn_split_1            1 1 re_lu_1 ncnn_split_1 -23330=8,3,256,256,16,3,256,256,16 
-ConvolutionDepthWise    sep_dwconv2d_split_1    1 1 ncnn_split_1 sep_dwconv2d_split_1 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_1      1 1 sep_dwconv2d_split_1 sep_conv2d_split_1 -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_2                 1 1 sep_conv2d_split_1 re_lu_2 -23330=4,3,256,256,16 0=0.0 1=6.0
-BatchNorm               batch_normalization_3   1 1 re_lu_2 batch_normalization_3 -23330=4,3,256,256,16 0=16 1=0.001
-ReLU                    re_lu_3                 1 1 batch_normalization_3 re_lu_3 -23330=4,3,256,256,16 0=0.0 1=6.0
-Eltwise                 add_1                   2 1 re_lu_3 ncnn_split_1 add_1 -23330=4,3,256,256,16 0=1
-Split                   ncnn_split_2            1 1 add_1 ncnn_split_2 -23330=8,3,256,256,16,3,256,256,16 
-Convolution             conv2d_2                1 1 ncnn_split_2 conv2d_2 -23330=4,3,128,128,32 0=32 1=3 2=1 3=2 4=0 5=1 6=4608 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
-ReLU                    re_lu_4                 1 1 conv2d_2 re_lu_4 -23330=4,3,128,128,32 0=0.0 1=6.0
-Split                   ncnn_split_3            1 1 re_lu_4 ncnn_split_3 -23330=8,3,128,128,32,3,128,128,32 
-ConvolutionDepthWise    sep_dwconv2d_split_2    1 1 ncnn_split_3 sep_dwconv2d_split_2 -23330=4,3,128,128,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_2      1 1 sep_dwconv2d_split_2 sep_conv2d_split_2 -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_5                 1 1 sep_conv2d_split_2 re_lu_5 -23330=4,3,128,128,32 0=0.0 1=6.0
-BatchNorm               batch_normalization_6   1 1 re_lu_5 batch_normalization_6 -23330=4,3,128,128,32 0=32 1=0.001
-ReLU                    re_lu_6                 1 1 batch_normalization_6 re_lu_6 -23330=4,3,128,128,32 0=0.0 1=6.0
-Eltwise                 add_2                   2 1 re_lu_6 ncnn_split_3 add_2 -23330=4,3,128,128,32 0=1
-Split                   ncnn_split_4            1 1 add_2 ncnn_split_4 -23330=8,3,128,128,32,3,128,128,32 
-Convolution             conv2d_3                1 1 ncnn_split_4 conv2d_3 -23330=4,3,64,64,64 0=64 1=3 2=1 3=2 4=0 5=1 6=18432 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
-ReLU                    re_lu_7                 1 1 conv2d_3 re_lu_7 -23330=4,3,64,64,64 0=0.0 1=6.0
-Split                   ncnn_split_5            1 1 re_lu_7 ncnn_split_5 -23330=8,3,64,64,64,3,64,64,64 
-ConvolutionDepthWise    sep_dwconv2d_split_3    1 1 ncnn_split_5 sep_dwconv2d_split_3 -23330=4,3,64,64,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_3      1 1 sep_dwconv2d_split_3 sep_conv2d_split_3 -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_8                 1 1 sep_conv2d_split_3 re_lu_8 -23330=4,3,64,64,64 0=0.0 1=6.0
-BatchNorm               batch_normalization_9   1 1 re_lu_8 batch_normalization_9 -23330=4,3,64,64,64 0=64 1=0.001
-ReLU                    re_lu_9                 1 1 batch_normalization_9 re_lu_9 -23330=4,3,64,64,64 0=0.0 1=6.0
-Eltwise                 add_3                   2 1 re_lu_9 ncnn_split_5 add_3 -23330=4,3,64,64,64 0=1
-Split                   ncnn_split_6            1 1 add_3 ncnn_split_6 -23330=8,3,64,64,64,3,64,64,64 
-Convolution             conv2d_4                1 1 ncnn_split_6 conv2d_4 -23330=4,3,32,32,128 0=128 1=3 2=1 3=2 4=0 5=1 6=73728 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
-ReLU                    re_lu_10                1 1 conv2d_4 re_lu_10 -23330=4,3,32,32,128 0=0.0 1=6.0
-Split                   ncnn_split_7            1 1 re_lu_10 ncnn_split_7 -23330=8,3,32,32,128,3,32,32,128 
-ConvolutionDepthWise    sep_dwconv2d_split_4    1 1 ncnn_split_7 sep_dwconv2d_split_4 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_4      1 1 sep_dwconv2d_split_4 sep_conv2d_split_4 -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_11                1 1 sep_conv2d_split_4 re_lu_11 -23330=4,3,32,32,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_12  1 1 re_lu_11 batch_normalization_12 -23330=4,3,32,32,128 0=128 1=0.001
-ReLU                    re_lu_12                1 1 batch_normalization_12 re_lu_12 -23330=4,3,32,32,128 0=0.0 1=6.0
-Eltwise                 add_4                   2 1 re_lu_12 ncnn_split_7 add_4 -23330=4,3,32,32,128 0=1
-Split                   ncnn_split_8            1 1 add_4 ncnn_split_8 -23330=8,3,32,32,128,3,32,32,128 
-ConvolutionDepthWise    sep_dwconv2d_split_5    1 1 ncnn_split_8 sep_dwconv2d_split_5 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_5      1 1 sep_dwconv2d_split_5 sep_conv2d_split_5 -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_13                1 1 sep_conv2d_split_5 re_lu_13 -23330=4,3,32,32,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_14  1 1 re_lu_13 batch_normalization_14 -23330=4,3,32,32,128 0=128 1=0.001
-ReLU                    re_lu_14                1 1 batch_normalization_14 re_lu_14 -23330=4,3,32,32,128 0=0.0 1=6.0
-Eltwise                 add_5                   2 1 re_lu_14 ncnn_split_8 add_5 -23330=4,3,32,32,128 0=1
-Split                   ncnn_split_9            1 1 add_5 ncnn_split_9 -23330=8,3,32,32,128,3,32,32,128 
-Convolution             conv2d_5                1 1 ncnn_split_9 conv2d_5 -23330=4,3,16,16,128 0=128 1=3 2=1 3=2 4=0 5=1 6=147456 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
-ReLU                    re_lu_15                1 1 conv2d_5 re_lu_15 -23330=4,3,16,16,128 0=0.0 1=6.0
-Split                   ncnn_split_10           1 1 re_lu_15 ncnn_split_10 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_6    1 1 ncnn_split_10 sep_dwconv2d_split_6 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_6      1 1 sep_dwconv2d_split_6 sep_conv2d_split_6 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_16                1 1 sep_conv2d_split_6 re_lu_16 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_17  1 1 re_lu_16 batch_normalization_17 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_17                1 1 batch_normalization_17 re_lu_17 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_6                   2 1 re_lu_17 ncnn_split_10 add_6 -23330=4,3,16,16,128 0=1
-Split                   ncnn_split_11           1 1 add_6 ncnn_split_11 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_7    1 1 ncnn_split_11 sep_dwconv2d_split_7 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_7      1 1 sep_dwconv2d_split_7 sep_conv2d_split_7 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_18                1 1 sep_conv2d_split_7 re_lu_18 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_19  1 1 re_lu_18 batch_normalization_19 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_19                1 1 batch_normalization_19 re_lu_19 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_7                   2 1 re_lu_19 ncnn_split_11 add_7 -23330=4,3,16,16,128 0=1
-Split                   ncnn_split_12           1 1 add_7 ncnn_split_12 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_8    1 1 ncnn_split_12 sep_dwconv2d_split_8 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_8      1 1 sep_dwconv2d_split_8 sep_conv2d_split_8 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_20                1 1 sep_conv2d_split_8 re_lu_20 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_21  1 1 re_lu_20 batch_normalization_21 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_21                1 1 batch_normalization_21 re_lu_21 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_8                   2 1 re_lu_21 ncnn_split_12 add_8 -23330=4,3,16,16,128 0=1
-Split                   ncnn_split_13           1 1 add_8 ncnn_split_13 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_9    1 1 ncnn_split_13 sep_dwconv2d_split_9 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_9      1 1 sep_dwconv2d_split_9 sep_conv2d_split_9 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_22                1 1 sep_conv2d_split_9 re_lu_22 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_23  1 1 re_lu_22 batch_normalization_23 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_23                1 1 batch_normalization_23 re_lu_23 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_9                   2 1 re_lu_23 ncnn_split_13 add_9 -23330=4,3,16,16,128 0=1
-Split                   ncnn_split_14           1 1 add_9 ncnn_split_14 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_10   1 1 ncnn_split_14 sep_dwconv2d_split_10 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_10     1 1 sep_dwconv2d_split_10 sep_conv2d_split_10 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_24                1 1 sep_conv2d_split_10 re_lu_24 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_25  1 1 re_lu_24 batch_normalization_25 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_25                1 1 batch_normalization_25 re_lu_25 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_10                  2 1 re_lu_25 ncnn_split_14 add_10 -23330=4,3,16,16,128 0=1
-Split                   ncnn_split_15           1 1 add_10 ncnn_split_15 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise    sep_dwconv2d_split_11   1 1 ncnn_split_15 sep_dwconv2d_split_11 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_11     1 1 sep_dwconv2d_split_11 sep_conv2d_split_11 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_26                1 1 sep_conv2d_split_11 re_lu_26 -23330=4,3,16,16,128 0=0.0 1=6.0
-BatchNorm               batch_normalization_27  1 1 re_lu_26 batch_normalization_27 -23330=4,3,16,16,128 0=128 1=0.001
-ReLU                    re_lu_27                1 1 batch_normalization_27 re_lu_27 -23330=4,3,16,16,128 0=0.0 1=6.0
-Eltwise                 add_11                  2 1 re_lu_27 ncnn_split_15 add_11 -23330=4,3,16,16,128 0=1
-Interp                  up_sampling2d_1         1 1 add_11 up_sampling2d_1 -23330=4,3,32,32,128 0=2 1=2.0 2=2.0
-Eltwise                 add_12                  2 1 up_sampling2d_1 ncnn_split_9 add_12 -23330=4,3,32,32,128 0=1
-Convolution             conv2d_6                1 1 add_12 conv2d_6 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=73728 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-ReLU                    re_lu_28                1 1 conv2d_6 re_lu_28 -23330=4,3,32,32,64 0=0.0 1=6.0
-Split                   ncnn_split_16           1 1 re_lu_28 ncnn_split_16 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise    sep_dwconv2d_split_12   1 1 ncnn_split_16 sep_dwconv2d_split_12 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_12     1 1 sep_dwconv2d_split_12 sep_conv2d_split_12 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_29                1 1 sep_conv2d_split_12 re_lu_29 -23330=4,3,32,32,64 0=0.0 1=6.0
-BatchNorm               batch_normalization_30  1 1 re_lu_29 batch_normalization_30 -23330=4,3,32,32,64 0=64 1=0.001
-ReLU                    re_lu_30                1 1 batch_normalization_30 re_lu_30 -23330=4,3,32,32,64 0=0.0 1=6.0
-Eltwise                 add_13                  2 1 re_lu_30 ncnn_split_16 add_13 -23330=4,3,32,32,64 0=1
-Split                   ncnn_split_17           1 1 add_13 ncnn_split_17 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise    sep_dwconv2d_split_13   1 1 ncnn_split_17 sep_dwconv2d_split_13 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_13     1 1 sep_dwconv2d_split_13 sep_conv2d_split_13 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_31                1 1 sep_conv2d_split_13 re_lu_31 -23330=4,3,32,32,64 0=0.0 1=6.0
-BatchNorm               batch_normalization_32  1 1 re_lu_31 batch_normalization_32 -23330=4,3,32,32,64 0=64 1=0.001
-ReLU                    re_lu_32                1 1 batch_normalization_32 re_lu_32 -23330=4,3,32,32,64 0=0.0 1=6.0
-Eltwise                 add_14                  2 1 re_lu_32 ncnn_split_17 add_14 -23330=4,3,32,32,64 0=1
-Split                   ncnn_split_18           1 1 add_14 ncnn_split_18 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise    sep_dwconv2d_split_14   1 1 ncnn_split_18 sep_dwconv2d_split_14 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_14     1 1 sep_dwconv2d_split_14 sep_conv2d_split_14 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_33                1 1 sep_conv2d_split_14 re_lu_33 -23330=4,3,32,32,64 0=0.0 1=6.0
-BatchNorm               batch_normalization_34  1 1 re_lu_33 batch_normalization_34 -23330=4,3,32,32,64 0=64 1=0.001
-ReLU                    re_lu_34                1 1 batch_normalization_34 re_lu_34 -23330=4,3,32,32,64 0=0.0 1=6.0
-Eltwise                 add_15                  2 1 re_lu_34 ncnn_split_18 add_15 -23330=4,3,32,32,64 0=1
-Interp                  up_sampling2d_2         1 1 add_15 up_sampling2d_2 -23330=4,3,64,64,64 0=2 1=2.0 2=2.0
-Eltwise                 add_16                  2 1 up_sampling2d_2 ncnn_split_6 add_16 -23330=4,3,64,64,64 0=1
-Convolution             conv2d_7                1 1 add_16 conv2d_7 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=18432 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-ReLU                    re_lu_35                1 1 conv2d_7 re_lu_35 -23330=4,3,64,64,32 0=0.0 1=6.0
-Split                   ncnn_split_19           1 1 re_lu_35 ncnn_split_19 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise    sep_dwconv2d_split_15   1 1 ncnn_split_19 sep_dwconv2d_split_15 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_15     1 1 sep_dwconv2d_split_15 sep_conv2d_split_15 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_36                1 1 sep_conv2d_split_15 re_lu_36 -23330=4,3,64,64,32 0=0.0 1=6.0
-BatchNorm               batch_normalization_37  1 1 re_lu_36 batch_normalization_37 -23330=4,3,64,64,32 0=32 1=0.001
-ReLU                    re_lu_37                1 1 batch_normalization_37 re_lu_37 -23330=4,3,64,64,32 0=0.0 1=6.0
-Eltwise                 add_17                  2 1 re_lu_37 ncnn_split_19 add_17 -23330=4,3,64,64,32 0=1
-Split                   ncnn_split_20           1 1 add_17 ncnn_split_20 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise    sep_dwconv2d_split_16   1 1 ncnn_split_20 sep_dwconv2d_split_16 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_16     1 1 sep_dwconv2d_split_16 sep_conv2d_split_16 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_38                1 1 sep_conv2d_split_16 re_lu_38 -23330=4,3,64,64,32 0=0.0 1=6.0
-BatchNorm               batch_normalization_39  1 1 re_lu_38 batch_normalization_39 -23330=4,3,64,64,32 0=32 1=0.001
-ReLU                    re_lu_39                1 1 batch_normalization_39 re_lu_39 -23330=4,3,64,64,32 0=0.0 1=6.0
-Eltwise                 add_18                  2 1 re_lu_39 ncnn_split_20 add_18 -23330=4,3,64,64,32 0=1
-Split                   ncnn_split_21           1 1 add_18 ncnn_split_21 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise    sep_dwconv2d_split_17   1 1 ncnn_split_21 sep_dwconv2d_split_17 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_17     1 1 sep_dwconv2d_split_17 sep_conv2d_split_17 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_40                1 1 sep_conv2d_split_17 re_lu_40 -23330=4,3,64,64,32 0=0.0 1=6.0
-BatchNorm               batch_normalization_41  1 1 re_lu_40 batch_normalization_41 -23330=4,3,64,64,32 0=32 1=0.001
-ReLU                    re_lu_41                1 1 batch_normalization_41 re_lu_41 -23330=4,3,64,64,32 0=0.0 1=6.0
-Eltwise                 add_19                  2 1 re_lu_41 ncnn_split_21 add_19 -23330=4,3,64,64,32 0=1
-Interp                  up_sampling2d_3         1 1 add_19 up_sampling2d_3 -23330=4,3,128,128,32 0=2 1=2.0 2=2.0
-Eltwise                 add_20                  2 1 up_sampling2d_3 ncnn_split_4 add_20 -23330=4,3,128,128,32 0=1
-Convolution             conv2d_8                1 1 add_20 conv2d_8 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=4608 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-ReLU                    re_lu_42                1 1 conv2d_8 re_lu_42 -23330=4,3,128,128,16 0=0.0 1=6.0
-Split                   ncnn_split_22           1 1 re_lu_42 ncnn_split_22 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise    sep_dwconv2d_split_18   1 1 ncnn_split_22 sep_dwconv2d_split_18 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_18     1 1 sep_dwconv2d_split_18 sep_conv2d_split_18 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_43                1 1 sep_conv2d_split_18 re_lu_43 -23330=4,3,128,128,16 0=0.0 1=6.0
-BatchNorm               batch_normalization_44  1 1 re_lu_43 batch_normalization_44 -23330=4,3,128,128,16 0=16 1=0.001
-ReLU                    re_lu_44                1 1 batch_normalization_44 re_lu_44 -23330=4,3,128,128,16 0=0.0 1=6.0
-Eltwise                 add_21                  2 1 re_lu_44 ncnn_split_22 add_21 -23330=4,3,128,128,16 0=1
-Split                   ncnn_split_23           1 1 add_21 ncnn_split_23 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise    sep_dwconv2d_split_19   1 1 ncnn_split_23 sep_dwconv2d_split_19 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_19     1 1 sep_dwconv2d_split_19 sep_conv2d_split_19 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_45                1 1 sep_conv2d_split_19 re_lu_45 -23330=4,3,128,128,16 0=0.0 1=6.0
-BatchNorm               batch_normalization_46  1 1 re_lu_45 batch_normalization_46 -23330=4,3,128,128,16 0=16 1=0.001
-ReLU                    re_lu_46                1 1 batch_normalization_46 re_lu_46 -23330=4,3,128,128,16 0=0.0 1=6.0
-Eltwise                 add_22                  2 1 re_lu_46 ncnn_split_23 add_22 -23330=4,3,128,128,16 0=1
-Split                   ncnn_split_24           1 1 add_22 ncnn_split_24 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise    sep_dwconv2d_split_20   1 1 ncnn_split_24 sep_dwconv2d_split_20 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_20     1 1 sep_dwconv2d_split_20 sep_conv2d_split_20 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_47                1 1 sep_conv2d_split_20 re_lu_47 -23330=4,3,128,128,16 0=0.0 1=6.0
-BatchNorm               batch_normalization_48  1 1 re_lu_47 batch_normalization_48 -23330=4,3,128,128,16 0=16 1=0.001
-ReLU                    re_lu_48                1 1 batch_normalization_48 re_lu_48 -23330=4,3,128,128,16 0=0.0 1=6.0
-Eltwise                 add_23                  2 1 re_lu_48 ncnn_split_24 add_23 -23330=4,3,128,128,16 0=1
-Interp                  up_sampling2d_4         1 1 add_23 up_sampling2d_4 -23330=4,3,256,256,16 0=2 1=2.0 2=2.0
-Eltwise                 add_24                  2 1 up_sampling2d_4 ncnn_split_2 add_24 -23330=4,3,256,256,16 0=1
-Convolution             conv2d_9                1 1 add_24 conv2d_9 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=1152 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-ReLU                    re_lu_49                1 1 conv2d_9 re_lu_49 -23330=4,3,256,256,8 0=0.0 1=6.0
-Split                   ncnn_split_25           1 1 re_lu_49 ncnn_split_25 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise    sep_dwconv2d_split_21   1 1 ncnn_split_25 sep_dwconv2d_split_21 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_21     1 1 sep_dwconv2d_split_21 sep_conv2d_split_21 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_50                1 1 sep_conv2d_split_21 re_lu_50 -23330=4,3,256,256,8 0=0.0 1=6.0
-BatchNorm               batch_normalization_51  1 1 re_lu_50 batch_normalization_51 -23330=4,3,256,256,8 0=8 1=0.001
-ReLU                    re_lu_51                1 1 batch_normalization_51 re_lu_51 -23330=4,3,256,256,8 0=0.0 1=6.0
-Eltwise                 add_25                  2 1 re_lu_51 ncnn_split_25 add_25 -23330=4,3,256,256,8 0=1
-Split                   ncnn_split_26           1 1 add_25 ncnn_split_26 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise    sep_dwconv2d_split_22   1 1 ncnn_split_26 sep_dwconv2d_split_22 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_22     1 1 sep_dwconv2d_split_22 sep_conv2d_split_22 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_52                1 1 sep_conv2d_split_22 re_lu_52 -23330=4,3,256,256,8 0=0.0 1=6.0
-BatchNorm               batch_normalization_53  1 1 re_lu_52 batch_normalization_53 -23330=4,3,256,256,8 0=8 1=0.001
-ReLU                    re_lu_53                1 1 batch_normalization_53 re_lu_53 -23330=4,3,256,256,8 0=0.0 1=6.0
-Eltwise                 add_26                  2 1 re_lu_53 ncnn_split_26 add_26 -23330=4,3,256,256,8 0=1
-Split                   ncnn_split_27           1 1 add_26 ncnn_split_27 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise    sep_dwconv2d_split_23   1 1 ncnn_split_27 sep_dwconv2d_split_23 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution             sep_conv2d_split_23     1 1 sep_dwconv2d_split_23 sep_conv2d_split_23 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-ReLU                    re_lu_54                1 1 sep_conv2d_split_23 re_lu_54 -23330=4,3,256,256,8 0=0.0 1=6.0
-BatchNorm               batch_normalization_55  1 1 re_lu_54 batch_normalization_55 -23330=4,3,256,256,8 0=8 1=0.001
-ReLU                    re_lu_55                1 1 batch_normalization_55 re_lu_55 -23330=4,3,256,256,8 0=0.0 1=6.0
-Eltwise                 add_27                  2 1 re_lu_55 ncnn_split_27 add_27 -23330=4,3,256,256,8 0=1
-Convolution             softmax_conv            1 1 add_27 softmax_conv -23330=4,3,256,256,1 0=1 1=1 2=1 3=1 4=0 5=1 6=8 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-Sigmoid                 output                  1 1 softmax_conv output -23330=4,3,256,256,1 
+139 139
+Input                               data                                0 1 data -23330=4,3,256,256,3 0=256 1=256 2=3
+Convolution                         conv2d_1_M                          1 1 data conv2d_1_M -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=432 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
+Split                               ncnn_split_1                        1 1 conv2d_1_M ncnn_split_1 -23330=8,3,256,256,16,3,256,256,16 
+ConvolutionDepthWise                sep_dwconv2d_split_1                1 1 ncnn_split_1 sep_dwconv2d_split_1 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_1_M                1 1 sep_dwconv2d_split_1 sep_conv2d_split_1_M -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_3_M             1 1 sep_conv2d_split_1_M batch_normalization_3_M -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_1                               2 1 batch_normalization_3_M ncnn_split_1 add_1 -23330=4,3,256,256,16 0=1
+Split                               ncnn_split_2                        1 1 add_1 ncnn_split_2 -23330=8,3,256,256,16,3,256,256,16 
+Convolution                         conv2d_2_M                          1 1 ncnn_split_2 conv2d_2_M -23330=4,3,128,128,32 0=32 1=3 2=1 3=2 4=0 5=1 6=4608 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
+Split                               ncnn_split_3                        1 1 conv2d_2_M ncnn_split_3 -23330=8,3,128,128,32,3,128,128,32 
+ConvolutionDepthWise                sep_dwconv2d_split_2                1 1 ncnn_split_3 sep_dwconv2d_split_2 -23330=4,3,128,128,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_2_M                1 1 sep_dwconv2d_split_2 sep_conv2d_split_2_M -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_6_M             1 1 sep_conv2d_split_2_M batch_normalization_6_M -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_2                               2 1 batch_normalization_6_M ncnn_split_3 add_2 -23330=4,3,128,128,32 0=1
+Split                               ncnn_split_4                        1 1 add_2 ncnn_split_4 -23330=8,3,128,128,32,3,128,128,32 
+Convolution                         conv2d_3_M                          1 1 ncnn_split_4 conv2d_3_M -23330=4,3,64,64,64 0=64 1=3 2=1 3=2 4=0 5=1 6=18432 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
+Split                               ncnn_split_5                        1 1 conv2d_3_M ncnn_split_5 -23330=8,3,64,64,64,3,64,64,64 
+ConvolutionDepthWise                sep_dwconv2d_split_3                1 1 ncnn_split_5 sep_dwconv2d_split_3 -23330=4,3,64,64,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_3_M                1 1 sep_dwconv2d_split_3 sep_conv2d_split_3_M -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_9_M             1 1 sep_conv2d_split_3_M batch_normalization_9_M -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_3                               2 1 batch_normalization_9_M ncnn_split_5 add_3 -23330=4,3,64,64,64 0=1
+Split                               ncnn_split_6                        1 1 add_3 ncnn_split_6 -23330=8,3,64,64,64,3,64,64,64 
+Convolution                         conv2d_4_M                          1 1 ncnn_split_6 conv2d_4_M -23330=4,3,32,32,128 0=128 1=3 2=1 3=2 4=0 5=1 6=73728 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
+Split                               ncnn_split_7                        1 1 conv2d_4_M ncnn_split_7 -23330=8,3,32,32,128,3,32,32,128 
+ConvolutionDepthWise                sep_dwconv2d_split_4                1 1 ncnn_split_7 sep_dwconv2d_split_4 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_4_M                1 1 sep_dwconv2d_split_4 sep_conv2d_split_4_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_12_M            1 1 sep_conv2d_split_4_M batch_normalization_12_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_4                               2 1 batch_normalization_12_M ncnn_split_7 add_4 -23330=4,3,32,32,128 0=1
+Split                               ncnn_split_8                        1 1 add_4 ncnn_split_8 -23330=8,3,32,32,128,3,32,32,128 
+ConvolutionDepthWise                sep_dwconv2d_split_5                1 1 ncnn_split_8 sep_dwconv2d_split_5 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_5_M                1 1 sep_dwconv2d_split_5 sep_conv2d_split_5_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_14_M            1 1 sep_conv2d_split_5_M batch_normalization_14_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_5                               2 1 batch_normalization_14_M ncnn_split_8 add_5 -23330=4,3,32,32,128 0=1
+Split                               ncnn_split_9                        1 1 add_5 ncnn_split_9 -23330=8,3,32,32,128,3,32,32,128 
+Convolution                         conv2d_5_M                          1 1 ncnn_split_9 conv2d_5_M -23330=4,3,16,16,128 0=128 1=3 2=1 3=2 4=0 5=1 6=147456 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
+Split                               ncnn_split_10                       1 1 conv2d_5_M ncnn_split_10 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_6                1 1 ncnn_split_10 sep_dwconv2d_split_6 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_6_M                1 1 sep_dwconv2d_split_6 sep_conv2d_split_6_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_17_M            1 1 sep_conv2d_split_6_M batch_normalization_17_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_6                               2 1 batch_normalization_17_M ncnn_split_10 add_6 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_11                       1 1 add_6 ncnn_split_11 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_7                1 1 ncnn_split_11 sep_dwconv2d_split_7 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_7_M                1 1 sep_dwconv2d_split_7 sep_conv2d_split_7_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_19_M            1 1 sep_conv2d_split_7_M batch_normalization_19_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_7                               2 1 batch_normalization_19_M ncnn_split_11 add_7 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_12                       1 1 add_7 ncnn_split_12 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_8                1 1 ncnn_split_12 sep_dwconv2d_split_8 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_8_M                1 1 sep_dwconv2d_split_8 sep_conv2d_split_8_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_21_M            1 1 sep_conv2d_split_8_M batch_normalization_21_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_8                               2 1 batch_normalization_21_M ncnn_split_12 add_8 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_13                       1 1 add_8 ncnn_split_13 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_9                1 1 ncnn_split_13 sep_dwconv2d_split_9 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_9_M                1 1 sep_dwconv2d_split_9 sep_conv2d_split_9_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_23_M            1 1 sep_conv2d_split_9_M batch_normalization_23_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_9                               2 1 batch_normalization_23_M ncnn_split_13 add_9 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_14                       1 1 add_9 ncnn_split_14 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_10               1 1 ncnn_split_14 sep_dwconv2d_split_10 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_10_M               1 1 sep_dwconv2d_split_10 sep_conv2d_split_10_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_25_M            1 1 sep_conv2d_split_10_M batch_normalization_25_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_10                              2 1 batch_normalization_25_M ncnn_split_14 add_10 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_15                       1 1 add_10 ncnn_split_15 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_11               1 1 ncnn_split_15 sep_dwconv2d_split_11 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_11_M               1 1 sep_dwconv2d_split_11 sep_conv2d_split_11_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_27_M            1 1 sep_conv2d_split_11_M batch_normalization_27_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_11                              2 1 batch_normalization_27_M ncnn_split_15 add_11 -23330=4,3,16,16,128 0=1
+Interp                              up_sampling2d_1                     1 1 add_11 up_sampling2d_1 -23330=4,3,32,32,128 0=2 1=2.0 2=2.0
+Eltwise                             add_12                              2 1 up_sampling2d_1 ncnn_split_9 add_12 -23330=4,3,32,32,128 0=1
+Convolution                         conv2d_6_M                          1 1 add_12 conv2d_6_M -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=73728 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
+Split                               ncnn_split_16                       1 1 conv2d_6_M ncnn_split_16 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_12               1 1 ncnn_split_16 sep_dwconv2d_split_12 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_12_M               1 1 sep_dwconv2d_split_12 sep_conv2d_split_12_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_30_M            1 1 sep_conv2d_split_12_M batch_normalization_30_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_13                              2 1 batch_normalization_30_M ncnn_split_16 add_13 -23330=4,3,32,32,64 0=1
+Split                               ncnn_split_17                       1 1 add_13 ncnn_split_17 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_13               1 1 ncnn_split_17 sep_dwconv2d_split_13 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_13_M               1 1 sep_dwconv2d_split_13 sep_conv2d_split_13_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_32_M            1 1 sep_conv2d_split_13_M batch_normalization_32_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_14                              2 1 batch_normalization_32_M ncnn_split_17 add_14 -23330=4,3,32,32,64 0=1
+Split                               ncnn_split_18                       1 1 add_14 ncnn_split_18 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_14               1 1 ncnn_split_18 sep_dwconv2d_split_14 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_14_M               1 1 sep_dwconv2d_split_14 sep_conv2d_split_14_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_34_M            1 1 sep_conv2d_split_14_M batch_normalization_34_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_15                              2 1 batch_normalization_34_M ncnn_split_18 add_15 -23330=4,3,32,32,64 0=1
+Interp                              up_sampling2d_2                     1 1 add_15 up_sampling2d_2 -23330=4,3,64,64,64 0=2 1=2.0 2=2.0
+Eltwise                             add_16                              2 1 up_sampling2d_2 ncnn_split_6 add_16 -23330=4,3,64,64,64 0=1
+Convolution                         conv2d_7_M                          1 1 add_16 conv2d_7_M -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=18432 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
+Split                               ncnn_split_19                       1 1 conv2d_7_M ncnn_split_19 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_15               1 1 ncnn_split_19 sep_dwconv2d_split_15 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_15_M               1 1 sep_dwconv2d_split_15 sep_conv2d_split_15_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_37_M            1 1 sep_conv2d_split_15_M batch_normalization_37_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_17                              2 1 batch_normalization_37_M ncnn_split_19 add_17 -23330=4,3,64,64,32 0=1
+Split                               ncnn_split_20                       1 1 add_17 ncnn_split_20 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_16               1 1 ncnn_split_20 sep_dwconv2d_split_16 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_16_M               1 1 sep_dwconv2d_split_16 sep_conv2d_split_16_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_39_M            1 1 sep_conv2d_split_16_M batch_normalization_39_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_18                              2 1 batch_normalization_39_M ncnn_split_20 add_18 -23330=4,3,64,64,32 0=1
+Split                               ncnn_split_21                       1 1 add_18 ncnn_split_21 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_17               1 1 ncnn_split_21 sep_dwconv2d_split_17 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_17_M               1 1 sep_dwconv2d_split_17 sep_conv2d_split_17_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_41_M            1 1 sep_conv2d_split_17_M batch_normalization_41_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_19                              2 1 batch_normalization_41_M ncnn_split_21 add_19 -23330=4,3,64,64,32 0=1
+Interp                              up_sampling2d_3                     1 1 add_19 up_sampling2d_3 -23330=4,3,128,128,32 0=2 1=2.0 2=2.0
+Eltwise                             add_20                              2 1 up_sampling2d_3 ncnn_split_4 add_20 -23330=4,3,128,128,32 0=1
+Convolution                         conv2d_8_M                          1 1 add_20 conv2d_8_M -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=4608 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
+Split                               ncnn_split_22                       1 1 conv2d_8_M ncnn_split_22 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_18               1 1 ncnn_split_22 sep_dwconv2d_split_18 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_18_M               1 1 sep_dwconv2d_split_18 sep_conv2d_split_18_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_44_M            1 1 sep_conv2d_split_18_M batch_normalization_44_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_21                              2 1 batch_normalization_44_M ncnn_split_22 add_21 -23330=4,3,128,128,16 0=1
+Split                               ncnn_split_23                       1 1 add_21 ncnn_split_23 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_19               1 1 ncnn_split_23 sep_dwconv2d_split_19 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_19_M               1 1 sep_dwconv2d_split_19 sep_conv2d_split_19_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_46_M            1 1 sep_conv2d_split_19_M batch_normalization_46_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_22                              2 1 batch_normalization_46_M ncnn_split_23 add_22 -23330=4,3,128,128,16 0=1
+Split                               ncnn_split_24                       1 1 add_22 ncnn_split_24 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_20               1 1 ncnn_split_24 sep_dwconv2d_split_20 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_20_M               1 1 sep_dwconv2d_split_20 sep_conv2d_split_20_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_48_M            1 1 sep_conv2d_split_20_M batch_normalization_48_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_23                              2 1 batch_normalization_48_M ncnn_split_24 add_23 -23330=4,3,128,128,16 0=1
+Interp                              up_sampling2d_4                     1 1 add_23 up_sampling2d_4 -23330=4,3,256,256,16 0=2 1=2.0 2=2.0
+Eltwise                             add_24                              2 1 up_sampling2d_4 ncnn_split_2 add_24 -23330=4,3,256,256,16 0=1
+Convolution                         conv2d_9_M                          1 1 add_24 conv2d_9_M -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=1152 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
+Split                               ncnn_split_25                       1 1 conv2d_9_M ncnn_split_25 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_21               1 1 ncnn_split_25 sep_dwconv2d_split_21 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_21_M               1 1 sep_dwconv2d_split_21 sep_conv2d_split_21_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_51_M            1 1 sep_conv2d_split_21_M batch_normalization_51_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_25                              2 1 batch_normalization_51_M ncnn_split_25 add_25 -23330=4,3,256,256,8 0=1
+Split                               ncnn_split_26                       1 1 add_25 ncnn_split_26 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_22               1 1 ncnn_split_26 sep_dwconv2d_split_22 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_22_M               1 1 sep_dwconv2d_split_22 sep_conv2d_split_22_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_53_M            1 1 sep_conv2d_split_22_M batch_normalization_53_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_26                              2 1 batch_normalization_53_M ncnn_split_26 add_26 -23330=4,3,256,256,8 0=1
+Split                               ncnn_split_27                       1 1 add_26 ncnn_split_27 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_23               1 1 ncnn_split_27 sep_dwconv2d_split_23 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_23_M               1 1 sep_dwconv2d_split_23 sep_conv2d_split_23_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+ConvolutionDepthWise                batch_normalization_55_M            1 1 sep_conv2d_split_23_M batch_normalization_55_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
+Eltwise                             add_27                              2 1 batch_normalization_55_M ncnn_split_27 add_27 -23330=4,3,256,256,8 0=1
+Convolution                         softmax_conv                        1 1 add_27 softmax_conv -23330=4,3,256,256,1 0=1 1=1 2=1 3=1 4=0 5=1 6=8 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+Sigmoid                             output                              1 1 softmax_conv output -23330=4,3,256,256,1 
