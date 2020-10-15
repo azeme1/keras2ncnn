@@ -81,7 +81,7 @@ def detect_transform_Conv2DBatchNormalization(keras_config):
 
 
 def check_Conv2DBatchNormalization(keras_config):
-    return len(detect_transform_Conv2DBatchNormalization(keras_config)) > 0
+    return len(detect_transform_Conv2DBatchNormalization(keras_config)[0]) > 0
 
 
 def apply_transform_Conv2DBatchNormalization(keras_config):

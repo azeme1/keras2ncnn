@@ -42,7 +42,7 @@ def detect_transform_Conv2DReLU(keras_config):
 
 
 def check_Conv2DReLU(keras_config):
-    return len(detect_transform_Conv2DReLU(keras_config)) > 0
+    return len(detect_transform_Conv2DReLU(keras_config)[0]) > 0
 
 
 def apply_transform_Conv2DReLU(keras_config):
