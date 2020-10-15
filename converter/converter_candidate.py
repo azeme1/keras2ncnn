@@ -6,6 +6,8 @@ import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict
 
+activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4}
+
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
                       'MaxPooling2D': 'Pooling', 'AveragePooling2D': 'Pooling',
                       'MaxPool2D': 'Pooling', 'AvgPool2D': 'Pooling',
@@ -303,7 +305,6 @@ def get_conv2dtranspose_mapping(in_dict):
     bias_term = int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
-    activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4}
 
     layer_input_shape = get_valid_shape(layer.input_shape)
     layer_output_shape = get_valid_shape(layer.output_shape)
@@ -376,7 +377,6 @@ def get_conv2d_mapping(in_dict):
     bias_term = int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
-    activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4}
 
     layer_input_shape = get_valid_shape(layer.input_shape)
     layer_output_shape = get_valid_shape(layer.output_shape)
@@ -444,7 +444,6 @@ def get_depthwiseconv2d_mapping(in_dict):
     bias_term = int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
-    activation_type = 0
 
     layer_input_shape = get_valid_shape(layer.input_shape)
     layer_output_shape = get_valid_shape(layer.output_shape)
@@ -452,7 +451,9 @@ def get_depthwiseconv2d_mapping(in_dict):
     num_output = layer_output_shape[0][-1]
     group = num_output
 
-    assert layer_config['activation'] == 'linear'
+    assert layer_config['activation'] in activation_type_dict
+    activation_type = activation_type_dict[layer_config['activation']]
+    #"TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
     assert dilation_h == dilation_w == 1
 
