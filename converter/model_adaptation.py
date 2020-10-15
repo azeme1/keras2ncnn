@@ -2,6 +2,7 @@ from copy import deepcopy
 from extra_layers.OutputSplit import OutputSplit
 from tensorflow.keras.models import Model
 
+
 def is_multi_output(keras_model_config):
     for layer_index, layer_item in enumerate(keras_model_config['layers']):
         inbound_nodes = layer_item['inbound_nodes']
@@ -12,6 +13,7 @@ def is_multi_output(keras_model_config):
             if len(inbound_node_list) > 1:
                 return True
     return False
+
 
 def rename_layer(model_config, src_name, dst_name):
     for layer_item in model_config['input_layers']:
@@ -47,6 +49,7 @@ def rename_layer(model_config, src_name, dst_name):
                     item[0] = dst_name
     return model_config
 
+
 def get_outbound_nodes(keras_model_config):
     outbound_nodes_dict = {}
     layer_index_dict = {}
@@ -73,6 +76,7 @@ def get_outbound_nodes(keras_model_config):
         outbound_nodes_dict[_in_node_name] = []
 
     return outbound_nodes_dict, layer_index_dict
+
 
 def split_output_nodes(keras_model_config):
     protected_class_names = ['OutputSplit']
@@ -121,10 +125,12 @@ def split_output_nodes(keras_model_config):
     model_config['layers'] = nccn2keras_layer_list
     return model_config
 
+
 def adapt_keras_model(keras_model, model_name):
     keras_model_config = keras_model.get_config()
     keras_model_config['name'] = model_name
-    assert len(keras_model_config['input_layers']) == len(keras_model_config['output_layers']) == 1, 'Multi IN/OUT is not supported'
+    assert len(keras_model_config['input_layers']) == len(
+        keras_model_config['output_layers']) == 1, 'Multi IN/OUT is not supported'
     if is_multi_output(keras_model_config):
         adapted_model_config = split_output_nodes(keras_model_config)
         adapted_model_config = rename_layer(adapted_model_config, keras_model_config['input_layers'][0][0], 'data')
@@ -134,4 +140,3 @@ def adapt_keras_model(keras_model, model_name):
         adapted_keras_model = Model.from_config(keras_model_config)
     adapted_keras_model.set_weights(keras_model.get_weights())
     return adapted_keras_model
-

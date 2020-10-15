@@ -16,6 +16,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding'}
 
+
 def fix_axis_value(in_dict, axis):
     if axis < 0:
         axis = len(in_dict['layer'].output_shape) + axis
@@ -27,12 +28,14 @@ def fix_axis_value(in_dict, axis):
     assert axis >= 0, 'Axis can not be negative'
     return axis
 
+
 def get_valid_shape(raw_shape):
     if isinstance(raw_shape, list):
         layer_shape_list = raw_shape
     else:
         layer_shape_list = [raw_shape]
     return layer_shape_list
+
 
 def get_layer_type(layer):
     activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU'}
@@ -58,6 +61,7 @@ def get_blob_shape_string(layer, batch_size):
     blob_shape_string = ','.join([str(item) for item in [item_counter] + item_list])
     return blob_shape_string
 
+
 def get_split_shape_string(layer_output_shape, batch_size):
     N = batch_size
     item_counter = 0
@@ -69,12 +73,14 @@ def get_split_shape_string(layer_output_shape, batch_size):
     blob_shape_string = ','.join([str(item) for item in [item_counter] + item_list])
     return blob_shape_string
 
+
 def split_remap(blob_name, split_info):
     if blob_name in split_info:
         out_blob_name = split_info[blob_name]
     else:
         out_blob_name = blob_name
     return out_blob_name
+
 
 def get_in_out_string(in_dict):
     layer = in_dict['layer']
@@ -142,9 +148,11 @@ def get_in_out_string(in_dict):
 
     return in_out_string, split_string
 
+
 def get_outputsplit_mapping(in_dict):
     parameter_mapping = OrderedDict({})
     return parameter_mapping
+
 
 def get_inputlayer_mapping(in_dict):
     # Input	0   w	0
@@ -154,6 +162,7 @@ def get_inputlayer_mapping(in_dict):
     N, H, W, C = layer_config['batch_input_shape']
     parameter_mapping = OrderedDict({0: W, 1: H, 2: C})
     return parameter_mapping
+
 
 def get_zeropadding2d_mapping(in_dict):
     #   Padding
@@ -177,6 +186,7 @@ def get_zeropadding2d_mapping(in_dict):
                                      7: front, 8: behind})
     return parameter_mapping
 
+
 def get_pooling2d_mapping(in_dict):
     #     Pooling  ::  from  C++   enum PoolMethod { PoolMethod_MAX = 0, PoolMethod_AVE = 1 };
     #       0	pooling_type	0
@@ -199,10 +209,10 @@ def get_pooling2d_mapping(in_dict):
     pad_mode = 0
     global_pooling = 0
     # assert layer_config['padding'] == 'same'
-    if in_dict['layer'].__class__.__name__ in  ['MaxPool2D', 'MaxPooling2D']:
+    if in_dict['layer'].__class__.__name__ in ['MaxPool2D', 'MaxPooling2D']:
         pooling_type = 0
-    elif in_dict['layer'].__class__.__name__ in  ['AvgPool2D', 'AveragePooling2D']:
-        #TODO :: Check AvgPool2d enum
+    elif in_dict['layer'].__class__.__name__ in ['AvgPool2D', 'AveragePooling2D']:
+        # TODO :: Check AvgPool2d enum
         pooling_type = 1
     else:
         assert False, f"Unsupported Layer {in_dict['layer']}"
@@ -212,27 +222,33 @@ def get_pooling2d_mapping(in_dict):
                                      11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
     return parameter_mapping
 
+
 def get_maxpooling2d_mapping(in_dict):
     return get_pooling2d_mapping(in_dict)
+
 
 def get_averagepooling2d_mapping(in_dict):
     return get_pooling2d_mapping(in_dict)
 
+
 def get_multiply_mapping(in_dict):
     return get_merge_mapping(in_dict, op_type=0)
+
 
 def get_add_mapping(in_dict):
     return get_merge_mapping(in_dict, op_type=1)
 
+
 def get_merge_mapping(in_dict, op_type):
     # Add, Multiply, Max ->  C++ class Eltwise : public Layer
     # enum OperationType { Operation_PROD = 0, Operation_SUM = 1, Operation_MAX = 2 };
-    #Eltwise
+    # Eltwise
     # 0  op_type     0
     # 1  coeffs     []
     # TODO :: support other ops
     parameter_mapping = OrderedDict({0: op_type})
     return parameter_mapping
+
 
 def get_upsampling2d_mapping(in_dict):
     #     Interp
@@ -266,8 +282,9 @@ def get_padding(input_size, output_size, kernel_size, stride_size, dilation_rate
         s_pad = t_pad - f_pad
     return f_pad, s_pad
 
+
 def get_conv2dtranspose_mapping(in_dict):
-    #Deconvolution
+    # Deconvolution
     # 0	num_output	0	weight bias
     # 1	kernel_w	0
     # 2	dilation_w	1
@@ -311,7 +328,7 @@ def get_conv2dtranspose_mapping(in_dict):
 
     assert layer_config['activation'] in activation_type_dict
     activation_type = activation_type_dict[layer_config['activation']]
-    #"TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
+    # "TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
     assert dilation_h == dilation_w == 1
 
@@ -335,6 +352,7 @@ def get_conv2dtranspose_mapping(in_dict):
                                      20: output_w, 21: output_h
                                      })
     return parameter_mapping
+
 
 def get_conv2d_mapping(in_dict):
     #     Convolution
@@ -383,7 +401,7 @@ def get_conv2d_mapping(in_dict):
 
     assert layer_config['activation'] in activation_type_dict
     activation_type = activation_type_dict[layer_config['activation']]
-    #"TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
+    # "TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
     assert dilation_h == dilation_w == 1
 
@@ -403,6 +421,7 @@ def get_conv2d_mapping(in_dict):
                                      # TODO :: FILL This params 17:<>, 18:<>,
                                      })
     return parameter_mapping
+
 
 def get_depthwiseconv2d_mapping(in_dict):
     #     ConvolutionDepthWise
@@ -453,7 +472,7 @@ def get_depthwiseconv2d_mapping(in_dict):
 
     assert layer_config['activation'] in activation_type_dict
     activation_type = activation_type_dict[layer_config['activation']]
-    #"TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
+    # "TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
     assert dilation_h == dilation_w == 1
 
@@ -475,6 +494,7 @@ def get_depthwiseconv2d_mapping(in_dict):
                                      })
     return parameter_mapping
 
+
 def get_batchnormalization_mapping(in_dict):
     # BatchNorm   0   channels    0   slope   mean    variance    bias
     #             1   eps 0.f
@@ -485,7 +505,7 @@ def get_batchnormalization_mapping(in_dict):
         scale, beta, moving_mean, moving_variance = layer.get_weights()
     elif (not layer_config['scale']) and layer_config['center']:
         beta, moving_mean, moving_variance = layer.get_weights()
-        scale = 1. + 0*moving_mean.flatten()
+        scale = 1. + 0 * moving_mean.flatten()
     elif layer_config['scale'] and (not layer_config['center']):
         scale, moving_mean, moving_variance = layer.get_weights()
         beta = 0 * moving_mean.flatten()
@@ -495,8 +515,8 @@ def get_batchnormalization_mapping(in_dict):
         beta = 0 * moving_mean.flatten()
     else:
         assert False, "This branch was not verified"
-    in_dict['weight_list'] += [scale.flatten(),  moving_mean.flatten(),
-                               moving_variance.flatten(), beta.flatten(),]
+    in_dict['weight_list'] += [scale.flatten(), moving_mean.flatten(),
+                               moving_variance.flatten(), beta.flatten(), ]
 
     layer_output_shape = get_valid_shape(layer.output_shape)
     num_output = layer_output_shape[0][-1]
@@ -504,6 +524,7 @@ def get_batchnormalization_mapping(in_dict):
 
     parameter_mapping = OrderedDict({0: num_output, 1: epsilon})
     return parameter_mapping
+
 
 def get_relu_mapping(in_dict):
     # ReLU	0	slope	0.f
@@ -523,6 +544,7 @@ def get_relu_mapping(in_dict):
             parameter_mapping[1] = max_value
     return parameter_mapping
 
+
 def get_leakyrelu_mapping(in_dict):
     # ReLU	0	slope	0.f
     layer = in_dict['layer']
@@ -530,6 +552,7 @@ def get_leakyrelu_mapping(in_dict):
     slope = float("{0:.7f}".format(layer_config['alpha']))
     parameter_mapping = OrderedDict({0: slope})
     return parameter_mapping
+
 
 def get_softmax_mapping(in_dict):
     # Softmax	0	axis	0
@@ -579,6 +602,7 @@ def get_parameter_string(in_dict):
     parameter_string = ' '.join([f'{key}={value}' for key, value in parameter_mapping.items()])
     return parameter_string
 
+
 def get_model_string(model, magic_number, blob_set, string_list):
     # [layer count] [blob count]
     layer_count = len(string_list)
@@ -587,6 +611,7 @@ def get_model_string(model, magic_number, blob_set, string_list):
     string_list.append(str(magic_number))
     string_list.append(f'{layer_count} {blob_count}')
     return string_list
+
 
 def get_layer_string(in_dict):
     batch_size = in_dict['batch_size']
@@ -599,7 +624,7 @@ def get_layer_string(in_dict):
     parameter_string = get_parameter_string(in_dict)
     array_key = str(in_dict['array_key'])
 
-    #TODO :: autodetect line length
+    # TODO :: autodetect line length
     max_line_length = 36
     assert len(layer_type) < max_line_length
     assert len(layer_name) < max_line_length
@@ -610,6 +635,7 @@ def get_layer_string(in_dict):
     if split_string is not None:
         string_list.append(split_string)
     return string_list
+
 
 def conver_model(model):
     # magic number: 7767517
@@ -639,11 +665,6 @@ def conver_model(model):
             tmp_list.append(split_info[item][tmp])
     blob_set = set([layer.name for layer in model.layers] + tmp_list)
 
-    #Первые строки конфига
     string_list = get_model_string(model, magic_number, blob_set=blob_set, string_list=string_list) + string_list
 
-    # if len(weight_list) > 0:
-    #     weight_array = np.concatenate(weight_list)
-    # else:
-    #     weight_array = np.array([])
     return string_list, weight_list

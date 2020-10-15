@@ -1,6 +1,6 @@
 import os
 from tensorflow.keras.models import load_model
-from unit_test.helper import save_config, save_layer_unit_test, get_test_item_mean_std
+from unit_test.helper import save_config, get_test_item_mean_std
 from converter.converter_candidate import conver_model
 from converter.model_adaptation import adapt_keras_model
 from optimization.optimize_graph import apply_transformations
@@ -14,6 +14,7 @@ if __name__ == '__main__':
     Quick command lines
     --model_path=model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5
     --model_path=model_zoo/segmentation/hair/model_001/checkpoint.hdf5
+    --model_path=model_zoo/segmentation/hair/model_002/gaelkt_HairNets.hdf5
     """
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--model_path', help='The path to the Keras model file (usually *.hdf5) ')
