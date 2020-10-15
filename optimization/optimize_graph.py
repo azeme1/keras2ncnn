@@ -5,10 +5,11 @@ from optimization.graph.SeparableConv2D_split import check_SeparableConv2D_trans
     info_SeparableConv2D
 from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchNormalization, \
     apply_transform_Conv2DBatchNormalization, info_Conv2DBatchNormalization
+from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transform_Conv2DReLU, info_Conv2DReLU
 
-info_list = [info_SeparableConv2D, info_Conv2DBatchNormalization]
-check_transform_list = [check_SeparableConv2D_transfrom, check_Conv2DBatchNormalization]
-apply_transform_list = [apply_transform_SeparableConv2D, apply_transform_Conv2DBatchNormalization]
+info_list = [info_SeparableConv2D, info_Conv2DBatchNormalization, info_Conv2DReLU]
+check_transform_list = [check_SeparableConv2D_transfrom, check_Conv2DBatchNormalization, check_Conv2DReLU]
+apply_transform_list = [apply_transform_SeparableConv2D, apply_transform_Conv2DBatchNormalization, apply_transform_Conv2DReLU]
 
 
 def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
