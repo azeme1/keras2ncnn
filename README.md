@@ -10,7 +10,6 @@ Export Keras model to Tencent/NCNN.
 * UpSampling2D
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
-* Fix layer name length issue
 
 ### Preconverted models
 Some 'preconverted' models can be downloaded from [DropBox](https://www.dropbox.com/sh/8anok3k3jxjj81i/AADWMLad_V0MKs4ySN2mgPPda?dl=0)
@@ -42,9 +41,9 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 ## TODO List
 ### Code
 * Tensorflow 2.x support
-* Layer Fusion
 * Auto compile python bindings for the project
-* Add Padding support
+* Fix layer name length issue
+* Export models from Keras applications applications
 ### Upcoming Models 
 * [https://github.com/thangtran480/hair-segmentation]
 * [https://github.com/ItchyHiker/Hair_Segmentation_Keras]
