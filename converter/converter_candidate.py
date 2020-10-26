@@ -108,7 +108,7 @@ def get_in_out_string(in_dict):
                 pass
         else:
             if item.outbound_layer.name in in_dict['model_output_names']:
-                output_blobs.append('output')
+                output_blobs.append('output' + item.outbound_layer.name)
             else:
                 output_blobs.append(item.outbound_layer.name)
     #     print(input_blobs)
@@ -141,7 +141,11 @@ def get_in_out_string(in_dict):
         in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), ' '.join(output_blobs)]
     else:
         if item.outbound_layer.name in in_dict['model_output_names']:
-            in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), 'output']
+            layer_name = layer.name
+            if layer_name == 'output':
+                in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), 'output']
+            else:
+                in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), layer.name]
         else:
             in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), layer.name]
     in_out_string = ' '.join(in_out_list)

@@ -30,8 +30,15 @@ def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
 def check_transform(src_model, dst_model):
     print("Checking Transfer :: Random value check")
     x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
-    transform_error = np.abs(dst_model.predict(x_in) - src_model.predict(x_in)).mean()
-    print(f"         Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
+    dst_output = dst_model.predict(x_in)
+    src_output = src_model.predict(x_in)
+    if isinstance(dst_output,list):
+        for _i, (src_item, dst_item) in enumerate(zip(src_output, dst_output)):
+            transform_error = np.abs(src_item - dst_item).mean()
+            print(f"  Output {_i}    Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
+    else:
+        transform_error = np.abs(dst_output - src_model).mean()
+        print(f"         Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
     return transform_error
 
 

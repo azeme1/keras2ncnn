@@ -1,9 +1,10 @@
 import os
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from unit_test.helper import save_config, get_test_item_mean_std
 from converter.converter_candidate import conver_model
 from converter.model_adaptation import adapt_keras_model
-from optimization.optimize_graph import apply_transformations
+from optimization.optimize_graph import apply_transformations, check_transform
 
 import argparse
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -31,13 +32,12 @@ if __name__ == '__main__':
     if export_model_name is None:
         export_model_name = '.'.join(os.path.basename(model_path).split('.')[:-1])
 
-    keras_model = load_model(model_path)
+    keras_model = load_model(model_path, custom_objects={'tf': tf})
     keras_model = apply_transformations(keras_model)
 
     adapted_keras_model = adapt_keras_model(keras_model, export_model_name)
     target_shape = keras_model.input_shape[1:3]
     x_in_item = get_test_item_mean_std(target_shape)
-    error = ((keras_model.predict(x_in_item) - adapted_keras_model.predict(x_in_item))**2).mean()
-    assert error < 1.e-5, 'Bad conversion'
+    check_transform(keras_model, adapted_keras_model)
     string_list, weight_list = conver_model(adapted_keras_model)
     save_config(string_list, weight_list, adapted_keras_model.name, export_path)
