@@ -131,7 +131,8 @@ def adapt_keras_model(keras_model, model_name):
     keras_model_config['name'] = model_name
     # assert len(keras_model_config['input_layers']) == len(
     #     keras_model_config['output_layers']) == 1, 'Multi IN/OUT is not supported'
-    print("WARNING :: Multi Output Detected!!!")
+    if len(keras_model_config['output_layers']) != 1:
+        print("WARNING :: Multi Output Detected!!!")
     if is_multi_output(keras_model_config):
         adapted_model_config = split_output_nodes(keras_model_config)
         adapted_model_config = rename_layer(adapted_model_config, keras_model_config['input_layers'][0][0], 'data')
