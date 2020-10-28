@@ -37,7 +37,7 @@ def check_transform(src_model, dst_model):
             transform_error = np.abs(src_item - dst_item).mean()
             print(f"  Output {_i}    Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
     else:
-        transform_error = np.abs(dst_output - src_model).mean()
+        transform_error = np.abs(dst_output - src_output).mean()
         print(f"         Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
     return transform_error
 
