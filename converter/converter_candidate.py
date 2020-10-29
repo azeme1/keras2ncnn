@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict
 
-activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4}
+activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4, 'tanh': 5}
 
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
                       'MaxPooling2D': 'Pooling', 'AveragePooling2D': 'Pooling',
@@ -38,7 +38,7 @@ def get_valid_shape(raw_shape):
 
 
 def get_layer_type(layer):
-    activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU'}
+    activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'Tanh'}
     if type(layer).__name__ == 'Activation':
         return activation_type_mapping[layer.get_config()['activation']]
     else:
@@ -529,6 +529,8 @@ def get_batchnormalization_mapping(in_dict):
     parameter_mapping = OrderedDict({0: num_output, 1: epsilon})
     return parameter_mapping
 
+def get_tanh_mapping(in_dict):
+    return OrderedDict({})
 
 def get_relu_mapping(in_dict):
     # ReLU	0	slope	0.f
