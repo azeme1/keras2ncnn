@@ -9,12 +9,18 @@ from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transfor
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
 
-info_list = [info_SeparableConv2D, info_Conv2DBatchNormalization,
-             info_BatchNormalization_DepthwiseConv2D, info_Conv2DReLU]
-check_transform_list = [check_SeparableConv2D_transfrom, check_Conv2DBatchNormalization,
-                        check_BatchNormalization_DepthwiseConv2D, check_Conv2DReLU]
-apply_transform_list = [apply_transform_SeparableConv2D, apply_transform_Conv2DBatchNormalization,
-                        apply_transform_BatchNormalization_DepthwiseConv2D, apply_transform_Conv2DReLU]
+info_list = [info_SeparableConv2D,
+             info_Conv2DBatchNormalization,
+             info_BatchNormalization_DepthwiseConv2D,
+             info_Conv2DReLU]
+check_transform_list = [check_SeparableConv2D_transfrom,
+                        check_Conv2DBatchNormalization,
+                        check_BatchNormalization_DepthwiseConv2D,
+                        check_Conv2DReLU]
+apply_transform_list = [apply_transform_SeparableConv2D,
+                        apply_transform_Conv2DBatchNormalization,
+                        apply_transform_BatchNormalization_DepthwiseConv2D,
+                        apply_transform_Conv2DReLU]
 
 
 def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):

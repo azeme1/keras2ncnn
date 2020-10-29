@@ -1,6 +1,6 @@
 import os
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, Model
 from unit_test.helper import save_config, get_test_item_mean_std
 from converter.converter_candidate import conver_model
 from converter.model_adaptation import adapt_keras_model
@@ -21,23 +21,29 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', help='The path to the Keras model file (usually *.hdf5) ')
     parser.add_argument('--export_path', default=None, help='The path for the script result output')
     parser.add_argument('--export_model_name', default=None, help='The model file name')
+    parser.add_argument('--save_optimized', default=True, help='The model file name')
     args = parser.parse_args()
     inference_mode = 'NCHW'
 
     model_path = args.model_path
     export_path = args.export_path
     export_model_name = args.export_model_name
+    save_optimized = args.save_optimized
     if export_path is None:
         export_path = os.path.dirname(model_path)
     if export_model_name is None:
         export_model_name = '.'.join(os.path.basename(model_path).split('.')[:-1])
 
-    keras_model = load_model(model_path, custom_objects={'tf': tf})
-    keras_model = apply_transformations(keras_model)
+    keras_model_in = load_model(model_path, custom_objects={'tf': tf, 'Functional': Model})
+    keras_model = apply_transformations(keras_model_in)
+    if save_optimized:
+        keras_model.save('.'.join(model_path.split('.')[:-1]) + '_optimized.hdf5')
 
     adapted_keras_model = adapt_keras_model(keras_model, export_model_name)
     target_shape = keras_model.input_shape[1:3]
     x_in_item = get_test_item_mean_std(target_shape)
-    check_transform(keras_model, adapted_keras_model)
+
+
+    check_transform(keras_model_in, adapted_keras_model)
     string_list, weight_list = conver_model(adapted_keras_model)
     save_config(string_list, weight_list, adapted_keras_model.name, export_path)
