@@ -78,10 +78,10 @@ def detect_transform_Conv2DBatchNormalization(keras_config):
         if item['class_name'] == 'BatchNormalization':
             in_node_name = item['inbound_nodes'][0][0][0]
             in_node_class_name = keras_config['layers'][index_dict[in_node_name]]['class_name']
-            _activation = keras_config['layers'][index_dict[in_node_name]]['config']['activation']
-            if not(_activation in ['linear']):
-                continue
             if in_node_class_name in mapping_class_dict:
+                _activation = keras_config['layers'][index_dict[in_node_name]]['config']['activation']
+                if not (_activation in ['linear']):
+                    continue
                 if len(outbound_dict[in_node_name]) == 1:
                     index_list.append(i)
     return index_list, index_dict

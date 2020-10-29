@@ -1,5 +1,5 @@
 import numpy as np
-
+from tensorflow.keras.layers import ReLU
 from converter.model_adaptation import rename_layer, get_outbound_nodes
 
 info_Conv2DReLU = 'Conv2D->ReLU: Inline operations should be merged'
@@ -31,6 +31,12 @@ def detect_transform_Conv2DReLU(keras_config):
     outbound_dict, index_dict = get_outbound_nodes(keras_config)
     for i, item in enumerate(keras_config['layers']):
         if item['class_name'] == 'ReLU':
+            if 'max_value' in item['config']:
+                if 'max_value' is not  None:
+                    continue
+            if 'negative_slope' in item['config']:
+                if 'negative_slope' > 0.:
+                    continue
             in_node_name = item['inbound_nodes'][0][0][0]
             in_node_class_name = keras_config['layers'][index_dict[in_node_name]]['class_name']
             if in_node_class_name in ['Conv2D', 'DepthwiseConv2D']:
