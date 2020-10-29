@@ -60,7 +60,7 @@ def check_transform(src_model, dst_model):
 def apply_transformations(in_model):
     src_model = None
     src_model_config = in_model.get_config()
-    k = 1024
+    k = 2
     for info_txt, check_func, apply_func in zip(info_list[:k], check_transform_list[:k], apply_transform_list[:k]):
         if check_func(src_model_config):
             if src_model is None:
