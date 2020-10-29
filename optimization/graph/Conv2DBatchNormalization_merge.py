@@ -25,6 +25,26 @@ def transfer_Conv2DBatchNormalization_Conv2D(src_model, dst_model, transfer_rule
 
     dst_model.get_layer(transfer_rule['dst']).set_weights([weight, bias])
 
+def transfer_Conv2DBatchNormalization_Conv2DTranspose(src_model, dst_model, transfer_rule):
+    layer_c = src_model.get_layer(transfer_rule['src_c'])
+    weigths_c = layer_c.get_weights()
+    layer_b = src_model.get_layer(transfer_rule['src_b'])
+    weigths_b = layer_b.get_weights()
+
+    eps = layer_b.get_config()['epsilon']
+    if len(weigths_c) == 2:
+        weight, bias = weigths_c
+    else:
+        weight, = weigths_c
+        bias = 0
+    gamma, beta, mean, var = weigths_b
+
+    a = gamma / np.sqrt(var + eps)
+    weight = weight * a.reshape((1, 1, -1, 1))
+    bias = a * (bias - mean) + beta
+
+    dst_model.get_layer(transfer_rule['dst']).set_weights([weight, bias])
+
 def transfer_DepthwiseConv2DBatchNormalization_Conv2D(src_model, dst_model, transfer_rule):
     layer_c = src_model.get_layer(transfer_rule['src_c'])
     weigths_c = layer_c.get_weights()
@@ -47,24 +67,8 @@ def transfer_DepthwiseConv2DBatchNormalization_Conv2D(src_model, dst_model, tran
 
 
 mapping_class_dict = {'Conv2D': transfer_Conv2DBatchNormalization_Conv2D,
-                      'DepthwiseConv2D': transfer_DepthwiseConv2DBatchNormalization_Conv2D}
-
-
-# def get_outbound_nodes(keras_config):
-#     outbound_dict = {}
-#     index_dict = {}
-#     for _i, _layer in enumerate(keras_config['layers']):
-#         out_node_name = _layer['name']
-#         index_dict[out_node_name] = _i
-#         if len(_layer['inbound_nodes']) == 0:
-#             continue
-#         in_node_name = _layer['inbound_nodes'][0][0][0]
-#         if in_node_name in outbound_dict:
-#             outbound_dict[in_node_name] += [out_node_name]
-#         else:
-#             outbound_dict[in_node_name] = [out_node_name]
-#
-#     return outbound_dict, index_dict
+                      'DepthwiseConv2D': transfer_DepthwiseConv2DBatchNormalization_Conv2D,
+                      'Conv2DTranspose': transfer_Conv2DBatchNormalization_Conv2DTranspose}
 
 
 def detect_transform_Conv2DBatchNormalization(keras_config):
@@ -75,7 +79,7 @@ def detect_transform_Conv2DBatchNormalization(keras_config):
             in_node_name = item['inbound_nodes'][0][0][0]
             in_node_class_name = keras_config['layers'][index_dict[in_node_name]]['class_name']
             _activation = keras_config['layers'][index_dict[in_node_name]]['config']['activation']
-            if _activation in ['linear']:
+            if not(_activation in ['linear']):
                 continue
             if in_node_class_name in mapping_class_dict:
                 if len(outbound_dict[in_node_name]) == 1:

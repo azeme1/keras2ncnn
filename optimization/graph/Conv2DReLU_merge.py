@@ -1,6 +1,6 @@
 import numpy as np
 
-from converter.model_adaptation import rename_layer
+from converter.model_adaptation import rename_layer, get_outbound_nodes
 
 info_Conv2DReLU = 'Conv2D->ReLU: Inline operations should be merged'
 
@@ -9,21 +9,21 @@ def transfer_Conv2DReLU_Conv2D(src_model, dst_model, transfer_rule):
     dst_model.get_layer(transfer_rule['dst']).set_weights(src_model.get_layer(transfer_rule['src']).get_weights())
 
 
-def get_outbound_nodes(keras_config):
-    outbound_dict = {}
-    index_dict = {}
-    for _i, _layer in enumerate(keras_config['layers']):
-        out_node_name = _layer['name']
-        index_dict[out_node_name] = _i
-        if len(_layer['inbound_nodes']) == 0:
-            continue
-        in_node_name = _layer['inbound_nodes'][0][0][0]
-        if in_node_name in outbound_dict:
-            outbound_dict[in_node_name] += [out_node_name]
-        else:
-            outbound_dict[in_node_name] = [out_node_name]
-
-    return outbound_dict, index_dict
+# def get_outbound_nodes(keras_config):
+#     outbound_dict = {}
+#     index_dict = {}
+#     for _i, _layer in enumerate(keras_config['layers']):
+#         out_node_name = _layer['name']
+#         index_dict[out_node_name] = _i
+#         if len(_layer['inbound_nodes']) == 0:
+#             continue
+#         in_node_name = _layer['inbound_nodes'][0][0][0]
+#         if in_node_name in outbound_dict:
+#             outbound_dict[in_node_name] += [out_node_name]
+#         else:
+#             outbound_dict[in_node_name] = [out_node_name]
+#
+#     return outbound_dict, index_dict
 
 
 def detect_transform_Conv2DReLU(keras_config):
@@ -57,7 +57,7 @@ def apply_transform_Conv2DReLU(keras_config):
         transfer_call = transfer_Conv2DReLU_Conv2D
 
         keras_config = rename_layer(keras_config, src_name, dst_name)
-        merged_dst = dst_name + '_M'
+        merged_dst = dst_name       # + '_M' TODO Decide to rename the layer
         keras_config = rename_layer(keras_config, dst_name, merged_dst)
         weight_transfer_rule_dict[merged_dst] = {'transfer_call': transfer_call,
                                                  'src': dst_name,

@@ -9,18 +9,27 @@ from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transfor
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
 
-info_list = [info_SeparableConv2D,
+from optimization.graph.DropLayer import check_DropLayer, \
+    apply_transform_DropLayer, info_DropLayer
+
+info_list = [info_DropLayer,
+             info_SeparableConv2D,
              info_Conv2DBatchNormalization,
              info_BatchNormalization_DepthwiseConv2D,
-             info_Conv2DReLU]
-check_transform_list = [check_SeparableConv2D_transfrom,
+             info_Conv2DReLU
+             ]
+check_transform_list = [check_DropLayer,
+                        check_SeparableConv2D_transfrom,
                         check_Conv2DBatchNormalization,
                         check_BatchNormalization_DepthwiseConv2D,
-                        check_Conv2DReLU]
-apply_transform_list = [apply_transform_SeparableConv2D,
+                        check_Conv2DReLU
+                        ]
+apply_transform_list = [apply_transform_DropLayer,
+                        apply_transform_SeparableConv2D,
                         apply_transform_Conv2DBatchNormalization,
                         apply_transform_BatchNormalization_DepthwiseConv2D,
-                        apply_transform_Conv2DReLU]
+                        apply_transform_Conv2DReLU
+                        ]
 
 
 def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
@@ -65,7 +74,7 @@ def apply_transformations(in_model):
             dst_model_config, weight_transfer_rule_dict = apply_func(src_model_config)
             dst_model = Model.from_config(dst_model_config)
             transfer_weights(src_model, dst_model, weight_transfer_rule_dict)
-            check_transform(in_model, src_model)
+            check_transform(in_model, dst_model)
 
             del src_model
             src_model = dst_model
