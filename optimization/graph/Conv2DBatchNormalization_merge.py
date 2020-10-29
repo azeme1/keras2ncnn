@@ -1,6 +1,6 @@
 import numpy as np
 
-from converter.model_adaptation import rename_layer
+from converter.model_adaptation import rename_layer, get_outbound_nodes
 
 info_Conv2DBatchNormalization = 'Conv2D/DepthwiseConv2D->BatchNormalization: Subsequent linear operations can be easily merged for inference'
 
@@ -50,21 +50,21 @@ mapping_class_dict = {'Conv2D': transfer_Conv2DBatchNormalization_Conv2D,
                       'DepthwiseConv2D': transfer_DepthwiseConv2DBatchNormalization_Conv2D}
 
 
-def get_outbound_nodes(keras_config):
-    outbound_dict = {}
-    index_dict = {}
-    for _i, _layer in enumerate(keras_config['layers']):
-        out_node_name = _layer['name']
-        index_dict[out_node_name] = _i
-        if len(_layer['inbound_nodes']) == 0:
-            continue
-        in_node_name = _layer['inbound_nodes'][0][0][0]
-        if in_node_name in outbound_dict:
-            outbound_dict[in_node_name] += [out_node_name]
-        else:
-            outbound_dict[in_node_name] = [out_node_name]
-
-    return outbound_dict, index_dict
+# def get_outbound_nodes(keras_config):
+#     outbound_dict = {}
+#     index_dict = {}
+#     for _i, _layer in enumerate(keras_config['layers']):
+#         out_node_name = _layer['name']
+#         index_dict[out_node_name] = _i
+#         if len(_layer['inbound_nodes']) == 0:
+#             continue
+#         in_node_name = _layer['inbound_nodes'][0][0][0]
+#         if in_node_name in outbound_dict:
+#             outbound_dict[in_node_name] += [out_node_name]
+#         else:
+#             outbound_dict[in_node_name] = [out_node_name]
+#
+#     return outbound_dict, index_dict
 
 
 def detect_transform_Conv2DBatchNormalization(keras_config):
@@ -74,6 +74,9 @@ def detect_transform_Conv2DBatchNormalization(keras_config):
         if item['class_name'] == 'BatchNormalization':
             in_node_name = item['inbound_nodes'][0][0][0]
             in_node_class_name = keras_config['layers'][index_dict[in_node_name]]['class_name']
+            _activation = keras_config['layers'][index_dict[in_node_name]]['config']['activation']
+            if _activation in ['linear']:
+                continue
             if in_node_class_name in mapping_class_dict:
                 if len(outbound_dict[in_node_name]) == 1:
                     index_list.append(i)
@@ -96,7 +99,7 @@ def apply_transform_Conv2DBatchNormalization(keras_config):
         transfer_call = mapping_class_dict[keras_config['layers'][index_dict[dst_name]]['class_name']]
 
         keras_config = rename_layer(keras_config, src_name, dst_name)
-        merged_dst = dst_name + '_M'
+        merged_dst = dst_name       # + '_M' TODO Decide to rename the layer
         keras_config = rename_layer(keras_config, dst_name, merged_dst)
         weight_transfer_rule_dict[merged_dst] = {'transfer_call': transfer_call,
                                                  'src_c': dst_name,
