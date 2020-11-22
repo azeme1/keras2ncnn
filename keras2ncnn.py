@@ -35,7 +35,13 @@ if __name__ == '__main__':
     if export_model_name is None:
         export_model_name = '.'.join(os.path.basename(model_path).split('.')[:-1])
 
-    keras_model_in = load_model(model_path, custom_objects={'tf': tf, 'Functional': Model})
+    model_ext = model_path.split('.')[-1]
+    if model_ext.lower() == 'json':
+        from tensorflow.keras.models import model_from_json
+        keras_model_in = model_from_json(open(model_path).read())
+        keras_model_in.load_weights(model_path.replace(model_ext, 'hdf5'))
+    else:
+        keras_model_in = load_model(model_path, custom_objects={'tf': tf, 'Functional': Model})
     keras_model = apply_transformations(keras_model_in)
     if save_optimized:
         keras_model.save('.'.join(model_path.split('.')[:-1]) + '_optimized.hdf5')
