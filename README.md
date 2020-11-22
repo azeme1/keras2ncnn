@@ -27,8 +27,13 @@ The model zoo folder contains the sample model
 as well as the result of the conversion 
 (graph: [CelebA_PrismaNet_256_hair_seg_model_opt_001.param](./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.param) and 
 weights: [CelebA_PrismaNet_256_hair_seg_model_opt_001.bin](./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.bin))
+Load the model from the '<file_name>.hdf5' file
 ```
 python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5
+```
+Load the model from the '<file_name>.json' file (the weights should be located at the same folder in '<file_name>.hdf5')
+```
+python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.json
 ```
 ## Useful Links
 ### Tencent/NCNN documentation
@@ -44,6 +49,7 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 * Auto compile python bindings for the project
 * Fix layer name length issue
 * Export models from Keras applications applications
+* Unit tests with Python bindings
 ### Upcoming Models 
 * [https://github.com/thangtran480/hair-segmentation]
 * [https://github.com/ItchyHiker/Hair_Segmentation_Keras]
