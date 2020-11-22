@@ -25,7 +25,7 @@ def transfer_Conv2DBatchNormalization_Conv2D(src_model, dst_model, transfer_rule
 
     dst_model.get_layer(transfer_rule['dst']).set_weights([weight, bias])
 
-def transfer_Conv2DBatchNormalization_Conv2DTranspose(src_model, dst_model, transfer_rule):
+def transfer_Conv2DTransposeBatchNormalization_Conv2DTranspose(src_model, dst_model, transfer_rule):
     layer_c = src_model.get_layer(transfer_rule['src_c'])
     weigths_c = layer_c.get_weights()
     layer_b = src_model.get_layer(transfer_rule['src_b'])
@@ -68,7 +68,7 @@ def transfer_DepthwiseConv2DBatchNormalization_Conv2D(src_model, dst_model, tran
 
 mapping_class_dict = {'Conv2D': transfer_Conv2DBatchNormalization_Conv2D,
                       'DepthwiseConv2D': transfer_DepthwiseConv2DBatchNormalization_Conv2D,
-                      'Conv2DTranspose': transfer_Conv2DBatchNormalization_Conv2DTranspose}
+                      'Conv2DTranspose': transfer_Conv2DTransposeBatchNormalization_Conv2DTranspose}
 
 
 def detect_transform_Conv2DBatchNormalization(keras_config):

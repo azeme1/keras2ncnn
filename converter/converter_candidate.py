@@ -14,7 +14,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
-                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding'}
+                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -55,9 +55,8 @@ def get_blob_shape_string(layer, batch_size):
     item_list = []
     layer_output_shape = get_valid_shape(layer.output_shape)
     for output_shape in layer_output_shape:
-        _, H, W, C = output_shape
         item_counter += 4
-        item_list.extend([N, H, W, C])
+        item_list.extend((N,) + output_shape[1:])
     blob_shape_string = ','.join([str(item) for item in [item_counter] + item_list])
     return blob_shape_string
 
@@ -155,6 +154,22 @@ def get_in_out_string(in_dict):
 
 def get_outputsplit_mapping(in_dict):
     parameter_mapping = OrderedDict({})
+    return parameter_mapping
+
+def get_reshape_mapping(in_dict):
+    # Reshape     0	w	-233
+    #             1	h	-233
+    #             2	c	-233
+    #             3	permute	0
+    layer_config = in_dict['layer'].get_config()
+    target_shape = layer_config['target_shape']
+    if len(target_shape) == 2:
+        if target_shape[0] == -1:
+            parameter_mapping = OrderedDict({0: target_shape[-1], 1: -1, 2: -233, 3: 0})
+        else:
+            raise NotImplemented
+    else:
+        raise NotImplemented
     return parameter_mapping
 
 
