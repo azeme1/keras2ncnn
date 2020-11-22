@@ -13,22 +13,22 @@ from optimization.graph.DropLayer import check_DropLayer, \
     apply_transform_DropLayer, info_DropLayer
 
 info_list = [info_DropLayer,
-             info_SeparableConv2D,
-             info_Conv2DBatchNormalization,
-             info_BatchNormalization_DepthwiseConv2D,
-             info_Conv2DReLU
+             # info_SeparableConv2D,
+             # info_Conv2DBatchNormalization,
+             # info_BatchNormalization_DepthwiseConv2D,
+             # info_Conv2DReLU
              ]
 check_transform_list = [check_DropLayer,
-                        check_SeparableConv2D_transfrom,
-                        check_Conv2DBatchNormalization,
-                        check_BatchNormalization_DepthwiseConv2D,
-                        check_Conv2DReLU
+                        # check_SeparableConv2D_transfrom,
+                        # check_Conv2DBatchNormalization,
+                        # check_BatchNormalization_DepthwiseConv2D,
+                        # check_Conv2DReLU
                         ]
 apply_transform_list = [apply_transform_DropLayer,
-                        apply_transform_SeparableConv2D,
-                        apply_transform_Conv2DBatchNormalization,
-                        apply_transform_BatchNormalization_DepthwiseConv2D,
-                        apply_transform_Conv2DReLU
+                        # apply_transform_SeparableConv2D,
+                        # apply_transform_Conv2DBatchNormalization,
+                        # apply_transform_BatchNormalization_DepthwiseConv2D,
+                        # apply_transform_Conv2DReLU
                         ]
 
 
@@ -60,7 +60,7 @@ def check_transform(src_model, dst_model):
 def apply_transformations(in_model):
     src_model = None
     src_model_config = in_model.get_config()
-    k = 2
+    k = 1024
     for info_txt, check_func, apply_func in zip(info_list[:k], check_transform_list[:k], apply_transform_list[:k]):
         if check_func(src_model_config):
             if src_model is None:
