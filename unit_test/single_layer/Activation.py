@@ -5,14 +5,15 @@ from unit_test.helper import tf_random_seed
 model_list = []
 for activation_item in ['relu', 'softmax', 'sigmoid']:
     tf_random_seed()
-    placeholder = Input((32,32,3), name='data')
+    placeholder = Input((32, 32, 3), name='data')
     x = Activation(activation_item)(placeholder)
     model = Model(placeholder, x, name=f'model_single_layer_{activation_item}')
     model_list.append(model)
 
-for op_item in [ReLU(), LeakyReLU(0.1), LeakyReLU(0.25)]:
+for op_item, name_item in zip([ReLU(), LeakyReLU(0.1), LeakyReLU(0.25)],
+                              ['ReLU_0.0', 'ReLU_0.1', 'ReLU_0.25']):
     tf_random_seed()
-    placeholder = Input((32,32,3), name='data')
+    placeholder = Input((32, 32, 3), name='data')
     x = op_item(placeholder)
-    model = Model(placeholder, x, name=f'model_single_layer_{op_item.__class__.__name__.lower()}')
+    model = Model(placeholder, x, name=f'model_single_layer_{op_item.__class__.__name__.lower()}_{name_item}')
     model_list.append(model)
