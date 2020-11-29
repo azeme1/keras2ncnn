@@ -53,15 +53,15 @@ ReLU_config_template = {'class_name': 'ReLU',
                                    'dtype': 'float32',
                                    'max_value': None,
                                    'negative_slope': 0.,
-                                   'threshold': 0.,
+                                   'threshold': 0.},
                                    'name': '_node_name',
-                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}}
+                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
 
 Clip_config_template = {'class_name': 'Clip',
                         'config': {'name': '_node_name',
                                    'trainable': True,
                                    'dtype': 'float32',
                                    'min_value': -1.,
-                                   'max_value': +1.,
+                                   'max_value': +1.},
                                    'name': '_node_name',
-                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}}
+                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
