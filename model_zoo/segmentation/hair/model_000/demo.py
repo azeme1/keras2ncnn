@@ -39,10 +39,14 @@ out_file_name = 'model_zoo/segmentation/hair/model_000/demo.png'
 print(f'MAE :: {np.abs(keras_out.flatten() - ncnn_out.flatten()).mean()}')
 print(f'Output saved {out_file_name}')
 
+frame_bgr_show = np.pad(frame_bgr_show, ((7, 7), (7, 7), (0, 0)), constant_values=128)
+
 keras_out_show = cv2.cvtColor((255*keras_out).astype(np.uint8), cv2.COLOR_GRAY2BGR)
 keras_out_show = cv2.putText(keras_out_show, 'Keras Result', (20, 20), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+keras_out_show = np.pad(keras_out_show, ((7, 7), (7, 7), (0, 0)), constant_values=128)
 ncnn_out_show = cv2.cvtColor((255*ncnn_out).astype(np.uint8), cv2.COLOR_GRAY2BGR)
 ncnn_out_show = cv2.putText(ncnn_out_show, 'NCNN Result', (20, 20), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+ncnn_out_show = np.pad(ncnn_out_show, ((7, 7), (7, 7), (0, 0)), constant_values=128)
 
 show_frame = np.hstack([frame_bgr_show, keras_out_show, ncnn_out_show])
 cv2.imwrite(out_file_name, show_frame)
