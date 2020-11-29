@@ -40,10 +40,11 @@ def save_layer_unit_test(model, model_name, root_folder, inference_mode, get_tes
             y_out = x_in.copy().astype(dtype)
             layer_unit_test_path = os.path.join(unit_test_path, '', f'{model.input_names[0]}.{dtype_string}')
         elif layer.name in model.output_names:
+            pass
             # TODO:: FIX output name in NCNN
-            layer_unit_test_path = os.path.join(unit_test_path, '', f"{'output'}.{dtype_string}")
-            test_model = Model(model.input, layer.output)
-            y_out = test_model.predict(x_in)
+            # layer_unit_test_path = os.path.join(unit_test_path, '', f"{'output'}.{dtype_string}")
+            # test_model = Model(model.input, layer.output)
+            # y_out = test_model.predict(x_in)
         else:
             layer_unit_test_path = os.path.join(unit_test_path, '', f'{layer.name}.{dtype_string}')
             test_model = Model(model.input, layer.output)
@@ -54,12 +55,13 @@ def save_layer_unit_test(model, model_name, root_folder, inference_mode, get_tes
             y_out = np.transpose(y_out, (0, 3, 1, 2))
         y_out.astype(dtype).tofile(layer_unit_test_path)
 
-def save_config(string_list, weight_list, model_name, root_folder, dtype=np.float32):
+def save_config(string_list, weight_list, model_name, root_folder, dtype=np.float32, debug=True):
     out_config_path = os.path.join(root_folder, '', f'{model_name}.param')
     out_weights_path = os.path.join(root_folder, '', f'{model_name}.bin')
 
-    for item in string_list:
-        print(item)
+    if debug:
+        for item in string_list:
+            print(item)
 
     with open(out_config_path, 'w') as f:
         for item in string_list:
@@ -68,7 +70,9 @@ def save_config(string_list, weight_list, model_name, root_folder, dtype=np.floa
     with open(out_weights_path, 'wb') as f:
         for item in weight_list:
             layer_class, weight_list_item = item
-            if layer_class in ['Conv2D', 'DepthwiseConv2D']:
+            if layer_class in ['Conv2D', 'DepthwiseConv2D', 'Conv2DTranspose']:
                 f.write(np.array([0], dtype=np.uint32).tobytes())
             for weight_array in weight_list_item:
                 f.write(weight_array.astype(dtype).tobytes())
+
+    return out_config_path, out_weights_path

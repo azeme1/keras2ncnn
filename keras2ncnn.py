@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 from tensorflow.keras.models import load_model, Model
 from unit_test.helper import save_config, get_test_item_mean_std
-from converter.converter_candidate import conver_model
+from converter.converter import conver_model
 from converter.model_adaptation import adapt_keras_model
 from optimization.optimize_graph import apply_transformations, check_transform
 
@@ -52,5 +52,5 @@ if __name__ == '__main__':
 
     print('\n' + ('='*20) + 'Overall Transform' + ('='*20))
     check_transform(keras_model_in, adapted_keras_model)
-    string_list, weight_list = conver_model(adapted_keras_model)
+    string_list, weight_list, _ = conver_model(adapted_keras_model)
     save_config(string_list, weight_list, adapted_keras_model.name, export_path)

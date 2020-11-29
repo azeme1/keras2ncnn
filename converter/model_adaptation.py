@@ -1,7 +1,22 @@
 from copy import deepcopy
+
+from extra_layers.Clip import Clip
+from extra_layers.CustomObjects import extra_custom_objects
 from extra_layers.OutputSplit import OutputSplit
 from tensorflow.keras.models import Model
 
+
+def convert_blob(in_item):
+    if type(in_item) == list:
+        out_item = in_item
+    else:
+        out_item = [in_item]
+    return out_item
+
+
+def clean_node_name(in_name):
+    out_name = in_name.replace(':', '_').replace('/', 'l').lower()
+    return out_name
 
 def is_multi_output(keras_model_config):
     for layer_index, layer_item in enumerate(keras_model_config['layers']):
@@ -136,9 +151,11 @@ def adapt_keras_model(keras_model, model_name):
     if is_multi_output(keras_model_config):
         adapted_model_config = split_output_nodes(keras_model_config)
         adapted_model_config = rename_layer(adapted_model_config, keras_model_config['input_layers'][0][0], 'data')
-        adapted_model_config = rename_layer(adapted_model_config, keras_model_config['output_layers'][0][0], 'output')
-        adapted_keras_model = Model.from_config(adapted_model_config, custom_objects={'OutputSplit': OutputSplit})
+        # adapted_model_config = rename_layer(adapted_model_config, keras_model_config['output_layers'][0][0], 'output')
+        adapted_keras_model = Model.from_config(adapted_model_config,  custom_objects=extra_custom_objects)
     else:
         adapted_keras_model = Model.from_config(keras_model_config)
     adapted_keras_model.set_weights(keras_model.get_weights())
     return adapted_keras_model
+
+

@@ -6,6 +6,8 @@ import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict
 
+from converter.model_adaptation import get_outbound_nodes, convert_blob, clean_node_name
+
 activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4, 'tanh': 5}
 
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
@@ -14,7 +16,8 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
-                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape'}
+                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
+                      'Clip': 'Clip'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -84,72 +87,24 @@ def split_remap(blob_name, split_info):
 def get_in_out_string(in_dict):
     layer = in_dict['layer']
     input_blobs = []
-    for item in layer.inbound_nodes:
-        if isinstance(item.inbound_layers, list):
-            if len(item.inbound_layers) > 1:
-                for _item in item.inbound_layers:
-                    input_blobs.append(_item.name)
-            else:
-                pass
-        else:
-            input_blobs.append(item.inbound_layers.name)
-
     output_blobs = []
-    for item in layer.inbound_nodes:
-        if isinstance(item.outbound_layer, list):
-            if len(item.inbound_layers) > 1:
-                for _item in item.outbound_layer:
-                    if _item.name in in_dict['model_output_names']:
-                        output_blobs.append('output')
-                    else:
-                        output_blobs.append(_item.name)
-            else:
-                pass
-        else:
-            if item.outbound_layer.name in in_dict['model_output_names']:
-                output_blobs.append('output' + item.outbound_layer.name)
-            else:
-                output_blobs.append(item.outbound_layer.name)
-    #     print(input_blobs)
-    #     input_blobs = [item.inbound_layers.name for item in layer.inbound_nodes
-    #                    if (not isinstance(item.inbound_layers, list)) or (len(item.inbound_layers)>1)]
-    #     output_blobs = [item.outbound_layer.name for item in layer.outbound_nodes
-    #                     if (not isinstance(item.outbound_layer, list)) or (len(item.outbound_layer)>1)]
-    #     print(layer, input_blobs)
 
-    split_string = None
+    layer_input = convert_blob(layer.input)
+    if layer.__class__.__name__ == 'InputLayer':
+        layer_input = []
+    layer_output = convert_blob(layer.output)
 
-    input_blobs_copy = []
-    for _blob in input_blobs:
-        if _blob in in_dict['split_info']:
-            assert len(output_blobs) < 2, 'Multi output is not supported'
-            tmp = in_dict['split_info'][_blob][output_blobs[0]]
-            input_blobs_copy.append(tmp)
-        else:
-            input_blobs_copy.append(_blob)
-    input_blobs = input_blobs_copy
+    for item in layer_input:
+        input_blobs.append(clean_node_name(item.name))
 
-    if len(input_blobs) == 0:
-        # Fix input blob item (placeholder item)
-        in_out_list = [str(len(input_blobs)), str(len(output_blobs)), layer.name]
-    elif len(output_blobs) == 0:
-        # Fix output blob item (placeholder item)
-        # TODO fix multioutput layer
-        in_out_list = [str(len(input_blobs)), '1', ' '.join(input_blobs), 'output']
-    elif len(output_blobs) > 1:
-        in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), ' '.join(output_blobs)]
-    else:
-        if item.outbound_layer.name in in_dict['model_output_names']:
-            layer_name = layer.name
-            if layer_name == 'output':
-                in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), 'output']
-            else:
-                in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), layer.name]
-        else:
-            in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), layer.name]
+    for item in layer_output:
+        output_blobs.append(clean_node_name(item.name))
+
+    in_out_list = [str(len(input_blobs)), str(len(output_blobs)), ' '.join(input_blobs), ' '.join(output_blobs)]
     in_out_string = ' '.join(in_out_list)
 
-    return in_out_string, split_string
+    split_string = None
+    return in_out_string, split_string, (input_blobs + output_blobs)
 
 
 def get_outputsplit_mapping(in_dict):
@@ -547,6 +502,16 @@ def get_batchnormalization_mapping(in_dict):
 def get_tanh_mapping(in_dict):
     return OrderedDict({})
 
+def get_clip_mapping(in_dict):
+    # Clip	0	min	-FLT_MAX
+    #       1	max	FLT_MAX
+    layer = in_dict['layer']
+    layer_config = layer.get_config()
+    parameter_mapping = OrderedDict({})
+    parameter_mapping[0] = float("{0:.7f}".format(float(layer_config['min_value'])))
+    parameter_mapping[1] = float("{0:.7f}".format(float(layer_config['max_value'])))
+    return parameter_mapping
+
 def get_relu_mapping(in_dict):
     # ReLU	0	slope	0.f
     layer = in_dict['layer']
@@ -561,6 +526,7 @@ def get_relu_mapping(in_dict):
     if 'max_value' in layer_config:
         max_value = layer_config['max_value']
         if max_value is not None:
+            assert True, 'This branch should not be executed!'
             max_value = float("{0:.7f}".format(float(max_value)))
             parameter_mapping[1] = max_value
     return parameter_mapping
@@ -626,8 +592,9 @@ def get_parameter_string(in_dict):
 
 def get_model_string(model, magic_number, blob_set, string_list):
     # [layer count] [blob count]
-    layer_count = len(string_list)
-    blob_count = len(blob_set)
+    # layer_count = len(string_list)
+    # blob_count = len(blob_set)
+    layer_count, blob_count = blob_set
     string_list = []
     string_list.append(str(magic_number))
     string_list.append(f'{layer_count} {blob_count}')
@@ -640,7 +607,7 @@ def get_layer_string(in_dict):
     layer_type = get_layer_type(layer)
     layer_name = get_layer_name(layer)
 
-    in_out_string, split_string = get_in_out_string(in_dict)
+    in_out_string, split_string, tensor_names = get_in_out_string(in_dict)
     blob_shape_string = get_blob_shape_string(layer, batch_size)
     parameter_string = get_parameter_string(in_dict)
     array_key = str(in_dict['array_key'])
@@ -655,10 +622,10 @@ def get_layer_string(in_dict):
         f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
     if split_string is not None:
         string_list.append(split_string)
-    return string_list
+    return string_list, layer_name, tensor_names
 
 
-def conver_model(model):
+def conver_model(model, debug=True):
     # magic number: 7767517
     magic_number = 7767517
     # TODO :: clarify this
@@ -668,24 +635,33 @@ def conver_model(model):
 
     split_info = {}
 
-    print("Export graph and weights")
+    if debug:
+        print("Export graph and weights")
     string_list = []
+    layer_name_list = []
+    tensor_name_list = []
+
+    outbound_dict, index_dict = get_outbound_nodes(model.get_config())
+
     for layer in tqdm(model.layers):
         export_function_name = 'get_layer_string'
         export_function = globals()[export_function_name]
         config_dict = {'layer': layer, 'array_key': array_key, 'batch_size': batch_size,
                        'weight_list': [], 'model_output_names': model.output_names,
-                       'split_info': split_info}
-        add_string = export_function(config_dict)
+                       'split_info': split_info, 'outbound_dict': outbound_dict}
+        add_string, layer_name, tensor_names = export_function(config_dict)
         weight_list += [[layer.__class__.__name__, config_dict['weight_list']]]
         string_list += add_string
+        layer_name_list += [layer_name]
+        tensor_name_list += tensor_names
 
     tmp_list = []
     for item in split_info:
         for tmp in split_info[item]:
             tmp_list.append(split_info[item][tmp])
-    blob_set = set([layer.name for layer in model.layers] + tmp_list)
+
+    blob_set = (len(model.layers), len(set(tensor_name_list)))
 
     string_list = get_model_string(model, magic_number, blob_set=blob_set, string_list=string_list) + string_list
 
-    return string_list, weight_list
+    return string_list, weight_list, layer_name_list
