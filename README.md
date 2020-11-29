@@ -66,4 +66,4 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 * [https://github.com/mostafa-shalaby84/hair_segmentation_matting]
 
 ### Thanx
-* https://github.com/cvzakharchenko
+* [https://github.com/cvzakharchenko]
