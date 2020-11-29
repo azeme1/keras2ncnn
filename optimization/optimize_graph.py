@@ -1,6 +1,8 @@
 from tqdm import tqdm
 import numpy as np
 from tensorflow.keras.models import Model
+
+from extra_layers.CustomObjects import extra_custom_objects
 from optimization.graph.SeparableConv2D_split import check_SeparableConv2D_transfrom, apply_transform_SeparableConv2D, \
     info_SeparableConv2D
 from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchNormalization, \
@@ -9,22 +11,28 @@ from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transfor
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
 
+from optimization.graph.ReLU_max_split import check_ReLU_max_transfrom, \
+    apply_transform_ReLU_max, info_ReLU_max
+
 from optimization.graph.DropLayer import check_DropLayer, \
     apply_transform_DropLayer, info_DropLayer
 
 info_list = [info_DropLayer,
+             info_ReLU_max,
              # info_SeparableConv2D,
              # info_Conv2DBatchNormalization,
              # info_BatchNormalization_DepthwiseConv2D,
              # info_Conv2DReLU
              ]
 check_transform_list = [check_DropLayer,
+                        check_ReLU_max_transfrom,
                         # check_SeparableConv2D_transfrom,
                         # check_Conv2DBatchNormalization,
                         # check_BatchNormalization_DepthwiseConv2D,
                         # check_Conv2DReLU
                         ]
 apply_transform_list = [apply_transform_DropLayer,
+                        apply_transform_ReLU_max,
                         # apply_transform_SeparableConv2D,
                         # apply_transform_Conv2DBatchNormalization,
                         # apply_transform_BatchNormalization_DepthwiseConv2D,
@@ -42,18 +50,21 @@ def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
         else:
             dst_layer.set_weights(src_model.get_layer(dst_layer.name).get_weights())
 
-def check_transform(src_model, dst_model):
-    print("Checking Transfer :: Random value check")
+def check_transform(src_model, dst_model, debug=True):
+    if debug:
+        print("Checking Transfer :: Random value check")
     x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
     dst_output = dst_model.predict(x_in)
     src_output = src_model.predict(x_in)
     if isinstance(dst_output,list):
         for _i, (src_item, dst_item) in enumerate(zip(src_output, dst_output)):
             transform_error = np.abs(src_item - dst_item).mean()
-            print(f"  Output {_i}    Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
+            if debug:
+                print(f"  Output {_i}    Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
     else:
         transform_error = np.abs(dst_output - src_output).mean()
-        print(f"         Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
+        if debug:
+            print(f"         Transform Error (is less 1e-5) :: {transform_error} , {transform_error < 1e-5}")
     return transform_error
 
 
@@ -72,7 +83,7 @@ def apply_transformations(in_model):
             print(info_txt)
             src_model_config = src_model.get_config()
             dst_model_config, weight_transfer_rule_dict = apply_func(src_model_config)
-            dst_model = Model.from_config(dst_model_config)
+            dst_model = Model.from_config(dst_model_config, custom_objects=extra_custom_objects)
             transfer_weights(src_model, dst_model, weight_transfer_rule_dict)
             check_transform(in_model, dst_model)
 
