@@ -1,141 +1,251 @@
 7767517
-139 139
-Input                               data                                0 1 data -23330=4,3,256,256,3 0=256 1=256 2=3
-Convolution                         conv2d_1_M                          1 1 data conv2d_1_M -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=432 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
-Split                               ncnn_split_1                        1 1 conv2d_1_M ncnn_split_1 -23330=8,3,256,256,16,3,256,256,16 
-ConvolutionDepthWise                sep_dwconv2d_split_1                1 1 ncnn_split_1 sep_dwconv2d_split_1 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_1_M                1 1 sep_dwconv2d_split_1 sep_conv2d_split_1_M -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_3_M             1 1 sep_conv2d_split_1_M batch_normalization_3_M -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_1                               2 1 batch_normalization_3_M ncnn_split_1 add_1 -23330=4,3,256,256,16 0=1
-Split                               ncnn_split_2                        1 1 add_1 ncnn_split_2 -23330=8,3,256,256,16,3,256,256,16 
-Convolution                         conv2d_2_M                          1 1 ncnn_split_2 conv2d_2_M -23330=4,3,128,128,32 0=32 1=3 2=1 3=2 4=0 5=1 6=4608 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
-Split                               ncnn_split_3                        1 1 conv2d_2_M ncnn_split_3 -23330=8,3,128,128,32,3,128,128,32 
-ConvolutionDepthWise                sep_dwconv2d_split_2                1 1 ncnn_split_3 sep_dwconv2d_split_2 -23330=4,3,128,128,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_2_M                1 1 sep_dwconv2d_split_2 sep_conv2d_split_2_M -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_6_M             1 1 sep_conv2d_split_2_M batch_normalization_6_M -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_2                               2 1 batch_normalization_6_M ncnn_split_3 add_2 -23330=4,3,128,128,32 0=1
-Split                               ncnn_split_4                        1 1 add_2 ncnn_split_4 -23330=8,3,128,128,32,3,128,128,32 
-Convolution                         conv2d_3_M                          1 1 ncnn_split_4 conv2d_3_M -23330=4,3,64,64,64 0=64 1=3 2=1 3=2 4=0 5=1 6=18432 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
-Split                               ncnn_split_5                        1 1 conv2d_3_M ncnn_split_5 -23330=8,3,64,64,64,3,64,64,64 
-ConvolutionDepthWise                sep_dwconv2d_split_3                1 1 ncnn_split_5 sep_dwconv2d_split_3 -23330=4,3,64,64,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_3_M                1 1 sep_dwconv2d_split_3 sep_conv2d_split_3_M -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_9_M             1 1 sep_conv2d_split_3_M batch_normalization_9_M -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_3                               2 1 batch_normalization_9_M ncnn_split_5 add_3 -23330=4,3,64,64,64 0=1
-Split                               ncnn_split_6                        1 1 add_3 ncnn_split_6 -23330=8,3,64,64,64,3,64,64,64 
-Convolution                         conv2d_4_M                          1 1 ncnn_split_6 conv2d_4_M -23330=4,3,32,32,128 0=128 1=3 2=1 3=2 4=0 5=1 6=73728 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
-Split                               ncnn_split_7                        1 1 conv2d_4_M ncnn_split_7 -23330=8,3,32,32,128,3,32,32,128 
-ConvolutionDepthWise                sep_dwconv2d_split_4                1 1 ncnn_split_7 sep_dwconv2d_split_4 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_4_M                1 1 sep_dwconv2d_split_4 sep_conv2d_split_4_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_12_M            1 1 sep_conv2d_split_4_M batch_normalization_12_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_4                               2 1 batch_normalization_12_M ncnn_split_7 add_4 -23330=4,3,32,32,128 0=1
-Split                               ncnn_split_8                        1 1 add_4 ncnn_split_8 -23330=8,3,32,32,128,3,32,32,128 
-ConvolutionDepthWise                sep_dwconv2d_split_5                1 1 ncnn_split_8 sep_dwconv2d_split_5 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_5_M                1 1 sep_dwconv2d_split_5 sep_conv2d_split_5_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_14_M            1 1 sep_conv2d_split_5_M batch_normalization_14_M -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_5                               2 1 batch_normalization_14_M ncnn_split_8 add_5 -23330=4,3,32,32,128 0=1
-Split                               ncnn_split_9                        1 1 add_5 ncnn_split_9 -23330=8,3,32,32,128,3,32,32,128 
-Convolution                         conv2d_5_M                          1 1 ncnn_split_9 conv2d_5_M -23330=4,3,16,16,128 0=128 1=3 2=1 3=2 4=0 5=1 6=147456 8=0 9=1 11=3 12=1 13=2 14=0 15=1 16=1
-Split                               ncnn_split_10                       1 1 conv2d_5_M ncnn_split_10 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_6                1 1 ncnn_split_10 sep_dwconv2d_split_6 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_6_M                1 1 sep_dwconv2d_split_6 sep_conv2d_split_6_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_17_M            1 1 sep_conv2d_split_6_M batch_normalization_17_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_6                               2 1 batch_normalization_17_M ncnn_split_10 add_6 -23330=4,3,16,16,128 0=1
-Split                               ncnn_split_11                       1 1 add_6 ncnn_split_11 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_7                1 1 ncnn_split_11 sep_dwconv2d_split_7 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_7_M                1 1 sep_dwconv2d_split_7 sep_conv2d_split_7_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_19_M            1 1 sep_conv2d_split_7_M batch_normalization_19_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_7                               2 1 batch_normalization_19_M ncnn_split_11 add_7 -23330=4,3,16,16,128 0=1
-Split                               ncnn_split_12                       1 1 add_7 ncnn_split_12 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_8                1 1 ncnn_split_12 sep_dwconv2d_split_8 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_8_M                1 1 sep_dwconv2d_split_8 sep_conv2d_split_8_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_21_M            1 1 sep_conv2d_split_8_M batch_normalization_21_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_8                               2 1 batch_normalization_21_M ncnn_split_12 add_8 -23330=4,3,16,16,128 0=1
-Split                               ncnn_split_13                       1 1 add_8 ncnn_split_13 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_9                1 1 ncnn_split_13 sep_dwconv2d_split_9 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_9_M                1 1 sep_dwconv2d_split_9 sep_conv2d_split_9_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_23_M            1 1 sep_conv2d_split_9_M batch_normalization_23_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_9                               2 1 batch_normalization_23_M ncnn_split_13 add_9 -23330=4,3,16,16,128 0=1
-Split                               ncnn_split_14                       1 1 add_9 ncnn_split_14 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_10               1 1 ncnn_split_14 sep_dwconv2d_split_10 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_10_M               1 1 sep_dwconv2d_split_10 sep_conv2d_split_10_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_25_M            1 1 sep_conv2d_split_10_M batch_normalization_25_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_10                              2 1 batch_normalization_25_M ncnn_split_14 add_10 -23330=4,3,16,16,128 0=1
-Split                               ncnn_split_15                       1 1 add_10 ncnn_split_15 -23330=8,3,16,16,128,3,16,16,128 
-ConvolutionDepthWise                sep_dwconv2d_split_11               1 1 ncnn_split_15 sep_dwconv2d_split_11 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_11_M               1 1 sep_dwconv2d_split_11 sep_conv2d_split_11_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_27_M            1 1 sep_conv2d_split_11_M batch_normalization_27_M -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=128 7=128 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_11                              2 1 batch_normalization_27_M ncnn_split_15 add_11 -23330=4,3,16,16,128 0=1
-Interp                              up_sampling2d_1                     1 1 add_11 up_sampling2d_1 -23330=4,3,32,32,128 0=2 1=2.0 2=2.0
-Eltwise                             add_12                              2 1 up_sampling2d_1 ncnn_split_9 add_12 -23330=4,3,32,32,128 0=1
-Convolution                         conv2d_6_M                          1 1 add_12 conv2d_6_M -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=73728 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
-Split                               ncnn_split_16                       1 1 conv2d_6_M ncnn_split_16 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise                sep_dwconv2d_split_12               1 1 ncnn_split_16 sep_dwconv2d_split_12 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_12_M               1 1 sep_dwconv2d_split_12 sep_conv2d_split_12_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_30_M            1 1 sep_conv2d_split_12_M batch_normalization_30_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_13                              2 1 batch_normalization_30_M ncnn_split_16 add_13 -23330=4,3,32,32,64 0=1
-Split                               ncnn_split_17                       1 1 add_13 ncnn_split_17 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise                sep_dwconv2d_split_13               1 1 ncnn_split_17 sep_dwconv2d_split_13 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_13_M               1 1 sep_dwconv2d_split_13 sep_conv2d_split_13_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_32_M            1 1 sep_conv2d_split_13_M batch_normalization_32_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_14                              2 1 batch_normalization_32_M ncnn_split_17 add_14 -23330=4,3,32,32,64 0=1
-Split                               ncnn_split_18                       1 1 add_14 ncnn_split_18 -23330=8,3,32,32,64,3,32,32,64 
-ConvolutionDepthWise                sep_dwconv2d_split_14               1 1 ncnn_split_18 sep_dwconv2d_split_14 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_14_M               1 1 sep_dwconv2d_split_14 sep_conv2d_split_14_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_34_M            1 1 sep_conv2d_split_14_M batch_normalization_34_M -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=64 7=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_15                              2 1 batch_normalization_34_M ncnn_split_18 add_15 -23330=4,3,32,32,64 0=1
-Interp                              up_sampling2d_2                     1 1 add_15 up_sampling2d_2 -23330=4,3,64,64,64 0=2 1=2.0 2=2.0
-Eltwise                             add_16                              2 1 up_sampling2d_2 ncnn_split_6 add_16 -23330=4,3,64,64,64 0=1
-Convolution                         conv2d_7_M                          1 1 add_16 conv2d_7_M -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=18432 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
-Split                               ncnn_split_19                       1 1 conv2d_7_M ncnn_split_19 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise                sep_dwconv2d_split_15               1 1 ncnn_split_19 sep_dwconv2d_split_15 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_15_M               1 1 sep_dwconv2d_split_15 sep_conv2d_split_15_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_37_M            1 1 sep_conv2d_split_15_M batch_normalization_37_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_17                              2 1 batch_normalization_37_M ncnn_split_19 add_17 -23330=4,3,64,64,32 0=1
-Split                               ncnn_split_20                       1 1 add_17 ncnn_split_20 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise                sep_dwconv2d_split_16               1 1 ncnn_split_20 sep_dwconv2d_split_16 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_16_M               1 1 sep_dwconv2d_split_16 sep_conv2d_split_16_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_39_M            1 1 sep_conv2d_split_16_M batch_normalization_39_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_18                              2 1 batch_normalization_39_M ncnn_split_20 add_18 -23330=4,3,64,64,32 0=1
-Split                               ncnn_split_21                       1 1 add_18 ncnn_split_21 -23330=8,3,64,64,32,3,64,64,32 
-ConvolutionDepthWise                sep_dwconv2d_split_17               1 1 ncnn_split_21 sep_dwconv2d_split_17 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_17_M               1 1 sep_dwconv2d_split_17 sep_conv2d_split_17_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_41_M            1 1 sep_conv2d_split_17_M batch_normalization_41_M -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=32 7=32 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_19                              2 1 batch_normalization_41_M ncnn_split_21 add_19 -23330=4,3,64,64,32 0=1
-Interp                              up_sampling2d_3                     1 1 add_19 up_sampling2d_3 -23330=4,3,128,128,32 0=2 1=2.0 2=2.0
-Eltwise                             add_20                              2 1 up_sampling2d_3 ncnn_split_4 add_20 -23330=4,3,128,128,32 0=1
-Convolution                         conv2d_8_M                          1 1 add_20 conv2d_8_M -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=4608 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
-Split                               ncnn_split_22                       1 1 conv2d_8_M ncnn_split_22 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise                sep_dwconv2d_split_18               1 1 ncnn_split_22 sep_dwconv2d_split_18 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_18_M               1 1 sep_dwconv2d_split_18 sep_conv2d_split_18_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_44_M            1 1 sep_conv2d_split_18_M batch_normalization_44_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_21                              2 1 batch_normalization_44_M ncnn_split_22 add_21 -23330=4,3,128,128,16 0=1
-Split                               ncnn_split_23                       1 1 add_21 ncnn_split_23 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise                sep_dwconv2d_split_19               1 1 ncnn_split_23 sep_dwconv2d_split_19 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_19_M               1 1 sep_dwconv2d_split_19 sep_conv2d_split_19_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_46_M            1 1 sep_conv2d_split_19_M batch_normalization_46_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_22                              2 1 batch_normalization_46_M ncnn_split_23 add_22 -23330=4,3,128,128,16 0=1
-Split                               ncnn_split_24                       1 1 add_22 ncnn_split_24 -23330=8,3,128,128,16,3,128,128,16 
-ConvolutionDepthWise                sep_dwconv2d_split_20               1 1 ncnn_split_24 sep_dwconv2d_split_20 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_20_M               1 1 sep_dwconv2d_split_20 sep_conv2d_split_20_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_48_M            1 1 sep_conv2d_split_20_M batch_normalization_48_M -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=16 7=16 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_23                              2 1 batch_normalization_48_M ncnn_split_24 add_23 -23330=4,3,128,128,16 0=1
-Interp                              up_sampling2d_4                     1 1 add_23 up_sampling2d_4 -23330=4,3,256,256,16 0=2 1=2.0 2=2.0
-Eltwise                             add_24                              2 1 up_sampling2d_4 ncnn_split_2 add_24 -23330=4,3,256,256,16 0=1
-Convolution                         conv2d_9_M                          1 1 add_24 conv2d_9_M -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=1152 8=0 9=1 11=3 12=1 13=1 14=1 15=1 16=1
-Split                               ncnn_split_25                       1 1 conv2d_9_M ncnn_split_25 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise                sep_dwconv2d_split_21               1 1 ncnn_split_25 sep_dwconv2d_split_21 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_21_M               1 1 sep_dwconv2d_split_21 sep_conv2d_split_21_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_51_M            1 1 sep_conv2d_split_21_M batch_normalization_51_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_25                              2 1 batch_normalization_51_M ncnn_split_25 add_25 -23330=4,3,256,256,8 0=1
-Split                               ncnn_split_26                       1 1 add_25 ncnn_split_26 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise                sep_dwconv2d_split_22               1 1 ncnn_split_26 sep_dwconv2d_split_22 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_22_M               1 1 sep_dwconv2d_split_22 sep_conv2d_split_22_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_53_M            1 1 sep_conv2d_split_22_M batch_normalization_53_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_26                              2 1 batch_normalization_53_M ncnn_split_26 add_26 -23330=4,3,256,256,8 0=1
-Split                               ncnn_split_27                       1 1 add_26 ncnn_split_27 -23330=8,3,256,256,8,3,256,256,8 
-ConvolutionDepthWise                sep_dwconv2d_split_23               1 1 ncnn_split_27 sep_dwconv2d_split_23 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
-Convolution                         sep_conv2d_split_23_M               1 1 sep_dwconv2d_split_23 sep_conv2d_split_23_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-ConvolutionDepthWise                batch_normalization_55_M            1 1 sep_conv2d_split_23_M batch_normalization_55_M -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=8 7=8 8=0 9=1 11=1 12=1 13=1 14=0 15=0 16=0
-Eltwise                             add_27                              2 1 batch_normalization_55_M ncnn_split_27 add_27 -23330=4,3,256,256,8 0=1
-Convolution                         softmax_conv                        1 1 add_27 softmax_conv -23330=4,3,256,256,1 0=1 1=1 2=1 3=1 4=0 5=1 6=8 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
-Sigmoid                             output                              1 1 softmax_conv output -23330=4,3,256,256,1 
+249 276
+Input                               data                                0 1  data_0 -23330=4,3,256,256,3 0=256 1=256 2=3
+Convolution                         conv2d_1                            1 1 data_0 conv2d_1_3lidentity_0 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=432 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+ReLU                                re_lu_1_dwc_2                       1 1 conv2d_1_3lidentity_0 re_lu_1_dwc_2_1lidentity_0 -23330=4,3,256,256,16 0=0.0
+Clip                                re_lu_1                             1 1 re_lu_1_dwc_2_1lidentity_0 re_lu_1_3lidentity_0 -23330=4,3,256,256,16 0=0.0 1=6.0
+Split                               ncnn_split_1                        1 2 re_lu_1_3lidentity_0 ncnn_split_1lidentity_0 ncnn_split_1lidentity_1_0 -23330=8,3,256,256,16,3,256,256,16 
+ConvolutionDepthWise                sep_dwconv2d_split_1                1 1 ncnn_split_1lidentity_0 sep_dwconv2d_split_1_3lidentity_0 -23330=4,3,256,256,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_1                  1 1 sep_dwconv2d_split_1_3lidentity_0 sep_conv2d_split_1_3lidentity_0 -23330=4,3,256,256,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_2_dwc_6                       1 1 sep_conv2d_split_1_3lidentity_0 re_lu_2_dwc_6_1lidentity_0 -23330=4,3,256,256,16 0=0.0
+Clip                                re_lu_2                             1 1 re_lu_2_dwc_6_1lidentity_0 re_lu_2_3lidentity_0 -23330=4,3,256,256,16 0=0.0 1=6.0
+BatchNorm                           batch_normalization_3               1 1 re_lu_2_3lidentity_0 batch_normalization_3_3lidentity_0 -23330=4,3,256,256,16 0=16 1=0.001
+ReLU                                re_lu_3_dwc_9                       1 1 batch_normalization_3_3lidentity_0 re_lu_3_dwc_9_1lidentity_0 -23330=4,3,256,256,16 0=0.0
+Clip                                re_lu_3                             1 1 re_lu_3_dwc_9_1lidentity_0 re_lu_3_3lidentity_0 -23330=4,3,256,256,16 0=0.0 1=6.0
+Eltwise                             add_1                               2 1 re_lu_3_3lidentity_0 ncnn_split_1lidentity_1_0 add_1_3lidentity_0 -23330=4,3,256,256,16 0=1
+Split                               ncnn_split_2                        1 2 add_1_3lidentity_0 ncnn_split_2lidentity_0 ncnn_split_2lidentity_1_0 -23330=8,3,256,256,16,3,256,256,16 
+Convolution                         conv2d_2                            1 1 ncnn_split_2lidentity_0 conv2d_2_3lidentity_0 -23330=4,3,128,128,32 0=32 1=3 2=1 3=2 4=0 5=1 6=4608 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
+ReLU                                re_lu_4_dwc_13                      1 1 conv2d_2_3lidentity_0 re_lu_4_dwc_13_1lidentity_0 -23330=4,3,128,128,32 0=0.0
+Clip                                re_lu_4                             1 1 re_lu_4_dwc_13_1lidentity_0 re_lu_4_3lidentity_0 -23330=4,3,128,128,32 0=0.0 1=6.0
+Split                               ncnn_split_3                        1 2 re_lu_4_3lidentity_0 ncnn_split_3lidentity_0 ncnn_split_3lidentity_1_0 -23330=8,3,128,128,32,3,128,128,32 
+ConvolutionDepthWise                sep_dwconv2d_split_2                1 1 ncnn_split_3lidentity_0 sep_dwconv2d_split_2_3lidentity_0 -23330=4,3,128,128,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_2                  1 1 sep_dwconv2d_split_2_3lidentity_0 sep_conv2d_split_2_3lidentity_0 -23330=4,3,128,128,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_5_dwc_17                      1 1 sep_conv2d_split_2_3lidentity_0 re_lu_5_dwc_17_1lidentity_0 -23330=4,3,128,128,32 0=0.0
+Clip                                re_lu_5                             1 1 re_lu_5_dwc_17_1lidentity_0 re_lu_5_3lidentity_0 -23330=4,3,128,128,32 0=0.0 1=6.0
+BatchNorm                           batch_normalization_6               1 1 re_lu_5_3lidentity_0 batch_normalization_6_3lidentity_0 -23330=4,3,128,128,32 0=32 1=0.001
+ReLU                                re_lu_6_dwc_20                      1 1 batch_normalization_6_3lidentity_0 re_lu_6_dwc_20_1lidentity_0 -23330=4,3,128,128,32 0=0.0
+Clip                                re_lu_6                             1 1 re_lu_6_dwc_20_1lidentity_0 re_lu_6_3lidentity_0 -23330=4,3,128,128,32 0=0.0 1=6.0
+Eltwise                             add_2                               2 1 re_lu_6_3lidentity_0 ncnn_split_3lidentity_1_0 add_2_3lidentity_0 -23330=4,3,128,128,32 0=1
+Split                               ncnn_split_4                        1 2 add_2_3lidentity_0 ncnn_split_4lidentity_0 ncnn_split_4lidentity_1_0 -23330=8,3,128,128,32,3,128,128,32 
+Convolution                         conv2d_3                            1 1 ncnn_split_4lidentity_0 conv2d_3_3lidentity_0 -23330=4,3,64,64,64 0=64 1=3 2=1 3=2 4=0 5=1 6=18432 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
+ReLU                                re_lu_7_dwc_24                      1 1 conv2d_3_3lidentity_0 re_lu_7_dwc_24_1lidentity_0 -23330=4,3,64,64,64 0=0.0
+Clip                                re_lu_7                             1 1 re_lu_7_dwc_24_1lidentity_0 re_lu_7_3lidentity_0 -23330=4,3,64,64,64 0=0.0 1=6.0
+Split                               ncnn_split_5                        1 2 re_lu_7_3lidentity_0 ncnn_split_5lidentity_0 ncnn_split_5lidentity_1_0 -23330=8,3,64,64,64,3,64,64,64 
+ConvolutionDepthWise                sep_dwconv2d_split_3                1 1 ncnn_split_5lidentity_0 sep_dwconv2d_split_3_3lidentity_0 -23330=4,3,64,64,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_3                  1 1 sep_dwconv2d_split_3_3lidentity_0 sep_conv2d_split_3_3lidentity_0 -23330=4,3,64,64,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_8_dwc_28                      1 1 sep_conv2d_split_3_3lidentity_0 re_lu_8_dwc_28_1lidentity_0 -23330=4,3,64,64,64 0=0.0
+Clip                                re_lu_8                             1 1 re_lu_8_dwc_28_1lidentity_0 re_lu_8_3lidentity_0 -23330=4,3,64,64,64 0=0.0 1=6.0
+BatchNorm                           batch_normalization_9               1 1 re_lu_8_3lidentity_0 batch_normalization_9_3lidentity_0 -23330=4,3,64,64,64 0=64 1=0.001
+ReLU                                re_lu_9_dwc_31                      1 1 batch_normalization_9_3lidentity_0 re_lu_9_dwc_31_1lidentity_0 -23330=4,3,64,64,64 0=0.0
+Clip                                re_lu_9                             1 1 re_lu_9_dwc_31_1lidentity_0 re_lu_9_3lidentity_0 -23330=4,3,64,64,64 0=0.0 1=6.0
+Eltwise                             add_3                               2 1 re_lu_9_3lidentity_0 ncnn_split_5lidentity_1_0 add_3_3lidentity_0 -23330=4,3,64,64,64 0=1
+Split                               ncnn_split_6                        1 2 add_3_3lidentity_0 ncnn_split_6lidentity_0 ncnn_split_6lidentity_1_0 -23330=8,3,64,64,64,3,64,64,64 
+Convolution                         conv2d_4                            1 1 ncnn_split_6lidentity_0 conv2d_4_3lidentity_0 -23330=4,3,32,32,128 0=128 1=3 2=1 3=2 4=0 5=1 6=73728 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
+ReLU                                re_lu_10_dwc_35                     1 1 conv2d_4_3lidentity_0 re_lu_10_dwc_35_1lidentity_0 -23330=4,3,32,32,128 0=0.0
+Clip                                re_lu_10                            1 1 re_lu_10_dwc_35_1lidentity_0 re_lu_10_3lidentity_0 -23330=4,3,32,32,128 0=0.0 1=6.0
+Split                               ncnn_split_7                        1 2 re_lu_10_3lidentity_0 ncnn_split_7lidentity_0 ncnn_split_7lidentity_1_0 -23330=8,3,32,32,128,3,32,32,128 
+ConvolutionDepthWise                sep_dwconv2d_split_4                1 1 ncnn_split_7lidentity_0 sep_dwconv2d_split_4_3lidentity_0 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_4                  1 1 sep_dwconv2d_split_4_3lidentity_0 sep_conv2d_split_4_3lidentity_0 -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_11_dwc_39                     1 1 sep_conv2d_split_4_3lidentity_0 re_lu_11_dwc_39_1lidentity_0 -23330=4,3,32,32,128 0=0.0
+Clip                                re_lu_11                            1 1 re_lu_11_dwc_39_1lidentity_0 re_lu_11_3lidentity_0 -23330=4,3,32,32,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_12              1 1 re_lu_11_3lidentity_0 batch_normalization_12_3lidentity_0 -23330=4,3,32,32,128 0=128 1=0.001
+ReLU                                re_lu_12_dwc_42                     1 1 batch_normalization_12_3lidentity_0 re_lu_12_dwc_42_1lidentity_0 -23330=4,3,32,32,128 0=0.0
+Clip                                re_lu_12                            1 1 re_lu_12_dwc_42_1lidentity_0 re_lu_12_3lidentity_0 -23330=4,3,32,32,128 0=0.0 1=6.0
+Eltwise                             add_4                               2 1 re_lu_12_3lidentity_0 ncnn_split_7lidentity_1_0 add_4_3lidentity_0 -23330=4,3,32,32,128 0=1
+Split                               ncnn_split_8                        1 2 add_4_3lidentity_0 ncnn_split_8lidentity_0 ncnn_split_8lidentity_1_0 -23330=8,3,32,32,128,3,32,32,128 
+ConvolutionDepthWise                sep_dwconv2d_split_5                1 1 ncnn_split_8lidentity_0 sep_dwconv2d_split_5_3lidentity_0 -23330=4,3,32,32,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_5                  1 1 sep_dwconv2d_split_5_3lidentity_0 sep_conv2d_split_5_3lidentity_0 -23330=4,3,32,32,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_13_dwc_47                     1 1 sep_conv2d_split_5_3lidentity_0 re_lu_13_dwc_47_1lidentity_0 -23330=4,3,32,32,128 0=0.0
+Clip                                re_lu_13                            1 1 re_lu_13_dwc_47_1lidentity_0 re_lu_13_3lidentity_0 -23330=4,3,32,32,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_14              1 1 re_lu_13_3lidentity_0 batch_normalization_14_3lidentity_0 -23330=4,3,32,32,128 0=128 1=0.001
+ReLU                                re_lu_14_dwc_50                     1 1 batch_normalization_14_3lidentity_0 re_lu_14_dwc_50_1lidentity_0 -23330=4,3,32,32,128 0=0.0
+Clip                                re_lu_14                            1 1 re_lu_14_dwc_50_1lidentity_0 re_lu_14_3lidentity_0 -23330=4,3,32,32,128 0=0.0 1=6.0
+Eltwise                             add_5                               2 1 re_lu_14_3lidentity_0 ncnn_split_8lidentity_1_0 add_5_3lidentity_0 -23330=4,3,32,32,128 0=1
+Split                               ncnn_split_9                        1 2 add_5_3lidentity_0 ncnn_split_9lidentity_0 ncnn_split_9lidentity_1_0 -23330=8,3,32,32,128,3,32,32,128 
+Convolution                         conv2d_5                            1 1 ncnn_split_9lidentity_0 conv2d_5_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=2 4=0 5=1 6=147456 8=0 9=0 11=3 12=1 13=2 14=0 15=1 16=1
+ReLU                                re_lu_15_dwc_54                     1 1 conv2d_5_3lidentity_0 re_lu_15_dwc_54_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_15                            1 1 re_lu_15_dwc_54_1lidentity_0 re_lu_15_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Split                               ncnn_split_10                       1 2 re_lu_15_3lidentity_0 ncnn_split_10lidentity_0 ncnn_split_10lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_6                1 1 ncnn_split_10lidentity_0 sep_dwconv2d_split_6_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_6                  1 1 sep_dwconv2d_split_6_3lidentity_0 sep_conv2d_split_6_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_16_dwc_58                     1 1 sep_conv2d_split_6_3lidentity_0 re_lu_16_dwc_58_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_16                            1 1 re_lu_16_dwc_58_1lidentity_0 re_lu_16_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_17              1 1 re_lu_16_3lidentity_0 batch_normalization_17_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_17_dwc_61                     1 1 batch_normalization_17_3lidentity_0 re_lu_17_dwc_61_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_17                            1 1 re_lu_17_dwc_61_1lidentity_0 re_lu_17_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_6                               2 1 re_lu_17_3lidentity_0 ncnn_split_10lidentity_1_0 add_6_3lidentity_0 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_11                       1 2 add_6_3lidentity_0 ncnn_split_11lidentity_0 ncnn_split_11lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_7                1 1 ncnn_split_11lidentity_0 sep_dwconv2d_split_7_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_7                  1 1 sep_dwconv2d_split_7_3lidentity_0 sep_conv2d_split_7_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_18_dwc_66                     1 1 sep_conv2d_split_7_3lidentity_0 re_lu_18_dwc_66_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_18                            1 1 re_lu_18_dwc_66_1lidentity_0 re_lu_18_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_19              1 1 re_lu_18_3lidentity_0 batch_normalization_19_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_19_dwc_69                     1 1 batch_normalization_19_3lidentity_0 re_lu_19_dwc_69_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_19                            1 1 re_lu_19_dwc_69_1lidentity_0 re_lu_19_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_7                               2 1 re_lu_19_3lidentity_0 ncnn_split_11lidentity_1_0 add_7_3lidentity_0 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_12                       1 2 add_7_3lidentity_0 ncnn_split_12lidentity_0 ncnn_split_12lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_8                1 1 ncnn_split_12lidentity_0 sep_dwconv2d_split_8_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_8                  1 1 sep_dwconv2d_split_8_3lidentity_0 sep_conv2d_split_8_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_20_dwc_74                     1 1 sep_conv2d_split_8_3lidentity_0 re_lu_20_dwc_74_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_20                            1 1 re_lu_20_dwc_74_1lidentity_0 re_lu_20_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_21              1 1 re_lu_20_3lidentity_0 batch_normalization_21_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_21_dwc_77                     1 1 batch_normalization_21_3lidentity_0 re_lu_21_dwc_77_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_21                            1 1 re_lu_21_dwc_77_1lidentity_0 re_lu_21_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_8                               2 1 re_lu_21_3lidentity_0 ncnn_split_12lidentity_1_0 add_8_3lidentity_0 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_13                       1 2 add_8_3lidentity_0 ncnn_split_13lidentity_0 ncnn_split_13lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_9                1 1 ncnn_split_13lidentity_0 sep_dwconv2d_split_9_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_9                  1 1 sep_dwconv2d_split_9_3lidentity_0 sep_conv2d_split_9_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_22_dwc_82                     1 1 sep_conv2d_split_9_3lidentity_0 re_lu_22_dwc_82_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_22                            1 1 re_lu_22_dwc_82_1lidentity_0 re_lu_22_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_23              1 1 re_lu_22_3lidentity_0 batch_normalization_23_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_23_dwc_85                     1 1 batch_normalization_23_3lidentity_0 re_lu_23_dwc_85_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_23                            1 1 re_lu_23_dwc_85_1lidentity_0 re_lu_23_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_9                               2 1 re_lu_23_3lidentity_0 ncnn_split_13lidentity_1_0 add_9_3lidentity_0 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_14                       1 2 add_9_3lidentity_0 ncnn_split_14lidentity_0 ncnn_split_14lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_10               1 1 ncnn_split_14lidentity_0 sep_dwconv2d_split_10_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_10                 1 1 sep_dwconv2d_split_10_3lidentity_0 sep_conv2d_split_10_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_24_dwc_90                     1 1 sep_conv2d_split_10_3lidentity_0 re_lu_24_dwc_90_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_24                            1 1 re_lu_24_dwc_90_1lidentity_0 re_lu_24_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_25              1 1 re_lu_24_3lidentity_0 batch_normalization_25_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_25_dwc_93                     1 1 batch_normalization_25_3lidentity_0 re_lu_25_dwc_93_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_25                            1 1 re_lu_25_dwc_93_1lidentity_0 re_lu_25_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_10                              2 1 re_lu_25_3lidentity_0 ncnn_split_14lidentity_1_0 add_10_3lidentity_0 -23330=4,3,16,16,128 0=1
+Split                               ncnn_split_15                       1 2 add_10_3lidentity_0 ncnn_split_15lidentity_0 ncnn_split_15lidentity_1_0 -23330=8,3,16,16,128,3,16,16,128 
+ConvolutionDepthWise                sep_dwconv2d_split_11               1 1 ncnn_split_15lidentity_0 sep_dwconv2d_split_11_3lidentity_0 -23330=4,3,16,16,128 0=128 1=3 2=1 3=1 4=1 5=1 6=1152 7=128 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_11                 1 1 sep_dwconv2d_split_11_3lidentity_0 sep_conv2d_split_11_3lidentity_0 -23330=4,3,16,16,128 0=128 1=1 2=1 3=1 4=0 5=1 6=16384 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_26_dwc_98                     1 1 sep_conv2d_split_11_3lidentity_0 re_lu_26_dwc_98_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_26                            1 1 re_lu_26_dwc_98_1lidentity_0 re_lu_26_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+BatchNorm                           batch_normalization_27              1 1 re_lu_26_3lidentity_0 batch_normalization_27_3lidentity_0 -23330=4,3,16,16,128 0=128 1=0.001
+ReLU                                re_lu_27_dwc_101                    1 1 batch_normalization_27_3lidentity_0 re_lu_27_dwc_101_1lidentity_0 -23330=4,3,16,16,128 0=0.0
+Clip                                re_lu_27                            1 1 re_lu_27_dwc_101_1lidentity_0 re_lu_27_3lidentity_0 -23330=4,3,16,16,128 0=0.0 1=6.0
+Eltwise                             add_11                              2 1 re_lu_27_3lidentity_0 ncnn_split_15lidentity_1_0 add_11_3lidentity_0 -23330=4,3,16,16,128 0=1
+Interp                              up_sampling2d_1                     1 1 add_11_3lidentity_0 up_sampling2d_1_3lidentity_0 -23330=4,3,32,32,128 0=2 1=2.0 2=2.0
+Eltwise                             add_12                              2 1 up_sampling2d_1_3lidentity_0 ncnn_split_9lidentity_1_0 add_12_3lidentity_0 -23330=4,3,32,32,128 0=1
+Convolution                         conv2d_6                            1 1 add_12_3lidentity_0 conv2d_6_3lidentity_0 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=73728 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+ReLU                                re_lu_28_dwc_107                    1 1 conv2d_6_3lidentity_0 re_lu_28_dwc_107_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_28                            1 1 re_lu_28_dwc_107_1lidentity_0 re_lu_28_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+Split                               ncnn_split_16                       1 2 re_lu_28_3lidentity_0 ncnn_split_16lidentity_0 ncnn_split_16lidentity_1_0 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_12               1 1 ncnn_split_16lidentity_0 sep_dwconv2d_split_12_3lidentity_0 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_12                 1 1 sep_dwconv2d_split_12_3lidentity_0 sep_conv2d_split_12_3lidentity_0 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_29_dwc_111                    1 1 sep_conv2d_split_12_3lidentity_0 re_lu_29_dwc_111_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_29                            1 1 re_lu_29_dwc_111_1lidentity_0 re_lu_29_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+BatchNorm                           batch_normalization_30              1 1 re_lu_29_3lidentity_0 batch_normalization_30_3lidentity_0 -23330=4,3,32,32,64 0=64 1=0.001
+ReLU                                re_lu_30_dwc_114                    1 1 batch_normalization_30_3lidentity_0 re_lu_30_dwc_114_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_30                            1 1 re_lu_30_dwc_114_1lidentity_0 re_lu_30_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+Eltwise                             add_13                              2 1 re_lu_30_3lidentity_0 ncnn_split_16lidentity_1_0 add_13_3lidentity_0 -23330=4,3,32,32,64 0=1
+Split                               ncnn_split_17                       1 2 add_13_3lidentity_0 ncnn_split_17lidentity_0 ncnn_split_17lidentity_1_0 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_13               1 1 ncnn_split_17lidentity_0 sep_dwconv2d_split_13_3lidentity_0 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_13                 1 1 sep_dwconv2d_split_13_3lidentity_0 sep_conv2d_split_13_3lidentity_0 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_31_dwc_119                    1 1 sep_conv2d_split_13_3lidentity_0 re_lu_31_dwc_119_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_31                            1 1 re_lu_31_dwc_119_1lidentity_0 re_lu_31_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+BatchNorm                           batch_normalization_32              1 1 re_lu_31_3lidentity_0 batch_normalization_32_3lidentity_0 -23330=4,3,32,32,64 0=64 1=0.001
+ReLU                                re_lu_32_dwc_122                    1 1 batch_normalization_32_3lidentity_0 re_lu_32_dwc_122_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_32                            1 1 re_lu_32_dwc_122_1lidentity_0 re_lu_32_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+Eltwise                             add_14                              2 1 re_lu_32_3lidentity_0 ncnn_split_17lidentity_1_0 add_14_3lidentity_0 -23330=4,3,32,32,64 0=1
+Split                               ncnn_split_18                       1 2 add_14_3lidentity_0 ncnn_split_18lidentity_0 ncnn_split_18lidentity_1_0 -23330=8,3,32,32,64,3,32,32,64 
+ConvolutionDepthWise                sep_dwconv2d_split_14               1 1 ncnn_split_18lidentity_0 sep_dwconv2d_split_14_3lidentity_0 -23330=4,3,32,32,64 0=64 1=3 2=1 3=1 4=1 5=1 6=576 7=64 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_14                 1 1 sep_dwconv2d_split_14_3lidentity_0 sep_conv2d_split_14_3lidentity_0 -23330=4,3,32,32,64 0=64 1=1 2=1 3=1 4=0 5=1 6=4096 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_33_dwc_127                    1 1 sep_conv2d_split_14_3lidentity_0 re_lu_33_dwc_127_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_33                            1 1 re_lu_33_dwc_127_1lidentity_0 re_lu_33_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+BatchNorm                           batch_normalization_34              1 1 re_lu_33_3lidentity_0 batch_normalization_34_3lidentity_0 -23330=4,3,32,32,64 0=64 1=0.001
+ReLU                                re_lu_34_dwc_130                    1 1 batch_normalization_34_3lidentity_0 re_lu_34_dwc_130_1lidentity_0 -23330=4,3,32,32,64 0=0.0
+Clip                                re_lu_34                            1 1 re_lu_34_dwc_130_1lidentity_0 re_lu_34_3lidentity_0 -23330=4,3,32,32,64 0=0.0 1=6.0
+Eltwise                             add_15                              2 1 re_lu_34_3lidentity_0 ncnn_split_18lidentity_1_0 add_15_3lidentity_0 -23330=4,3,32,32,64 0=1
+Interp                              up_sampling2d_2                     1 1 add_15_3lidentity_0 up_sampling2d_2_3lidentity_0 -23330=4,3,64,64,64 0=2 1=2.0 2=2.0
+Eltwise                             add_16                              2 1 up_sampling2d_2_3lidentity_0 ncnn_split_6lidentity_1_0 add_16_3lidentity_0 -23330=4,3,64,64,64 0=1
+Convolution                         conv2d_7                            1 1 add_16_3lidentity_0 conv2d_7_3lidentity_0 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=18432 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+ReLU                                re_lu_35_dwc_136                    1 1 conv2d_7_3lidentity_0 re_lu_35_dwc_136_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_35                            1 1 re_lu_35_dwc_136_1lidentity_0 re_lu_35_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+Split                               ncnn_split_19                       1 2 re_lu_35_3lidentity_0 ncnn_split_19lidentity_0 ncnn_split_19lidentity_1_0 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_15               1 1 ncnn_split_19lidentity_0 sep_dwconv2d_split_15_3lidentity_0 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_15                 1 1 sep_dwconv2d_split_15_3lidentity_0 sep_conv2d_split_15_3lidentity_0 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_36_dwc_140                    1 1 sep_conv2d_split_15_3lidentity_0 re_lu_36_dwc_140_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_36                            1 1 re_lu_36_dwc_140_1lidentity_0 re_lu_36_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+BatchNorm                           batch_normalization_37              1 1 re_lu_36_3lidentity_0 batch_normalization_37_3lidentity_0 -23330=4,3,64,64,32 0=32 1=0.001
+ReLU                                re_lu_37_dwc_143                    1 1 batch_normalization_37_3lidentity_0 re_lu_37_dwc_143_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_37                            1 1 re_lu_37_dwc_143_1lidentity_0 re_lu_37_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+Eltwise                             add_17                              2 1 re_lu_37_3lidentity_0 ncnn_split_19lidentity_1_0 add_17_3lidentity_0 -23330=4,3,64,64,32 0=1
+Split                               ncnn_split_20                       1 2 add_17_3lidentity_0 ncnn_split_20lidentity_0 ncnn_split_20lidentity_1_0 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_16               1 1 ncnn_split_20lidentity_0 sep_dwconv2d_split_16_3lidentity_0 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_16                 1 1 sep_dwconv2d_split_16_3lidentity_0 sep_conv2d_split_16_3lidentity_0 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_38_dwc_148                    1 1 sep_conv2d_split_16_3lidentity_0 re_lu_38_dwc_148_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_38                            1 1 re_lu_38_dwc_148_1lidentity_0 re_lu_38_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+BatchNorm                           batch_normalization_39              1 1 re_lu_38_3lidentity_0 batch_normalization_39_3lidentity_0 -23330=4,3,64,64,32 0=32 1=0.001
+ReLU                                re_lu_39_dwc_151                    1 1 batch_normalization_39_3lidentity_0 re_lu_39_dwc_151_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_39                            1 1 re_lu_39_dwc_151_1lidentity_0 re_lu_39_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+Eltwise                             add_18                              2 1 re_lu_39_3lidentity_0 ncnn_split_20lidentity_1_0 add_18_3lidentity_0 -23330=4,3,64,64,32 0=1
+Split                               ncnn_split_21                       1 2 add_18_3lidentity_0 ncnn_split_21lidentity_0 ncnn_split_21lidentity_1_0 -23330=8,3,64,64,32,3,64,64,32 
+ConvolutionDepthWise                sep_dwconv2d_split_17               1 1 ncnn_split_21lidentity_0 sep_dwconv2d_split_17_3lidentity_0 -23330=4,3,64,64,32 0=32 1=3 2=1 3=1 4=1 5=1 6=288 7=32 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_17                 1 1 sep_dwconv2d_split_17_3lidentity_0 sep_conv2d_split_17_3lidentity_0 -23330=4,3,64,64,32 0=32 1=1 2=1 3=1 4=0 5=1 6=1024 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_40_dwc_156                    1 1 sep_conv2d_split_17_3lidentity_0 re_lu_40_dwc_156_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_40                            1 1 re_lu_40_dwc_156_1lidentity_0 re_lu_40_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+BatchNorm                           batch_normalization_41              1 1 re_lu_40_3lidentity_0 batch_normalization_41_3lidentity_0 -23330=4,3,64,64,32 0=32 1=0.001
+ReLU                                re_lu_41_dwc_159                    1 1 batch_normalization_41_3lidentity_0 re_lu_41_dwc_159_1lidentity_0 -23330=4,3,64,64,32 0=0.0
+Clip                                re_lu_41                            1 1 re_lu_41_dwc_159_1lidentity_0 re_lu_41_3lidentity_0 -23330=4,3,64,64,32 0=0.0 1=6.0
+Eltwise                             add_19                              2 1 re_lu_41_3lidentity_0 ncnn_split_21lidentity_1_0 add_19_3lidentity_0 -23330=4,3,64,64,32 0=1
+Interp                              up_sampling2d_3                     1 1 add_19_3lidentity_0 up_sampling2d_3_3lidentity_0 -23330=4,3,128,128,32 0=2 1=2.0 2=2.0
+Eltwise                             add_20                              2 1 up_sampling2d_3_3lidentity_0 ncnn_split_4lidentity_1_0 add_20_3lidentity_0 -23330=4,3,128,128,32 0=1
+Convolution                         conv2d_8                            1 1 add_20_3lidentity_0 conv2d_8_3lidentity_0 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=4608 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+ReLU                                re_lu_42_dwc_165                    1 1 conv2d_8_3lidentity_0 re_lu_42_dwc_165_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_42                            1 1 re_lu_42_dwc_165_1lidentity_0 re_lu_42_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+Split                               ncnn_split_22                       1 2 re_lu_42_3lidentity_0 ncnn_split_22lidentity_0 ncnn_split_22lidentity_1_0 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_18               1 1 ncnn_split_22lidentity_0 sep_dwconv2d_split_18_3lidentity_0 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_18                 1 1 sep_dwconv2d_split_18_3lidentity_0 sep_conv2d_split_18_3lidentity_0 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_43_dwc_169                    1 1 sep_conv2d_split_18_3lidentity_0 re_lu_43_dwc_169_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_43                            1 1 re_lu_43_dwc_169_1lidentity_0 re_lu_43_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+BatchNorm                           batch_normalization_44              1 1 re_lu_43_3lidentity_0 batch_normalization_44_3lidentity_0 -23330=4,3,128,128,16 0=16 1=0.001
+ReLU                                re_lu_44_dwc_172                    1 1 batch_normalization_44_3lidentity_0 re_lu_44_dwc_172_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_44                            1 1 re_lu_44_dwc_172_1lidentity_0 re_lu_44_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+Eltwise                             add_21                              2 1 re_lu_44_3lidentity_0 ncnn_split_22lidentity_1_0 add_21_3lidentity_0 -23330=4,3,128,128,16 0=1
+Split                               ncnn_split_23                       1 2 add_21_3lidentity_0 ncnn_split_23lidentity_0 ncnn_split_23lidentity_1_0 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_19               1 1 ncnn_split_23lidentity_0 sep_dwconv2d_split_19_3lidentity_0 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_19                 1 1 sep_dwconv2d_split_19_3lidentity_0 sep_conv2d_split_19_3lidentity_0 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_45_dwc_177                    1 1 sep_conv2d_split_19_3lidentity_0 re_lu_45_dwc_177_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_45                            1 1 re_lu_45_dwc_177_1lidentity_0 re_lu_45_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+BatchNorm                           batch_normalization_46              1 1 re_lu_45_3lidentity_0 batch_normalization_46_3lidentity_0 -23330=4,3,128,128,16 0=16 1=0.001
+ReLU                                re_lu_46_dwc_180                    1 1 batch_normalization_46_3lidentity_0 re_lu_46_dwc_180_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_46                            1 1 re_lu_46_dwc_180_1lidentity_0 re_lu_46_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+Eltwise                             add_22                              2 1 re_lu_46_3lidentity_0 ncnn_split_23lidentity_1_0 add_22_3lidentity_0 -23330=4,3,128,128,16 0=1
+Split                               ncnn_split_24                       1 2 add_22_3lidentity_0 ncnn_split_24lidentity_0 ncnn_split_24lidentity_1_0 -23330=8,3,128,128,16,3,128,128,16 
+ConvolutionDepthWise                sep_dwconv2d_split_20               1 1 ncnn_split_24lidentity_0 sep_dwconv2d_split_20_3lidentity_0 -23330=4,3,128,128,16 0=16 1=3 2=1 3=1 4=1 5=1 6=144 7=16 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_20                 1 1 sep_dwconv2d_split_20_3lidentity_0 sep_conv2d_split_20_3lidentity_0 -23330=4,3,128,128,16 0=16 1=1 2=1 3=1 4=0 5=1 6=256 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_47_dwc_185                    1 1 sep_conv2d_split_20_3lidentity_0 re_lu_47_dwc_185_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_47                            1 1 re_lu_47_dwc_185_1lidentity_0 re_lu_47_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+BatchNorm                           batch_normalization_48              1 1 re_lu_47_3lidentity_0 batch_normalization_48_3lidentity_0 -23330=4,3,128,128,16 0=16 1=0.001
+ReLU                                re_lu_48_dwc_188                    1 1 batch_normalization_48_3lidentity_0 re_lu_48_dwc_188_1lidentity_0 -23330=4,3,128,128,16 0=0.0
+Clip                                re_lu_48                            1 1 re_lu_48_dwc_188_1lidentity_0 re_lu_48_3lidentity_0 -23330=4,3,128,128,16 0=0.0 1=6.0
+Eltwise                             add_23                              2 1 re_lu_48_3lidentity_0 ncnn_split_24lidentity_1_0 add_23_3lidentity_0 -23330=4,3,128,128,16 0=1
+Interp                              up_sampling2d_4                     1 1 add_23_3lidentity_0 up_sampling2d_4_3lidentity_0 -23330=4,3,256,256,16 0=2 1=2.0 2=2.0
+Eltwise                             add_24                              2 1 up_sampling2d_4_3lidentity_0 ncnn_split_2lidentity_1_0 add_24_3lidentity_0 -23330=4,3,256,256,16 0=1
+Convolution                         conv2d_9                            1 1 add_24_3lidentity_0 conv2d_9_3lidentity_0 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=1152 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+ReLU                                re_lu_49_dwc_194                    1 1 conv2d_9_3lidentity_0 re_lu_49_dwc_194_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_49                            1 1 re_lu_49_dwc_194_1lidentity_0 re_lu_49_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+Split                               ncnn_split_25                       1 2 re_lu_49_3lidentity_0 ncnn_split_25lidentity_0 ncnn_split_25lidentity_1_0 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_21               1 1 ncnn_split_25lidentity_0 sep_dwconv2d_split_21_3lidentity_0 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_21                 1 1 sep_dwconv2d_split_21_3lidentity_0 sep_conv2d_split_21_3lidentity_0 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_50_dwc_198                    1 1 sep_conv2d_split_21_3lidentity_0 re_lu_50_dwc_198_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_50                            1 1 re_lu_50_dwc_198_1lidentity_0 re_lu_50_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+BatchNorm                           batch_normalization_51              1 1 re_lu_50_3lidentity_0 batch_normalization_51_3lidentity_0 -23330=4,3,256,256,8 0=8 1=0.001
+ReLU                                re_lu_51_dwc_201                    1 1 batch_normalization_51_3lidentity_0 re_lu_51_dwc_201_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_51                            1 1 re_lu_51_dwc_201_1lidentity_0 re_lu_51_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+Eltwise                             add_25                              2 1 re_lu_51_3lidentity_0 ncnn_split_25lidentity_1_0 add_25_3lidentity_0 -23330=4,3,256,256,8 0=1
+Split                               ncnn_split_26                       1 2 add_25_3lidentity_0 ncnn_split_26lidentity_0 ncnn_split_26lidentity_1_0 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_22               1 1 ncnn_split_26lidentity_0 sep_dwconv2d_split_22_3lidentity_0 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_22                 1 1 sep_dwconv2d_split_22_3lidentity_0 sep_conv2d_split_22_3lidentity_0 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_52_dwc_206                    1 1 sep_conv2d_split_22_3lidentity_0 re_lu_52_dwc_206_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_52                            1 1 re_lu_52_dwc_206_1lidentity_0 re_lu_52_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+BatchNorm                           batch_normalization_53              1 1 re_lu_52_3lidentity_0 batch_normalization_53_3lidentity_0 -23330=4,3,256,256,8 0=8 1=0.001
+ReLU                                re_lu_53_dwc_209                    1 1 batch_normalization_53_3lidentity_0 re_lu_53_dwc_209_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_53                            1 1 re_lu_53_dwc_209_1lidentity_0 re_lu_53_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+Eltwise                             add_26                              2 1 re_lu_53_3lidentity_0 ncnn_split_26lidentity_1_0 add_26_3lidentity_0 -23330=4,3,256,256,8 0=1
+Split                               ncnn_split_27                       1 2 add_26_3lidentity_0 ncnn_split_27lidentity_0 ncnn_split_27lidentity_1_0 -23330=8,3,256,256,8,3,256,256,8 
+ConvolutionDepthWise                sep_dwconv2d_split_23               1 1 ncnn_split_27lidentity_0 sep_dwconv2d_split_23_3lidentity_0 -23330=4,3,256,256,8 0=8 1=3 2=1 3=1 4=1 5=1 6=72 7=8 8=0 9=0 11=3 12=1 13=1 14=1 15=1 16=1
+Convolution                         sep_conv2d_split_23                 1 1 sep_dwconv2d_split_23_3lidentity_0 sep_conv2d_split_23_3lidentity_0 -23330=4,3,256,256,8 0=8 1=1 2=1 3=1 4=0 5=1 6=64 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+ReLU                                re_lu_54_dwc_214                    1 1 sep_conv2d_split_23_3lidentity_0 re_lu_54_dwc_214_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_54                            1 1 re_lu_54_dwc_214_1lidentity_0 re_lu_54_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+BatchNorm                           batch_normalization_55              1 1 re_lu_54_3lidentity_0 batch_normalization_55_3lidentity_0 -23330=4,3,256,256,8 0=8 1=0.001
+ReLU                                re_lu_55_dwc_217                    1 1 batch_normalization_55_3lidentity_0 re_lu_55_dwc_217_1lidentity_0 -23330=4,3,256,256,8 0=0.0
+Clip                                re_lu_55                            1 1 re_lu_55_dwc_217_1lidentity_0 re_lu_55_3lidentity_0 -23330=4,3,256,256,8 0=0.0 1=6.0
+Eltwise                             add_27                              2 1 re_lu_55_3lidentity_0 ncnn_split_27lidentity_1_0 add_27_3lidentity_0 -23330=4,3,256,256,8 0=1
+Convolution                         softmax_conv                        1 1 add_27_3lidentity_0 softmax_conv_3lidentity_0 -23330=4,3,256,256,1 0=1 1=1 2=1 3=1 4=0 5=1 6=8 8=0 9=0 11=1 12=1 13=1 14=0 15=0 16=0
+Sigmoid                             output                              1 1 softmax_conv_3lidentity_0 output_3lidentity_0 -23330=4,3,256,256,1 
