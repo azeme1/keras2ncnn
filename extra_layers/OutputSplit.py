@@ -12,10 +12,11 @@ class OutputSplit(Layer):
     def call(self, x):
         return [x] * self.count
 
-    def compute_output_shape(self, inputShape):
-        return [inputShape] * self.count
+    def compute_output_shape(self, input_shape):
+        return [input_shape] * self.count
 
     def get_config(self):
         base_config = super(OutputSplit, self).get_config()
         base_config['count'] = self.count
         return base_config
+
