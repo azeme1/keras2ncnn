@@ -17,6 +17,7 @@ Export Keras model to Tencent/NCNN.
 
 ### Unit tests is written  
 * Unit tests with  [Python NCNN inference - pyncnn](https://github.com/caishanli/pyncnn) installed 
+* Latest models tested tf_nightly-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl / tf_nightly_gpu-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl  
 
 ### Preconverted models
 Some 'preconverted' models can be downloaded from 
@@ -69,3 +70,4 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 
 ### Thanx
 * [https://github.com/cvzakharchenko]
+* [https://github.com/nvoronetskiy]

@@ -1,10 +1,9 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-import tensorflow as tf
-tf.autograph.set_verbosity(0, True)
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import load_model
 
-from tensorflow.keras.models import Model, load_model
 import ncnn
 import numpy as np
 
@@ -23,7 +22,6 @@ from unit_test.helper import save_config
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
 model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
-
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -88,10 +86,12 @@ for keras_model_in in model_list:
     for layer in adapted_keras_model.layers:
         layer_name = layer.name
         layer_output = convert_blob(layer.output)
-        test_keras_model = Model(adapted_keras_model.inputs, adapted_keras_model.get_layer(layer_name).output)
-        keras_output = test_keras_model.predict(keras_in)
+
+        test_keras_model = K.function(adapted_keras_model.inputs, adapted_keras_model.get_layer(layer_name).output)
+        keras_output = test_keras_model(keras_in)
 
         for item, tensor_true in zip(layer_output, convert_blob(keras_output)):
+
             tensor_name = clean_node_name(item.name)
             ex.extract(tensor_name, mat_out)
             tensor_exp = tensor4_ncnn2keras(mat_out)

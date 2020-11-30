@@ -1,6 +1,6 @@
 from tensorflow.keras.layers import Layer
 from tensorflow.python.keras.utils import tf_utils
-
+import tensorflow as tf
 
 class OutputSplit(Layer):
     def __init__(self, count, **kwargs):
@@ -10,8 +10,9 @@ class OutputSplit(Layer):
     def build(self, inputShape):
         super(OutputSplit, self).build(inputShape)
 
+    @tf.function(experimental_relax_shapes=True)
     def call(self, x, **kwargs):
-        return [x] * self.count
+        return [tf.identity(x)] * self.count
 
     @tf_utils.shape_type_conversion
     def compute_output_shape(self, input_shape):

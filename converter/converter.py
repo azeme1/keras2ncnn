@@ -41,7 +41,7 @@ def get_valid_shape(raw_shape):
 
 
 def get_layer_type(layer):
-    activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'Tanh'}
+    activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH'}
     if type(layer).__name__ == 'Activation':
         return activation_type_mapping[layer.get_config()['activation']]
     else:

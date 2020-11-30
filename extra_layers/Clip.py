@@ -9,6 +9,7 @@ class Clip(Layer):
         self.min_value = K.cast_to_floatx(min_value)
         self.max_value = K.cast_to_floatx(max_value)
 
+    @tf.function(experimental_relax_shapes=True)
     def call(self, inputs, **kwargs):
         return K.clip(inputs, min_value=self.min_value, max_value=self.max_value)
 

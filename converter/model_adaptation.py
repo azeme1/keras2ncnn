@@ -119,7 +119,7 @@ def split_output_nodes(keras_model_config):
                                                                           'trainable': True,
                                                                           'dtype': 'float32',
                                                                           'count': len(
-                                                                              outbound_nodes_dict[out_node_name])},
+                                                                           outbound_nodes_dict[out_node_name])},
                                   'name': split_node_name,
                                   'inbound_nodes': [[[out_node_name, 0, 0, {}]]]}
             nccn2keras_layer_list.append(split_layer_config)
@@ -154,7 +154,7 @@ def adapt_keras_model(keras_model, model_name):
         # adapted_model_config = rename_layer(adapted_model_config, keras_model_config['output_layers'][0][0], 'output')
         adapted_keras_model = Model.from_config(adapted_model_config,  custom_objects=extra_custom_objects)
     else:
-        adapted_keras_model = Model.from_config(keras_model_config)
+        adapted_keras_model = Model.from_config(keras_model_config, custom_objects=extra_custom_objects)
     adapted_keras_model.set_weights(keras_model.get_weights())
     return adapted_keras_model
 
