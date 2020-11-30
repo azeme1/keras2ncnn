@@ -1,3 +1,8 @@
+from tensorflow.keras.models import Model, load_model
+import os
+import ncnn
+import numpy as np
+
 from converter.converter import conver_model
 from converter.model_adaptation import adapt_keras_model, convert_blob, clean_node_name
 from optimization.optimize_graph import apply_transformations, check_transform
@@ -11,15 +16,9 @@ from unit_test.helper import save_config
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
 # from unit_test.single_layer.Merge import model_list
-
 # from unit_test.single_layer.Conv2DTranspose import model_list
-from tensorflow.keras.models import Model, load_model
-import os
-import ncnn
-import numpy as np
+# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
 
-
-model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)

@@ -13,6 +13,7 @@ Export Keras model to Tencent/NCNN.
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
+* Conv2DTranspose (only for the even strides)
 
 ### Unit tests is written  
 * Unit tests with  [Python NCNN inference - pyncnn](https://github.com/caishanli/pyncnn) installed 
@@ -45,11 +46,12 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 ```
 ## Useful Links
 ### Tencent/NCNN documentation
-* https://github.com/Tencent/ncnn/wiki/how-to-implement-custom-layer-step-by-step
-* https://github.com/Tencent/ncnn/wiki/param-and-model-file-structure
-* https://github.com/Tencent/ncnn/wiki/operation-param-weight-table
+* [https://github.com/Tencent/ncnn/wiki/how-to-implement-custom-layer-step-by-step]
+* [https://github.com/Tencent/ncnn/wiki/param-and-model-file-structure]
+* [https://github.com/Tencent/ncnn/wiki/operation-param-weight-table]
+* [https://github.com/MarsTechHAN/keras2ncnn]
 ### Graph visualization 
-* https://github.com/lutzroeder/netron
+* [https://github.com/lutzroeder/netron]
 
 ## TODO List
 ### Code

@@ -248,12 +248,15 @@ def get_upsampling2d_mapping(in_dict):
 
 
 def get_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
-    t_pad = kernel_size + stride_size * (output_size - 1) - input_size
+    assert kernel_size != 1, 'This check this case separately'
+
+    t_pad = (kernel_size - stride_size) + input_size * stride_size - output_size
     t_pad = max(t_pad, 0)
     f_pad = s_pad = 0
     if t_pad > 0:
         f_pad = t_pad // 2
         s_pad = t_pad - f_pad
+
     return f_pad, s_pad
 
 
@@ -282,7 +285,7 @@ def get_conv2dtranspose_mapping(in_dict):
     layer_config = layer.get_config()
     if layer_config['use_bias']:
         w, b = layer.get_weights()
-        w = np.transpose(w, (3, 2, 0, 1))
+        w = np.transpose(w, (2, 3, 0, 1))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
     else:
         assert False, "This branch was not verified"
@@ -312,18 +315,19 @@ def get_conv2dtranspose_mapping(in_dict):
         pad_left, pad_right = get_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
         pad_top, pad_bottom = get_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
     else:
+        assert True, 'Check This Code Branch'
         pad_left = pad_right = pad_top = pad_bottom = 0
 
-    output_h, output_w = output_y_size, output_x_size
+    # output_h, output_w = output_y_size, output_x_size
 
     parameter_mapping = OrderedDict({0: num_output, 1: kernel_w, 2: dilation_w, 3: stride_w, 4: pad_left,
                                      5: bias_term, 6: weight_data_size, 8: int8_scale_term, 9: activation_type,
                                      # TODO :: Check Acrivation params 10:,
 
-                                     11: kernel_h, 12: dilation_w, 13: stride_h, 14: pad_top, 15: pad_right,
+                                     11: kernel_h, 12: dilation_h, 13: stride_h, 14: pad_top, 15: pad_right,
                                      16: pad_bottom,
                                      # TODO :: FILL This params 18:<>, 19:<>,
-                                     20: output_w, 21: output_h
+                                     # 20: output_w, 21: output_h
                                      })
     return parameter_mapping
 
