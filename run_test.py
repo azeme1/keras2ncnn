@@ -1,5 +1,10 @@
-from tensorflow.keras.models import Model, load_model
 import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+import tensorflow as tf
+tf.autograph.set_verbosity(0, True)
+
+from tensorflow.keras.models import Model, load_model
 import ncnn
 import numpy as np
 
@@ -13,11 +18,11 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Normalization import model_list
 # from unit_test.single_layer.Pooling2D import model_list
 # from unit_test.single_layer.UpSampling2D import model_list
-# from unit_test.simple_model.EncoderDecoder import model_list
-# from unit_test.simple_model.UNet import model_list
 # from unit_test.single_layer.Merge import model_list
 # from unit_test.single_layer.Conv2DTranspose import model_list
-# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
+# from unit_test.simple_model.EncoderDecoder import model_list
+# from unit_test.simple_model.UNet import model_list
+model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
 
 
 def mat_to_numpy_4(mat_array):

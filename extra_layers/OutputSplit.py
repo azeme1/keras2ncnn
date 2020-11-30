@@ -1,4 +1,5 @@
 from tensorflow.keras.layers import Layer
+from tensorflow.python.keras.utils import tf_utils
 
 
 class OutputSplit(Layer):
@@ -9,9 +10,10 @@ class OutputSplit(Layer):
     def build(self, inputShape):
         super(OutputSplit, self).build(inputShape)
 
-    def call(self, x):
+    def call(self, x, **kwargs):
         return [x] * self.count
 
+    @tf_utils.shape_type_conversion
     def compute_output_shape(self, input_shape):
         return [input_shape] * self.count
 

@@ -246,8 +246,16 @@ def get_upsampling2d_mapping(in_dict):
                                      })
     return parameter_mapping
 
+def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
+    t_pad = kernel_size + stride_size * (output_size - 1) - input_size
+    t_pad = max(t_pad, 0)
+    f_pad = s_pad = 0
+    if t_pad > 0:
+        f_pad = t_pad // 2
+        s_pad = t_pad - f_pad
+    return f_pad, s_pad
 
-def get_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
+def get_deconv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
     assert kernel_size != 1, 'This check this case separately'
 
     t_pad = (kernel_size - stride_size) + input_size * stride_size - output_size
@@ -312,8 +320,8 @@ def get_conv2dtranspose_mapping(in_dict):
     input_y_size, input_x_size = layer_input_shape[0][1:3]
     output_y_size, output_x_size = layer_output_shape[0][1:3]
     if layer_config['padding'] == 'same':
-        pad_left, pad_right = get_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
-        pad_top, pad_bottom = get_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
+        pad_left, pad_right = get_deconv_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
+        pad_top, pad_bottom = get_deconv_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
     else:
         assert True, 'Check This Code Branch'
         pad_left = pad_right = pad_top = pad_bottom = 0
@@ -386,8 +394,8 @@ def get_conv2d_mapping(in_dict):
     if layer_config['padding'] == 'same':
         input_y_size, input_x_size = layer_input_shape[0][1:3]
         output_y_size, output_x_size = layer_output_shape[0][1:3]
-        pad_left, pad_right = get_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
-        pad_top, pad_bottom = get_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
+        pad_left, pad_right = get_conv_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
+        pad_top, pad_bottom = get_conv_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
     else:
         pad_left = pad_right = pad_top = pad_bottom = 0
 
@@ -457,8 +465,8 @@ def get_depthwiseconv2d_mapping(in_dict):
     if layer_config['padding'] == 'same':
         input_y_size, input_x_size = layer_input_shape[0][1:3]
         output_y_size, output_x_size = layer_output_shape[0][1:3]
-        pad_left, pad_right = get_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
-        pad_top, pad_bottom = get_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
+        pad_left, pad_right = get_conv_padding(input_x_size, output_x_size, kernel_w, stride_w, dilation_w)
+        pad_top, pad_bottom = get_conv_padding(input_y_size, output_y_size, kernel_h, stride_h, dilation_h)
     else:
         pad_left = pad_right = pad_top = pad_bottom = 0
 
