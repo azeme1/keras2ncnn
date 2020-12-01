@@ -371,6 +371,7 @@ def get_conv2d_mapping(in_dict):
         # TODO :: Try to skip bias add, currently zero bias added
         w, = layer.get_weights()
         _, _, c_size, f_size = w.shape
+        w = np.transpose(w, (3, 2, 0, 1))
         b = np.zeros((f_size,))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
 
@@ -378,7 +379,8 @@ def get_conv2d_mapping(in_dict):
     kernel_h, kernel_w = layer_config['kernel_size']
     dilation_h, dilation_w = layer_config['dilation_rate']
     stride_h, stride_w = layer_config['strides']
-    bias_term = int(layer_config['use_bias'])
+    # TODO :: check use bias = False
+    bias_term = int(True) #int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
 
@@ -440,13 +442,15 @@ def get_depthwiseconv2d_mapping(in_dict):
         # TODO :: Try to skip bias add, currently zero bias added
         w, = layer.get_weights()
         _, _, c_size, f_size = w.shape
+        w = np.transpose(w, (3, 2, 0, 1))
         b = np.zeros((c_size,))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
 
     kernel_h, kernel_w = layer_config['kernel_size']
     dilation_h, dilation_w = layer_config['dilation_rate']
     stride_h, stride_w = layer_config['strides']
-    bias_term = int(layer_config['use_bias'])
+    # TODO Check use_bias=False
+    bias_term = int(True) #int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
 
