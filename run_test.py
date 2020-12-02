@@ -17,11 +17,14 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Normalization import model_list
 # from unit_test.single_layer.Pooling2D import model_list
 # from unit_test.single_layer.UpSampling2D import model_list
+from unit_test.single_layer.ReshapeFlatten import model_list
 # from unit_test.single_layer.Merge import model_list
 # from unit_test.single_layer.Conv2DTranspose import model_list
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
-model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
+# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
+# model_list = [load_model('./model_zoo/style_transfer/pix2pix/cats_model_small.hdf5')]
+
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -30,12 +33,41 @@ def mat_to_numpy_4(mat_array):
     return np_array
 
 
-def tensor_nchw2nhwc(in_data):
+def mat_to_numpy_3(mat_array):
+    np_array = np.array(mat_array)
+    assert len(np_array.shape) == 2, f"Wrong Array Shape {np_array.shape}"
+    np_array = np_array.reshape((1,) + np_array.shape)
+    return np_array
+
+
+def mat_to_numpy_2(mat_array):
+    np_array = np.array(mat_array)
+    assert len(np_array.shape) == 1, f"Wrong Array Shape {np_array.shape}"
+    np_array = np_array.reshape((1,) + np_array.shape)
+    return np_array
+
+
+def tensor_nchw2nhwc_4(in_data):
     return np.transpose(in_data, (0, 2, 3, 1))
 
 
+def tensor_nchw2nhwc_3(in_data):
+    return np.transpose(in_data, (0, 2, 1))
+
+
+def tensor_nchw2nhwc_2(in_data):
+    return in_data
+
+
 def tensor4_ncnn2keras(mat_array):
-    return tensor_nchw2nhwc(mat_to_numpy_4(mat_array))
+    if mat_array.dims == 3:
+        return tensor_nchw2nhwc_4(mat_to_numpy_4(mat_array))
+    elif mat_array.dims == 2:
+        return tensor_nchw2nhwc_3(mat_to_numpy_3(mat_array))
+    elif mat_array.dims == 1:
+        return tensor_nchw2nhwc_2(mat_to_numpy_2(mat_array))
+    else:
+        raise NotImplemented
 
 
 export_root = './unit_test_output/'
@@ -94,6 +126,7 @@ for keras_model_in in model_list:
 
             tensor_name = clean_node_name(item.name)
             ex.extract(tensor_name, mat_out)
+
             tensor_exp = tensor4_ncnn2keras(mat_out)
             error_exp = np.abs(tensor_true - tensor_exp).mean()
             print(f'Layer - {layer_name} :: {error_exp} < {str(error_th)} {error_exp < error_th}')

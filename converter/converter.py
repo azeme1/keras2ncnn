@@ -128,11 +128,15 @@ def get_reshape_mapping(in_dict):
     #             3	permute	0
     layer_config = in_dict['layer'].get_config()
     target_shape = layer_config['target_shape']
-    if len(target_shape) == 2:
-        if target_shape[0] == -1:
-            parameter_mapping = OrderedDict({0: target_shape[-1], 1: -1, 2: -233, 3: 0})
-        else:
-            raise NotImplemented
+    if len(target_shape) == 3:
+        y_size, x_size, c_size = target_shape
+        parameter_mapping = OrderedDict({0: x_size, 1: y_size, 2: c_size, 3: 0})
+    elif len(target_shape) == 2:
+        xy_size, c_size = target_shape
+        parameter_mapping = OrderedDict({0:  xy_size, 1: c_size, 2: -233, 3: 0})
+    elif len(target_shape) == 1:
+        c_size, = target_shape
+        parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233,  3: 1})
     else:
         raise NotImplemented
     return parameter_mapping
@@ -668,8 +672,13 @@ def get_layer_string(in_dict):
     assert len(layer_name) < max_line_length
 
     string_list = []
-    string_list.append(
-        f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
+    log_shape = False
+    if log_shape:
+        string_list.append(
+            f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
+    else:
+        string_list.append(
+            f'{layer_type: <36}{layer_name: <36}{in_out_string} {parameter_string}')
     if split_string is not None:
         string_list.append(split_string)
     return string_list, layer_name, tensor_names
