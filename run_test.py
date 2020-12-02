@@ -17,11 +17,12 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Normalization import model_list
 # from unit_test.single_layer.Pooling2D import model_list
 # from unit_test.single_layer.UpSampling2D import model_list
-from unit_test.single_layer.ReshapeFlatten import model_list
+# from unit_test.single_layer.ReshapeFlatten import model_list
 # from unit_test.single_layer.Merge import model_list
 # from unit_test.single_layer.Conv2DTranspose import model_list
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
+# model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')]
 # model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
 # model_list = [load_model('./model_zoo/style_transfer/pix2pix/cats_model_small.hdf5')]
 

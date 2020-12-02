@@ -24,9 +24,17 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
 def fix_axis_value(in_dict, axis):
     if axis < 0:
         axis = len(in_dict['layer'].output_shape) + axis
-    # Need thi NCNN has 3-dim tensors
+
+    if len(in_dict['layer'].output_shape) == 4:
+        magic_number = 2
+    elif len(in_dict['layer'].output_shape) == 3:
+        magic_number = 1
+    else:
+        raise NotImplemented
+
+    # Need this NCNN has 3-dim tensors
     if 'NCHW':
-        axis = 2 - int(axis - 1)
+        axis = magic_number - int(axis - 1)
     else:
         assert False, 'NHWC is not supported'
     assert axis >= 0, 'Axis can not be negative'
@@ -133,7 +141,7 @@ def get_reshape_mapping(in_dict):
         parameter_mapping = OrderedDict({0: x_size, 1: y_size, 2: c_size, 3: 0})
     elif len(target_shape) == 2:
         xy_size, c_size = target_shape
-        parameter_mapping = OrderedDict({0: xy_size, 1: c_size, 2: -233, 3: 0})
+        parameter_mapping = OrderedDict({0: xy_size, 1: c_size, 2: -233, 3: 1})
     elif len(target_shape) == 1:
         c_size, = target_shape
         parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233, 3: 1})
