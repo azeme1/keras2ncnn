@@ -77,7 +77,7 @@ for keras_model_in in model_list:
     keras_model = apply_transformations(keras_model_in)
     adapted_keras_model = adapt_keras_model(keras_model, keras_model.name)
     check_transform(keras_model_in, adapted_keras_model, False)
-    string_list, weight_list, layer_name_list = conver_model(adapted_keras_model, False)
+    string_list, weight_list, layer_name_list = conver_model(adapted_keras_model, False, False)
 
     export_path = os.path.join(export_root, '', keras_model.name)
     os.makedirs(export_path, exist_ok=True)

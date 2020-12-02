@@ -133,10 +133,10 @@ def get_reshape_mapping(in_dict):
         parameter_mapping = OrderedDict({0: x_size, 1: y_size, 2: c_size, 3: 0})
     elif len(target_shape) == 2:
         xy_size, c_size = target_shape
-        parameter_mapping = OrderedDict({0:  xy_size, 1: c_size, 2: -233, 3: 0})
+        parameter_mapping = OrderedDict({0: xy_size, 1: c_size, 2: -233, 3: 0})
     elif len(target_shape) == 1:
         c_size, = target_shape
-        parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233,  3: 1})
+        parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233, 3: 1})
     else:
         raise NotImplemented
     return parameter_mapping
@@ -500,6 +500,7 @@ def get_depthwiseconv2d_mapping(in_dict):
                                      })
     return parameter_mapping
 
+
 def extract_normalization_weights(layer):
     layer_config = layer.get_config()
 
@@ -519,6 +520,7 @@ def extract_normalization_weights(layer):
         assert False, "This branch was not verified"
 
     return scale, beta, moving_mean, moving_variance
+
 
 def get_batchnormalization_mapping(in_dict):
     # BatchNorm   0   channels    0   slope   mean    variance    bias
@@ -655,7 +657,7 @@ def get_model_string(model, magic_number, blob_set, string_list):
     return string_list
 
 
-def get_layer_string(in_dict):
+def get_layer_string(in_dict, export_shapes=False):
     batch_size = in_dict['batch_size']
     layer = in_dict['layer']
     layer_type, mapping_function_name = get_layer_type(layer)
@@ -672,8 +674,8 @@ def get_layer_string(in_dict):
     assert len(layer_name) < max_line_length
 
     string_list = []
-    log_shape = False
-    if log_shape:
+
+    if export_shapes:
         string_list.append(
             f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
     else:
@@ -684,7 +686,7 @@ def get_layer_string(in_dict):
     return string_list, layer_name, tensor_names
 
 
-def conver_model(model, debug=True):
+def conver_model(model, debug=True, export_shapes=False):
     # magic number: 7767517
     magic_number = 7767517
     # TODO :: clarify this
@@ -708,7 +710,7 @@ def conver_model(model, debug=True):
         config_dict = {'layer': layer, 'array_key': array_key, 'batch_size': batch_size,
                        'weight_list': [], 'model_output_names': model.output_names,
                        'split_info': split_info, 'outbound_dict': outbound_dict}
-        add_string, layer_name, tensor_names = export_function(config_dict)
+        add_string, layer_name, tensor_names = export_function(config_dict, export_shapes)
         weight_list += [[layer.__class__.__name__, config_dict['weight_list']]]
         string_list += add_string
         layer_name_list += [layer_name]
