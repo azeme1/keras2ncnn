@@ -24,7 +24,6 @@ from unit_test.helper import save_config
 # from unit_test.simple_model.UNet import model_list
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')]
 # model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
-# model_list = [load_model('./model_zoo/style_transfer/pix2pix/cats_model_small.hdf5')]
 
 
 def mat_to_numpy_4(mat_array):
@@ -112,6 +111,7 @@ for keras_model_in in model_list:
     assert len(adapted_keras_model.inputs) == 1, "MultiInput is not supported!"
 
     ncnn_input_name = clean_node_name(adapted_keras_model.inputs[0].name)
+    ...
     ex.input(ncnn_input_name, mat_in)
     mat_out = ncnn.Mat()
 

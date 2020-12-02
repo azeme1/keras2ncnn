@@ -5,11 +5,12 @@ Export Keras model to Tencent/NCNN.
 * InputLayer
 * ReLU/ReLU6/LeakyReLU/Softmax/Sigmoid
 * Clip
+* Reshape/Flatten(converted with NCNN::Reshape)
 * MaxPooling2D/AveragePooling2D/MaxPool2D/AvgPool2D
 * BatchNormalization
-* Conv2D/DepthwiseConv2D/SeparableConv2D
+* Conv2D/DepthwiseConv2D/SeparableConv2D(converted with split into NCNN::ConvolutionDepthWise->NCNN::Convolution)
 * Concatenate/Add/Multiply
-* UpSampling2D(nearest neighbour/ bilinear)
+* UpSampling2D(nearest neighbour/bilinear)
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
@@ -17,7 +18,9 @@ Export Keras model to Tencent/NCNN.
 
 ### Unit tests is written  
 * Unit tests with  [Python NCNN inference - pyncnn](https://github.com/caishanli/pyncnn) installed 
-* Latest models tested tf_nightly-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl / tf_nightly_gpu-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl  
+* Latest models tested tf_nightly-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl / tf_nightly_gpu-2.5.0.dev20201130-cp37-cp37m-win_amd64.whl
+* Latest NCNN revision https://github.com/Tencent/ncnn/commit/25b224479cbe535ce35ca92556c8f17d9b9f1951
+* Latest PyNCNN revision https://github.com/caishanli/pyncnn/commit/63c77b8bd75dae8e2601b918e92a5050a3fee8df
 
 ### Preconverted models
 Some 'preconverted' models can be downloaded from 
@@ -56,8 +59,7 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 
 ## TODO List
 ### Code
-* Tensorflow 2.x support
-* Auto compile python bindings for the project
+* Add support for the Dense Layer 
 * Fix layer name length issue
 * Export models from Keras applications applications
 ### Upcoming Models 

@@ -18,7 +18,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
-                      'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH'}
+                      'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -147,6 +147,14 @@ def get_reshape_mapping(in_dict):
         parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233, 3: 1})
     else:
         raise NotImplemented
+    return parameter_mapping
+
+def get_flatten_mapping(in_dict):
+    # Reshape     0	w	-233
+    #             1	h	-233
+    #             2	c	-233
+    #             3	permute	0
+    parameter_mapping = OrderedDict({0: -1, 3: 1})
     return parameter_mapping
 
 
