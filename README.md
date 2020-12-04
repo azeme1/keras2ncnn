@@ -1,7 +1,8 @@
 # keras2ncnn
 ## Description
 Export Keras model to Tencent/NCNN.
-### Supported Keras layer List
+### Supported Keras layers and Features
+* Functional Model API (the Sequential and Model as Layer features should be transformed in to flat Functional API Model)
 * InputLayer
 * ReLU/ReLU6/LeakyReLU/Softmax/Sigmoid
 * Clip
@@ -62,6 +63,9 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 * Add support for the Dense Layer 
 * Fix layer name length issue
 * Export models from Keras applications applications
+* Model in Model support
+* Sequential API support
+* Mixed mode API support  
 ### Upcoming Models 
 * [https://github.com/thangtran480/hair-segmentation]
 * [https://github.com/ItchyHiker/Hair_Segmentation_Keras]
