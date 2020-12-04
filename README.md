@@ -14,7 +14,7 @@ Export Keras model to Tencent/NCNN.
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * BatchNormalization(In Progress :: Fusion with Convolution)
 * ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
-* Conv2DTranspose (only for the even strides)
+* Conv2DTranspose(only for the even strides)
 
 ### Unit tests is written  
 * Unit tests with  [Python NCNN inference - pyncnn](https://github.com/caishanli/pyncnn) installed 

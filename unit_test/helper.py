@@ -70,7 +70,7 @@ def save_config(string_list, weight_list, model_name, root_folder, dtype=np.floa
     with open(out_weights_path, 'wb') as f:
         for item in weight_list:
             layer_class, weight_list_item = item
-            if layer_class in ['Conv2D', 'DepthwiseConv2D', 'Conv2DTranspose']:
+            if layer_class in ['Conv2D', 'DepthwiseConv2D', 'Conv2DTranspose', 'Dense']:
                 f.write(np.array([0], dtype=np.uint32).tobytes())
             for weight_array in weight_list_item:
                 f.write(weight_array.astype(dtype).tobytes())

@@ -18,7 +18,8 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
-                      'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape'}
+                      'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
+                      'Dense': 'InnerProduct'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -371,18 +372,52 @@ def get_conv2dtranspose_mapping(in_dict):
                                      })
     return parameter_mapping
 
+def get_dense_mapping(in_dict):
+    # InnerProduct	0	num_output	        0	weight bias
+    #               1	bias_term	        0
+    #               2	weight_data_size	0
+    #               8	int8_scale_term	    0
+    #               9	activation_type	    0
+    #               10	activation_params	[]
+
+    layer = in_dict['layer']
+    layer_config = layer.get_config()
+    if layer_config['use_bias']:
+        w, b = layer.get_weights()
+        w = np.transpose(w, (1, 0))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
+    else:
+        # TODO :: Try to skip bias add, currently zero bias added
+        w, = layer.get_weights()
+        c_size, f_size = w.shape
+        w = np.transpose(w, (1, 0))
+        b = np.zeros((f_size,))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
+
+
+    num_output = layer_config['units']
+    # TODO :: check use bias = False
+    bias_term = int(True)  # int(layer_config['use_bias'])
+    weight_data_size = np.prod(w.shape)
+
+    assert layer_config['activation'] in activation_type_dict
+    activation_type = activation_type_dict[layer_config['activation']]
+
+    parameter_mapping = OrderedDict({0: num_output, 1: bias_term, 2: weight_data_size, 9: activation_type})
+    return parameter_mapping
+
 
 def get_conv2d_mapping(in_dict):
     #     Convolution
-    #     0	num_output	0	weight bias
-    #     1	kernel_w	0
-    #     2	dilation_w	1
-    #     3	stride_w	1
-    #     4	pad_left	0
-    #     5	bias_term	0
-    #     6	weight_data_size	0
-    #     8	int8_scale_term	0
-    #     9	activation_type	0
+    #     0	    num_output	        0	weight bias
+    #     1	    kernel_w	        0
+    #     2	    dilation_w	        1
+    #     3	    stride_w	        1
+    #     4	    pad_left	        0
+    #     5	    bias_term	        0
+    #     6	    weight_data_size	0
+    #     8	    int8_scale_term	    0
+    #     9	    activation_type	    0
     #     10	activation_params	[ ]
     #     11	kernel_h	kernel_w
     #     12	dilation_h	dilation_w
