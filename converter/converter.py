@@ -17,15 +17,25 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
-                      'Clip': 'Clip'}
+                      'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
+                      'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
+                      'Dense': 'InnerProduct'}
 
 
 def fix_axis_value(in_dict, axis):
     if axis < 0:
         axis = len(in_dict['layer'].output_shape) + axis
-    # Need thi NCNN has 3-dim tensors
+
+    if len(in_dict['layer'].output_shape) == 4:
+        magic_number = 2
+    elif len(in_dict['layer'].output_shape) == 3:
+        magic_number = 1
+    else:
+        raise NotImplemented
+
+    # Need this NCNN has 3-dim tensors
     if 'NCHW':
-        axis = 2 - int(axis - 1)
+        axis = magic_number - int(axis - 1)
     else:
         assert False, 'NHWC is not supported'
     assert axis >= 0, 'Axis can not be negative'
@@ -41,11 +51,19 @@ def get_valid_shape(raw_shape):
 
 
 def get_layer_type(layer):
-    activation_type_mapping = {'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH'}
-    if type(layer).__name__ == 'Activation':
-        return activation_type_mapping[layer.get_config()['activation']]
-    else:
-        return layer_type_mapping[type(layer).__name__]
+    type_mapping = type(layer).__name__
+    if type_mapping == 'Activation':
+        type_mapping = layer.get_config()['activation']
+    elif type_mapping == 'BatchNormalization':
+        try:
+            call_args = layer.inbound_nodes[0].call_kwargs
+            if 'training' in call_args:
+                if call_args['training'] in [1, True]:
+                    type_mapping = 'InstanceNormalization'
+        except:
+            pass
+    mapping_function_name = '_'.join(['get', str(type_mapping).lower(), 'mapping'])
+    return layer_type_mapping[type_mapping], mapping_function_name
 
 
 def get_layer_name(layer):
@@ -111,6 +129,7 @@ def get_outputsplit_mapping(in_dict):
     parameter_mapping = OrderedDict({})
     return parameter_mapping
 
+
 def get_reshape_mapping(in_dict):
     # Reshape     0	w	-233
     #             1	h	-233
@@ -118,13 +137,25 @@ def get_reshape_mapping(in_dict):
     #             3	permute	0
     layer_config = in_dict['layer'].get_config()
     target_shape = layer_config['target_shape']
-    if len(target_shape) == 2:
-        if target_shape[0] == -1:
-            parameter_mapping = OrderedDict({0: target_shape[-1], 1: -1, 2: -233, 3: 0})
-        else:
-            raise NotImplemented
+    if len(target_shape) == 3:
+        y_size, x_size, c_size = target_shape
+        parameter_mapping = OrderedDict({0: x_size, 1: y_size, 2: c_size, 3: 0})
+    elif len(target_shape) == 2:
+        xy_size, c_size = target_shape
+        parameter_mapping = OrderedDict({0: xy_size, 1: c_size, 2: -233, 3: 1})
+    elif len(target_shape) == 1:
+        c_size, = target_shape
+        parameter_mapping = OrderedDict({0: c_size, 1: -233, 2: -233, 3: 1})
     else:
         raise NotImplemented
+    return parameter_mapping
+
+def get_flatten_mapping(in_dict):
+    # Reshape     0	w	-233
+    #             1	h	-233
+    #             2	c	-233
+    #             3	permute	0
+    parameter_mapping = OrderedDict({0: -1, 3: 1})
     return parameter_mapping
 
 
@@ -246,6 +277,7 @@ def get_upsampling2d_mapping(in_dict):
                                      })
     return parameter_mapping
 
+
 def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
     t_pad = kernel_size + stride_size * (output_size - 1) - input_size
     t_pad = max(t_pad, 0)
@@ -254,6 +286,7 @@ def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation
         f_pad = t_pad // 2
         s_pad = t_pad - f_pad
     return f_pad, s_pad
+
 
 def get_deconv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
     assert kernel_size != 1, 'This check this case separately'
@@ -339,18 +372,52 @@ def get_conv2dtranspose_mapping(in_dict):
                                      })
     return parameter_mapping
 
+def get_dense_mapping(in_dict):
+    # InnerProduct	0	num_output	        0	weight bias
+    #               1	bias_term	        0
+    #               2	weight_data_size	0
+    #               8	int8_scale_term	    0
+    #               9	activation_type	    0
+    #               10	activation_params	[]
+
+    layer = in_dict['layer']
+    layer_config = layer.get_config()
+    if layer_config['use_bias']:
+        w, b = layer.get_weights()
+        w = np.transpose(w, (1, 0))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
+    else:
+        # TODO :: Try to skip bias add, currently zero bias added
+        w, = layer.get_weights()
+        c_size, f_size = w.shape
+        w = np.transpose(w, (1, 0))
+        b = np.zeros((f_size,))
+        in_dict['weight_list'] += [w.flatten(), b.flatten()]
+
+
+    num_output = layer_config['units']
+    # TODO :: check use bias = False
+    bias_term = int(True)  # int(layer_config['use_bias'])
+    weight_data_size = np.prod(w.shape)
+
+    assert layer_config['activation'] in activation_type_dict
+    activation_type = activation_type_dict[layer_config['activation']]
+
+    parameter_mapping = OrderedDict({0: num_output, 1: bias_term, 2: weight_data_size, 9: activation_type})
+    return parameter_mapping
+
 
 def get_conv2d_mapping(in_dict):
     #     Convolution
-    #     0	num_output	0	weight bias
-    #     1	kernel_w	0
-    #     2	dilation_w	1
-    #     3	stride_w	1
-    #     4	pad_left	0
-    #     5	bias_term	0
-    #     6	weight_data_size	0
-    #     8	int8_scale_term	0
-    #     9	activation_type	0
+    #     0	    num_output	        0	weight bias
+    #     1	    kernel_w	        0
+    #     2	    dilation_w	        1
+    #     3	    stride_w	        1
+    #     4	    pad_left	        0
+    #     5	    bias_term	        0
+    #     6	    weight_data_size	0
+    #     8	    int8_scale_term	    0
+    #     9	    activation_type	    0
     #     10	activation_params	[ ]
     #     11	kernel_h	kernel_w
     #     12	dilation_h	dilation_w
@@ -380,7 +447,7 @@ def get_conv2d_mapping(in_dict):
     dilation_h, dilation_w = layer_config['dilation_rate']
     stride_h, stride_w = layer_config['strides']
     # TODO :: check use bias = False
-    bias_term = int(True) #int(layer_config['use_bias'])
+    bias_term = int(True)  # int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
 
@@ -450,7 +517,7 @@ def get_depthwiseconv2d_mapping(in_dict):
     dilation_h, dilation_w = layer_config['dilation_rate']
     stride_h, stride_w = layer_config['strides']
     # TODO Check use_bias=False
-    bias_term = int(True) #int(layer_config['use_bias'])
+    bias_term = int(True)  # int(layer_config['use_bias'])
     weight_data_size = np.prod(w.shape)
     int8_scale_term = 0
 
@@ -485,12 +552,9 @@ def get_depthwiseconv2d_mapping(in_dict):
     return parameter_mapping
 
 
-def get_batchnormalization_mapping(in_dict):
-    # BatchNorm   0   channels    0   slope   mean    variance    bias
-    #             1   eps 0.f
-
-    layer = in_dict['layer']
+def extract_normalization_weights(layer):
     layer_config = layer.get_config()
+
     if layer_config['scale'] and layer_config['center']:
         scale, beta, moving_mean, moving_variance = layer.get_weights()
     elif (not layer_config['scale']) and layer_config['center']:
@@ -505,18 +569,46 @@ def get_batchnormalization_mapping(in_dict):
         beta = 0 * moving_mean.flatten()
     else:
         assert False, "This branch was not verified"
+
+    return scale, beta, moving_mean, moving_variance
+
+
+def get_batchnormalization_mapping(in_dict):
+    # BatchNorm   0   channels    0   slope   mean    variance    bias
+    #             1   eps 0.f
+
+    layer = in_dict['layer']
+    scale, beta, moving_mean, moving_variance = extract_normalization_weights(layer)
     in_dict['weight_list'] += [scale.flatten(), moving_mean.flatten(),
-                               moving_variance.flatten(), beta.flatten(), ]
+                               moving_variance.flatten(), beta.flatten()]
 
     layer_output_shape = get_valid_shape(layer.output_shape)
     num_output = layer_output_shape[0][-1]
-    epsilon = layer_config['epsilon']
+    epsilon = layer.get_config()['epsilon']
 
     parameter_mapping = OrderedDict({0: num_output, 1: epsilon})
     return parameter_mapping
 
+
+def get_instancenormalization_mapping(in_dict):
+    # InstanceNorm      0   channels    0   gamma bias
+    #                   1   eps 0.f
+
+    layer = in_dict['layer']
+    scale, beta, moving_mean, moving_variance = extract_normalization_weights(layer)
+    in_dict['weight_list'] += [scale.flatten(), beta.flatten()]
+
+    layer_output_shape = get_valid_shape(layer.output_shape)
+    num_output = layer_output_shape[0][-1]
+    epsilon = layer.get_config()['epsilon']
+
+    parameter_mapping = OrderedDict({0: num_output, 1: epsilon})
+    return parameter_mapping
+
+
 def get_tanh_mapping(in_dict):
     return OrderedDict({})
+
 
 def get_clip_mapping(in_dict):
     # Clip	0	min	-FLT_MAX
@@ -527,6 +619,7 @@ def get_clip_mapping(in_dict):
     parameter_mapping[0] = float("{0:.7f}".format(float(layer_config['min_value'])))
     parameter_mapping[1] = float("{0:.7f}".format(float(layer_config['max_value'])))
     return parameter_mapping
+
 
 def get_relu_mapping(in_dict):
     # ReLU	0	slope	0.f
@@ -597,9 +690,7 @@ def get_concatenate_mapping(in_dict):
     return parameter_mapping
 
 
-def get_parameter_string(in_dict):
-    layer = in_dict['layer']
-    mapping_function_name = '_'.join(['get', str(type(layer).__name__).lower(), 'mapping'])
+def get_parameter_string(in_dict, mapping_function_name):
     mapping_function = globals()[mapping_function_name]
     parameter_mapping = mapping_function(in_dict)
     parameter_string = ' '.join([f'{key}={value}' for key, value in parameter_mapping.items()])
@@ -617,15 +708,15 @@ def get_model_string(model, magic_number, blob_set, string_list):
     return string_list
 
 
-def get_layer_string(in_dict):
+def get_layer_string(in_dict, export_shapes=False):
     batch_size = in_dict['batch_size']
     layer = in_dict['layer']
-    layer_type = get_layer_type(layer)
+    layer_type, mapping_function_name = get_layer_type(layer)
     layer_name = get_layer_name(layer)
 
     in_out_string, split_string, tensor_names = get_in_out_string(in_dict)
     blob_shape_string = get_blob_shape_string(layer, batch_size)
-    parameter_string = get_parameter_string(in_dict)
+    parameter_string = get_parameter_string(in_dict, mapping_function_name)
     array_key = str(in_dict['array_key'])
 
     # TODO :: autodetect line length
@@ -634,14 +725,19 @@ def get_layer_string(in_dict):
     assert len(layer_name) < max_line_length
 
     string_list = []
-    string_list.append(
-        f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
+
+    if export_shapes:
+        string_list.append(
+            f'{layer_type: <36}{layer_name: <36}{in_out_string} {array_key}={blob_shape_string} {parameter_string}')
+    else:
+        string_list.append(
+            f'{layer_type: <36}{layer_name: <36}{in_out_string} {parameter_string}')
     if split_string is not None:
         string_list.append(split_string)
     return string_list, layer_name, tensor_names
 
 
-def conver_model(model, debug=True):
+def conver_model(model, debug=True, export_shapes=False):
     # magic number: 7767517
     magic_number = 7767517
     # TODO :: clarify this
@@ -665,7 +761,7 @@ def conver_model(model, debug=True):
         config_dict = {'layer': layer, 'array_key': array_key, 'batch_size': batch_size,
                        'weight_list': [], 'model_output_names': model.output_names,
                        'split_info': split_info, 'outbound_dict': outbound_dict}
-        add_string, layer_name, tensor_names = export_function(config_dict)
+        add_string, layer_name, tensor_names = export_function(config_dict, export_shapes)
         weight_list += [[layer.__class__.__name__, config_dict['weight_list']]]
         string_list += add_string
         layer_name_list += [layer_name]
