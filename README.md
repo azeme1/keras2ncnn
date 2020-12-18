@@ -87,6 +87,6 @@ model = tf.keras.models.load_model("model.h5")
 model.save("saved_model")
 ```
 
-after that convert model.ckpt or 'model.pb' with following scripts
+after that convert 'model.ckpt' or 'model.pb' with following scripts
 * [https://github.com/Tencent/ncnn/tree/master/tools/mlir]
 * [https://github.com/Tencent/ncnn/tree/master/tools/tensorflow]
