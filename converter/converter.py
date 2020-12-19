@@ -291,7 +291,8 @@ def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation
 
 
 def get_deconv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
-    assert kernel_size != 1, 'This check this case separately'
+    if stride_size != 1:
+        assert (kernel_size != 1), 'This check this case separately'
 
     t_pad = (kernel_size - stride_size) + input_size * stride_size - output_size
     t_pad = max(t_pad, 0)
