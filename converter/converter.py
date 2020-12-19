@@ -60,8 +60,9 @@ def get_layer_type(layer):
             if 'training' in call_args:
                 if call_args['training'] in [1, True]:
                     type_mapping = 'InstanceNormalization'
-        except:
-            pass
+        except Exception as e_item:
+            print('Implicit Instance Normalization')
+            print(str(e_item))
     mapping_function_name = '_'.join(['get', str(type_mapping).lower(), 'mapping'])
     return layer_type_mapping[type_mapping], mapping_function_name
 
@@ -149,6 +150,7 @@ def get_reshape_mapping(in_dict):
     else:
         raise NotImplemented
     return parameter_mapping
+
 
 def get_flatten_mapping(in_dict):
     # Reshape     0	w	-233
@@ -289,7 +291,9 @@ def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation
 
 
 def get_deconv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
-    assert kernel_size != 1, 'This check this case separately'
+    if stride_size != 1:
+        # This should be covered by the accurate unit tests
+        assert (kernel_size != 1), 'This check this case separately'
 
     t_pad = (kernel_size - stride_size) + input_size * stride_size - output_size
     t_pad = max(t_pad, 0)
@@ -372,6 +376,7 @@ def get_conv2dtranspose_mapping(in_dict):
                                      })
     return parameter_mapping
 
+
 def get_dense_mapping(in_dict):
     # InnerProduct	0	num_output	        0	weight bias
     #               1	bias_term	        0
@@ -393,7 +398,6 @@ def get_dense_mapping(in_dict):
         w = np.transpose(w, (1, 0))
         b = np.zeros((f_size,))
         in_dict['weight_list'] += [w.flatten(), b.flatten()]
-
 
     num_output = layer_config['units']
     # TODO :: check use bias = False
@@ -698,13 +702,8 @@ def get_parameter_string(in_dict, mapping_function_name):
 
 
 def get_model_string(model, magic_number, blob_set, string_list):
-    # [layer count] [blob count]
-    # layer_count = len(string_list)
-    # blob_count = len(blob_set)
     layer_count, blob_count = blob_set
-    string_list = []
-    string_list.append(str(magic_number))
-    string_list.append(f'{layer_count} {blob_count}')
+    string_list = [str(magic_number), f'{layer_count} {blob_count}']
     return string_list
 
 
@@ -742,7 +741,7 @@ def conver_model(model, debug=True, export_shapes=False):
     magic_number = 7767517
     # TODO :: clarify this
     array_key = '-23330'
-    batch_size = 3
+    batch_size = 1
     weight_list = []
 
     split_info = {}
@@ -756,12 +755,10 @@ def conver_model(model, debug=True, export_shapes=False):
     outbound_dict, index_dict = get_outbound_nodes(model.get_config())
 
     for layer in tqdm(model.layers):
-        export_function_name = 'get_layer_string'
-        export_function = globals()[export_function_name]
         config_dict = {'layer': layer, 'array_key': array_key, 'batch_size': batch_size,
                        'weight_list': [], 'model_output_names': model.output_names,
                        'split_info': split_info, 'outbound_dict': outbound_dict}
-        add_string, layer_name, tensor_names = export_function(config_dict, export_shapes)
+        add_string, layer_name, tensor_names = get_layer_string(config_dict, export_shapes)
         weight_list += [[layer.__class__.__name__, config_dict['weight_list']]]
         string_list += add_string
         layer_name_list += [layer_name]

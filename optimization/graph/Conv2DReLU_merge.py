@@ -32,7 +32,7 @@ def detect_transform_Conv2DReLU(keras_config):
     for i, item in enumerate(keras_config['layers']):
         if item['class_name'] == 'ReLU':
             if 'max_value' in item['config']:
-                if 'max_value' is not  None:
+                if 'max_value' is not None:
                     continue
             if 'negative_slope' in item['config']:
                 if 'negative_slope' > 0.:

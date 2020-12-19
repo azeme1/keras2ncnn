@@ -6,6 +6,7 @@ from tensorflow.keras.models import load_model
 
 import ncnn
 import numpy as np
+import cv2
 
 from converter.converter import conver_model
 from converter.model_adaptation import adapt_keras_model, convert_blob, clean_node_name
@@ -23,10 +24,10 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Conv2DTranspose import model_list
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
-# model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')]
-# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')]
-model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')]
-
+# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')] # code demo
+# model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
+# model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
+model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -92,14 +93,14 @@ for keras_model_in in model_list:
     frame = np.random.uniform(0, 255, size=target_shape[1:]).astype(np.uint8)
     mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_BGR, src_x, src_y, target_x, target_y)
 
-    mean = np.array([128] * 3)
-    std = 1. / np.array([128] * 3)
+    mean = np.array([0] * 3)
+    std = 1. / np.array([255.] * 3)
     mat_in.substract_mean_normalize(mean, std)
 
     # Check input
     keras_tensor_cmp = tensor4_ncnn2keras(mat_in)
     keras_tensor = keras_in = (frame[None, ...] - mean) * std
-    assert np.abs(keras_tensor - keras_tensor_cmp).sum() < 1.e-5, 'Bad Input Tensor!'
+    assert np.abs(keras_tensor - keras_tensor_cmp).mean() < 1.e-5, 'Bad Input Tensor!'
 
     net = ncnn.Net()
     net.load_param(out_config_path)
@@ -117,6 +118,7 @@ for keras_model_in in model_list:
     ex.input(ncnn_input_name, mat_in)
     mat_out = ncnn.Mat()
 
+    print('\n' + ('=' * 20) + 'Test mode from ./run_test.py' + ('=' * 20))
     print('\n' + ('=' * 20) + 'By Layer Comparison ' + ('=' * 20))
     for layer in adapted_keras_model.layers:
         layer_name = layer.name

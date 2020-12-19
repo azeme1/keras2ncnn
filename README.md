@@ -77,3 +77,16 @@ python3 keras2ncnn.py --model_path=model_zoo/segmentation/hair/model_000/CelebA_
 ### Thanx
 * [https://github.com/cvzakharchenko]
 * [https://github.com/nvoronetskiy]
+
+## Important note
+Sometimes good result can be achieved with Tensorflow conversion approach
+
+```
+import tensorflow as tf
+model = tf.keras.models.load_model("model.h5")
+model.save("saved_model")
+```
+
+after that convert 'model.ckpt' or 'model.pb' with following scripts
+* [https://github.com/Tencent/ncnn/tree/master/tools/mlir]
+* [https://github.com/Tencent/ncnn/tree/master/tools/tensorflow]
