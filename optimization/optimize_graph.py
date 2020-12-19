@@ -7,36 +7,43 @@ from optimization.graph.SeparableConv2D_split import check_SeparableConv2D_trans
     info_SeparableConv2D
 from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchNormalization, \
     apply_transform_Conv2DBatchNormalization, info_Conv2DBatchNormalization
-from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transform_Conv2DReLU, info_Conv2DReLU
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
 
-from optimization.graph.ReLU_max_split import check_ReLU_max_transfrom, \
-    apply_transform_ReLU_max, info_ReLU_max
+from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transform_Conv2DReLU, info_Conv2DReLU
+from optimization.graph.Conv2DSigmoid_merge import check_Conv2DSigmoid, apply_transform_Conv2DSigmoid, info_Conv2DSigmoid
+from optimization.graph.Conv2DActivation_merge import check_Conv2DActivation, apply_transform_Conv2DActivation, info_Conv2DActivation
+from optimization.graph.ReLU_max_split import check_ReLU_max_transfrom, apply_transform_ReLU_max, info_ReLU_max
 
 from optimization.graph.DropLayer import check_DropLayer, \
     apply_transform_DropLayer, info_DropLayer
 
 info_list = [info_DropLayer,
              info_ReLU_max,
-             # info_SeparableConv2D,
-             # info_Conv2DBatchNormalization,
-             # info_BatchNormalization_DepthwiseConv2D,
-             # info_Conv2DReLU
+             info_SeparableConv2D,
+             info_Conv2DBatchNormalization,
+             info_BatchNormalization_DepthwiseConv2D,
+             info_Conv2DReLU,
+             info_Conv2DSigmoid,
+             info_Conv2DActivation,
              ]
 check_transform_list = [check_DropLayer,
                         check_ReLU_max_transfrom,
-                        # check_SeparableConv2D_transfrom,
-                        # check_Conv2DBatchNormalization,
-                        # check_BatchNormalization_DepthwiseConv2D,
-                        # check_Conv2DReLU
+                        check_SeparableConv2D_transfrom,
+                        check_Conv2DBatchNormalization,
+                        check_BatchNormalization_DepthwiseConv2D,
+                        check_Conv2DReLU,
+                        check_Conv2DSigmoid,
+                        check_Conv2DActivation,
                         ]
 apply_transform_list = [apply_transform_DropLayer,
                         apply_transform_ReLU_max,
-                        # apply_transform_SeparableConv2D,
-                        # apply_transform_Conv2DBatchNormalization,
-                        # apply_transform_BatchNormalization_DepthwiseConv2D,
-                        # apply_transform_Conv2DReLU
+                        apply_transform_SeparableConv2D,
+                        apply_transform_Conv2DBatchNormalization,
+                        apply_transform_BatchNormalization_DepthwiseConv2D,
+                        apply_transform_Conv2DReLU,
+                        apply_transform_Conv2DSigmoid,
+                        apply_transform_Conv2DActivation,
                         ]
 
 
