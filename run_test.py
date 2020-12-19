@@ -12,7 +12,7 @@ from converter.converter import conver_model
 from converter.model_adaptation import adapt_keras_model, convert_blob, clean_node_name
 from optimization.optimize_graph import apply_transformations, check_transform
 from unit_test.helper import save_config
-from unit_test.single_layer.Activation import model_list
+# from unit_test.single_layer.Activation import model_list
 # from unit_test.single_layer.Conv2D import model_list
 # from unit_test.single_layer.DepthwiseConv2D import model_list
 # from unit_test.single_layer.Normalization import model_list
@@ -27,7 +27,7 @@ from unit_test.single_layer.Activation import model_list
 # model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
-# model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
+model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -118,6 +118,7 @@ for keras_model_in in model_list:
     ex.input(ncnn_input_name, mat_in)
     mat_out = ncnn.Mat()
 
+    print('\n' + ('=' * 20) + 'Test mode from ./run_test.py' + ('=' * 20))
     print('\n' + ('=' * 20) + 'By Layer Comparison ' + ('=' * 20))
     for layer in adapted_keras_model.layers:
         layer_name = layer.name
