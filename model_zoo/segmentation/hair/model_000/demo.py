@@ -29,9 +29,9 @@ keras_out = keras_model.predict(keras_in)[0, ..., 0]
 
 ex = net.create_extractor()
 ex.set_num_threads(num_threads)
-ex.input("data_0", mat_in)
+ex.input("data", mat_in)
 mat_out = ncnn.Mat()
-ex.extract("output_3lidentity_0", mat_out)
+ex.extract("softmax_convlsigmoid_0", mat_out)
 ncnn_out = np.array(mat_out)
 ncnn_out = np.transpose(ncnn_out, (1, 2, 0))
 
