@@ -18,11 +18,13 @@ src_y, src_x = frame.shape[:2]
 
 
 input_data = cv2.resize(frame, (target_x, target_y))
-mean_value = input_data.reshape((-1, 3)).mean(0)
-inv_std_value = 1. / (1.e-5 + input_data.reshape((-1, 3)).std(0))
+mean_value = input_data.reshape((-1, 3)).mean(0)[::-1]
+inv_std_value = 1. / (1.e-5 + input_data.reshape((-1, 3)).std(0))[::-1]
 
 mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_RGB, src_x, src_y, target_x, target_y)
 mat_in.substract_mean_normalize(mean_value, inv_std_value)
+
+mean, std = cv2.meanStdDev(frame)
 
 keras_in = (np.array(input_data)[None] - mean_value)*inv_std_value
 keras_out = keras_model.predict(keras_in)[0, ..., 0]
