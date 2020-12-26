@@ -24,10 +24,10 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Conv2DTranspose import model_list
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
-# model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')] # code demo
+model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
-model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
+# model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
