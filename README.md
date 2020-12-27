@@ -1,6 +1,5 @@
 # keras2ncnn
-## Description
-Export Keras model to Tencent/NCNN.
+## Export Keras model to Tencent/NCNN.
 ### Supported Keras layers and Features
 * Functional Model API (the Sequential and Model as Layer features should be transformed in to flat Functional API Model)
 * InputLayer
