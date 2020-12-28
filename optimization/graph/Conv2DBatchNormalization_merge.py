@@ -82,6 +82,12 @@ def detect_transform_Conv2DBatchNormalization(keras_config):
                 _activation = keras_config['layers'][index_dict[in_node_name]]['config']['activation']
                 if not (_activation in ['linear']):
                     continue
+                try:
+                    if item['inbound_nodes'][0][0][-1]['training'] in [1, True]:
+                        continue
+                except Exception as e_item:
+                    print(str(e_item))
+
                 if len(outbound_dict[in_node_name]) == 1:
                     index_list.append(i)
     return index_list, index_dict
