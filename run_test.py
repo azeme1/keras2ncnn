@@ -24,7 +24,8 @@ from unit_test.helper import save_config
 # from unit_test.single_layer.Conv2DTranspose import model_list
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
-model_list = [load_model('./model_zoo/segmentation/hair/model_000/CelebA_PrismaNet_256_hair_seg_model_opt_001.hdf5')] # code demo
+from unit_test.simple_model.MultipleInput import model_list
+# model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
 # model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
@@ -87,21 +88,6 @@ for keras_model_in in model_list:
     out_config_path, out_weights_path = save_config(string_list, weight_list, adapted_keras_model.name, export_path,
                                                     debug=False)
 
-    target_shape = (1,) + keras_model.input_shape[1:]
-    src_x, src_y = target_x, target_y = target_shape[1:3]
-
-    frame = np.random.uniform(0, 255, size=target_shape[1:]).astype(np.uint8)
-    mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_BGR, src_x, src_y, target_x, target_y)
-
-    mean = np.array([0] * 3)
-    std = 1. / np.array([255.] * 3)
-    mat_in.substract_mean_normalize(mean, std)
-
-    # Check input
-    keras_tensor_cmp = tensor4_ncnn2keras(mat_in)
-    keras_tensor = keras_in = (frame[None, ...] - mean) * std
-    assert np.abs(keras_tensor - keras_tensor_cmp).mean() < 1.e-5, 'Bad Input Tensor!'
-
     net = ncnn.Net()
     net.load_param(out_config_path)
     net.load_model(out_weights_path)
@@ -111,21 +97,41 @@ for keras_model_in in model_list:
     ex = net.create_extractor()
     ex.set_num_threads(num_threads)
 
-    assert len(adapted_keras_model.inputs) == 1, "MultiInput is not supported!"
+    if type(keras_model.input_shape) != list:
+        target_shape_list = [target_shape]
+    else:
+        target_shape_list = keras_model.input_shape
 
-    ncnn_input_name = clean_node_name(adapted_keras_model.inputs[0].name)
-    ...
-    ex.input(ncnn_input_name, mat_in)
-    mat_out = ncnn.Mat()
+    keras_in_list = []
+    for input_index, target_shape in enumerate(target_shape_list):
+        target_shape = (1,) + target_shape[1:]
+        src_x, src_y = target_x, target_y = target_shape[1:3]
+
+        frame = np.random.uniform(0, 255, size=target_shape[1:]).astype(np.uint8)
+        mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_BGR, src_x, src_y, target_x, target_y)
+
+        mean = np.array([0] * 3)
+        std = 1. / np.array([255.] * 3)
+        mat_in.substract_mean_normalize(mean, std)
+
+        # Check input
+        keras_tensor_cmp = tensor4_ncnn2keras(mat_in)
+        keras_tensor = (frame[None, ...] - mean) * std
+        keras_in_list.append(keras_tensor)
+        assert np.abs(keras_tensor - keras_tensor_cmp).mean() < 1.e-5, 'Bad Input Tensor!'
+
+        ncnn_input_name = clean_node_name(adapted_keras_model.inputs[input_index].name)
+        ex.input(ncnn_input_name, mat_in)
 
     print('\n' + ('=' * 20) + 'Test mode from ./run_test.py' + ('=' * 20))
     print('\n' + ('=' * 20) + 'By Layer Comparison ' + ('=' * 20))
+    mat_out = ncnn.Mat()
     for layer in adapted_keras_model.layers:
         layer_name = layer.name
         layer_output = convert_blob(layer.output)
 
         test_keras_model = K.function(adapted_keras_model.inputs, adapted_keras_model.get_layer(layer_name).output)
-        keras_output = test_keras_model(keras_in)
+        keras_output = test_keras_model(keras_in_list)
 
         for item, tensor_true in zip(layer_output, convert_blob(keras_output)):
 

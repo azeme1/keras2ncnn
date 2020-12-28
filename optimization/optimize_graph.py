@@ -60,7 +60,10 @@ def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
 def check_transform(src_model, dst_model, debug=True):
     if debug:
         print("Checking Transfer :: Random value check")
-    x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
+    if type(src_model.input_shape) == list:
+        x_in = [np.random.uniform(size=(1,) + item[1:]) for item in src_model.input_shape]
+    else:
+        x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
     dst_output = dst_model.predict(x_in)
     src_output = src_model.predict(x_in)
     if isinstance(dst_output,list):
