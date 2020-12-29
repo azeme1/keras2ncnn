@@ -4,6 +4,7 @@
 
 import numpy as np
 from tqdm import tqdm
+from functools import partial
 from collections import OrderedDict
 
 from converter.model_adaptation import get_outbound_nodes, convert_blob, clean_node_name
@@ -16,7 +17,8 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
-                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
+                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'ReflectPadding2D': 'Padding',
+                      'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
                       'Dense': 'InnerProduct'}
@@ -171,7 +173,7 @@ def get_inputlayer_mapping(in_dict):
     return parameter_mapping
 
 
-def get_zeropadding2d_mapping(in_dict):
+def get_padding_mapping(in_dict, pad_type=0):
     #   Padding
     #   0	top	0
     #	1	bottom	0
@@ -182,16 +184,21 @@ def get_zeropadding2d_mapping(in_dict):
     #   6	per_channel_pad_data_size	0
     #   7	front	0
     #   8	behind	0
+    # int type; -> pad_type // 0=CONSTANT 1=REPLICATE 2=REFLECT
     layer_config = in_dict['layer'].get_config()
     per_channel_pad_data_size = 0
     front = behind = 0
-    pad_type = 0
     pad_value = float("{0:.2f}".format(0.))
     top_pad, bottom_pad, left_pad, right_pad = np.array(layer_config['padding']).flatten()
     parameter_mapping = OrderedDict({0: top_pad, 1: bottom_pad, 2: left_pad, 3: right_pad,
                                      4: pad_type, 5: pad_value, 6: per_channel_pad_data_size,
                                      7: front, 8: behind})
     return parameter_mapping
+
+
+get_zeropadding2d_mapping = partial(get_padding_mapping, pad_type=0)
+
+get_reflectpadding2d_mapping = partial(get_padding_mapping, pad_type=2)
 
 
 def get_pooling2d_mapping(in_dict):

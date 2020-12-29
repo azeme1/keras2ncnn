@@ -86,7 +86,7 @@ def apply_transformations(in_model):
         if check_func(src_model_config):
             if src_model is None:
                 print('Preparation for the transformation...\n')
-                src_model = Model.from_config(in_model.get_config())
+                src_model = Model.from_config(in_model.get_config(), custom_objects=extra_custom_objects)
                 transfer_weights(in_model, src_model, {})
                 check_transform(in_model, src_model)
 
