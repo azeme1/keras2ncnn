@@ -5,6 +5,17 @@ import imageio
 import cv2
 import tensorflow as tf
 
+
+def fix_none_in_shape(in_shape):
+    default_shape = (1, 32, 32, 32)
+    out_shape = []
+    for src, default in zip(in_shape, default_shape):
+        if src is None:
+            out_shape.append(default)
+        else:
+            out_shape.append(src)
+    return tuple(out_shape)
+
 def clean_name(in_str):
     out_str = "".join(in_str.split()).replace('(', '').replace(')', '').replace(',', 'x').strip()
     return out_str

@@ -18,6 +18,7 @@ from optimization.graph.ReLU_max_split import check_ReLU_max_transfrom, apply_tr
 from optimization.graph.DropLayer import check_DropLayer, \
     apply_transform_DropLayer, info_DropLayer
 
+
 info_list = [info_DropLayer,
              info_ReLU_max,
              info_SeparableConv2D,
@@ -63,7 +64,8 @@ def check_transform(src_model, dst_model, debug=True):
     if type(src_model.input_shape) == list:
         x_in = [np.random.uniform(size=(1,) + item[1:]) for item in src_model.input_shape]
     else:
-        x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
+        _shape = tuple(32 if item is None else item for item in src_model.input_shape[1:])
+        x_in = np.random.uniform(size=(1,) + _shape)
     dst_output = dst_model.predict(x_in)
     src_output = src_model.predict(x_in)
     if isinstance(dst_output,list):

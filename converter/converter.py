@@ -169,7 +169,13 @@ def get_inputlayer_mapping(in_dict):
     #       2	c	0
     layer_config = in_dict['layer'].get_config()
     N, H, W, C = layer_config['batch_input_shape']
-    parameter_mapping = OrderedDict({0: W, 1: H, 2: C})
+    parameter_mapping = OrderedDict()
+    if W is not None:
+        parameter_mapping[0] = W
+    if H is not None:
+        parameter_mapping[1] = H
+    if C is not None:
+        parameter_mapping[2] = C
     return parameter_mapping
 
 

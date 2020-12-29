@@ -13,6 +13,7 @@ from converter.model_adaptation import adapt_keras_model, convert_blob, clean_no
 from optimization.optimize_graph import apply_transformations, check_transform
 from unit_test.helper import save_config
 from extra_layers.CustomObjects import extra_custom_objects
+from unit_test.helper import fix_none_in_shape
 # from unit_test.single_layer.Activation import model_list
 # from unit_test.single_layer.Conv2D import model_list
 # from unit_test.single_layer.DepthwiseConv2D import model_list
@@ -105,19 +106,24 @@ for keras_model_in in model_list:
 
     keras_in_list = []
     for input_index, target_shape in enumerate(target_shape_list):
-        target_shape = (1,) + target_shape[1:]
+        target_shape = fix_none_in_shape(target_shape)
         src_x, src_y = target_x, target_y = target_shape[1:3]
 
-        frame = np.random.uniform(0, 255, size=target_shape[1:]).astype(np.uint8)
-        mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_BGR, src_x, src_y, target_x, target_y)
+        if target_shape[-1] == 3:
+            frame = np.random.uniform(0, 255, size=fix_none_in_shape(target_shape)[1:]).astype(np.uint8)
+            mat_in = ncnn.Mat.from_pixels_resize(frame, ncnn.Mat.PixelType.PIXEL_BGR, src_x, src_y, target_x, target_y)
+            mean = np.array([0] * 3)
+            std = 1. / np.array([255.] * 3)
+            mat_in.substract_mean_normalize(mean, std)
+            keras_tensor = (frame[None, ...] - mean) * std
+        else:
+            frame = np.random.uniform(-1., +1., size=fix_none_in_shape(target_shape)).astype(np.float32)
+            mat_in = ncnn.Mat(np.transpose(frame, (0, 3, 1, 2))[0])
+            keras_tensor = np.transpose(np.array(mat_in)[None, ...], (0, 2, 3, 1))
 
-        mean = np.array([0] * 3)
-        std = 1. / np.array([255.] * 3)
-        mat_in.substract_mean_normalize(mean, std)
 
         # Check input
         keras_tensor_cmp = tensor4_ncnn2keras(mat_in)
-        keras_tensor = (frame[None, ...] - mean) * std
         keras_in_list.append(keras_tensor)
         assert np.abs(keras_tensor - keras_tensor_cmp).mean() < 1.e-5, 'Bad Input Tensor!'
 
