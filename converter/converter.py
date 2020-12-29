@@ -14,6 +14,8 @@ activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4, 'tanh': 5}
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
                       'MaxPooling2D': 'Pooling', 'AveragePooling2D': 'Pooling',
                       'MaxPool2D': 'Pooling', 'AvgPool2D': 'Pooling',
+                      'GlobalMaxPooling2D': 'Pooling', 'GlobalAveragePooling2D': 'Pooling',
+                      'GlobalMaxPool2D': 'Pooling', 'GlobalAvgPool2D': 'Pooling',
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
@@ -207,7 +209,7 @@ get_zeropadding2d_mapping = partial(get_padding_mapping, pad_type=0)
 get_reflectpadding2d_mapping = partial(get_padding_mapping, pad_type=2)
 
 
-def get_pooling2d_mapping(in_dict):
+def get_pooling2d_mapping(in_dict, pooling_type, global_pooling = 0):
     #     Pooling  ::  from  C++   enum PoolMethod { PoolMethod_MAX = 0, PoolMethod_AVE = 1 };
     #       0	pooling_type	0
     #       1	kernel_w	0
@@ -221,34 +223,27 @@ def get_pooling2d_mapping(in_dict):
     #       4	global_pooling	0
     #       5	pad_mode	0
     layer_config = in_dict['layer'].get_config()
-    kernel_h, kernel_w = layer_config['pool_size']
-    stride_h, stride_w = layer_config['strides']
+    if global_pooling == 0:
+        kernel_h, kernel_w = layer_config['pool_size']
+        stride_h, stride_w = layer_config['strides']
 
-    pad_left = pad_right = pad_bottom = pad_top = 0
-
-    pad_mode = 0
-    global_pooling = 0
-    # assert layer_config['padding'] == 'same'
-    if in_dict['layer'].__class__.__name__ in ['MaxPool2D', 'MaxPooling2D']:
-        pooling_type = 0
-    elif in_dict['layer'].__class__.__name__ in ['AvgPool2D', 'AveragePooling2D']:
-        # TODO :: Check AvgPool2d enum
-        pooling_type = 1
-    else:
-        assert False, f"Unsupported Layer {in_dict['layer']}"
-
-    parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
+        pad_left = pad_right = pad_bottom = pad_top = 0
+        pad_mode = 0
+        parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
                                      4: global_pooling, 5: pad_mode,
                                      11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
+    else:
+        parameter_mapping = OrderedDict({0: pooling_type, 4: global_pooling})
     return parameter_mapping
 
 
-def get_maxpooling2d_mapping(in_dict):
-    return get_pooling2d_mapping(in_dict)
+get_maxpooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=0, global_pooling=0)
 
+get_averagepooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=1, global_pooling=0)
 
-def get_averagepooling2d_mapping(in_dict):
-    return get_pooling2d_mapping(in_dict)
+get_globalmaxpooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=0, global_pooling=1)
+
+get_globalaveragepooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=1, global_pooling=1)
 
 
 def get_multiply_mapping(in_dict):
