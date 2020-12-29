@@ -23,7 +23,8 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
-                      'Dense': 'InnerProduct'}
+                      'Dense': 'InnerProduct',
+                      'Sqrt': 'UnaryOp'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -163,6 +164,33 @@ def get_flatten_mapping(in_dict):
     #             3	permute	0
     parameter_mapping = OrderedDict({0: -1, 3: 1})
     return parameter_mapping
+
+
+def get_unaryop_mapping(in_dict, optype):
+    # enum OperationType
+    # {
+    #     Operation_ABS = 0,
+    #     Operation_NEG = 1,
+    #     Operation_FLOOR = 2,
+    #     Operation_CEIL = 3,
+    #     Operation_SQUARE = 4,
+    #     Operation_SQRT = 5,
+    #     Operation_RSQRT = 6,
+    #     Operation_EXP = 7,
+    #     Operation_LOG = 8,
+    #     Operation_SIN = 9,
+    #     Operation_COS = 10,
+    #     Operation_TAN = 11,
+    #     Operation_ASIN = 12,
+    #     Operation_ACOS = 13,
+    #     Operation_ATAN = 14,
+    #     Operation_RECIPROCAL = 15,
+    #     Operation_TANH = 16
+    # };
+    parameter_mapping = OrderedDict({0: optype})
+    return parameter_mapping
+
+get_sqrt_mapping = partial(get_unaryop_mapping, optype=5)
 
 
 def get_inputlayer_mapping(in_dict):

@@ -24,9 +24,13 @@ from unit_test.helper import fix_none_in_shape
 # from unit_test.single_layer.Dense import model_list
 # from unit_test.single_layer.Merge import model_list
 # from unit_test.single_layer.Conv2DTranspose import model_list
+from unit_test.single_layer.UnaryOp import model_list
+
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
-from unit_test.simple_model.MultipleInput import model_list
+# from unit_test.simple_model.MultipleInput import model_list
+# model_list = [load_model('model_zoo/tmp/encoder.hdf5', custom_objects=extra_custom_objects)]
+# model_list = [load_model('model_zoo/tmp/decoder.hdf5', custom_objects=extra_custom_objects)]
 # model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
