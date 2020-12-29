@@ -16,9 +16,11 @@ def fix_none_in_shape(in_shape):
             out_shape.append(src)
     return tuple(out_shape)
 
+
 def clean_name(in_str):
     out_str = "".join(in_str.split()).replace('(', '').replace(')', '').replace(',', 'x').strip()
     return out_str
+
 
 def tf_random_seed():
     if tf.__version__.split('.')[0] == '1':
@@ -26,18 +28,25 @@ def tf_random_seed():
     else:
         tf.random.set_seed(7)
 
+
+def np_random_seed():
+    np.random.seed(7)
+
+
 def get_test_item_zero_one(target_shape):
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'', 'unit_test_data/person_001_1024x1204.jpg')
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '', 'unit_test_data/person_001_1024x1204.jpg')
     frame_data = imageio.imread(file_path)
-    frame_data = cv2.resize(frame_data, tuple(reversed(target_shape[:2])))/255.
-    return frame_data[None,...]
+    frame_data = cv2.resize(frame_data, tuple(reversed(target_shape[:2]))) / 255.
+    return frame_data[None, ...]
+
 
 def get_test_item_mean_std(target_shape):
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'', 'unit_test_data/person_001_1024x1204.jpg')
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '', 'unit_test_data/person_001_1024x1204.jpg')
     frame_data = imageio.imread(file_path)
-    frame_data = cv2.resize(frame_data, tuple(reversed(target_shape[:2])))/255.
+    frame_data = cv2.resize(frame_data, tuple(reversed(target_shape[:2]))) / 255.
     frame_data = (frame_data - frame_data.mean()) / frame_data.std()
-    return frame_data[None,...]
+    return frame_data[None, ...]
+
 
 def save_layer_unit_test(model, model_name, root_folder, inference_mode, get_test_item, dtype=np.float32):
     target_shape = model.input_shape[1:3]
@@ -65,6 +74,7 @@ def save_layer_unit_test(model, model_name, root_folder, inference_mode, get_tes
         if inference_mode == 'NCHW':
             y_out = np.transpose(y_out, (0, 3, 1, 2))
         y_out.astype(dtype).tofile(layer_unit_test_path)
+
 
 def save_config(string_list, weight_list, model_name, root_folder, dtype=np.float32, debug=True):
     out_config_path = os.path.join(root_folder, '', f'{model_name}.param')
