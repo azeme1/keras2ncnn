@@ -12,6 +12,7 @@ from converter.converter import conver_model
 from converter.model_adaptation import adapt_keras_model, convert_blob, clean_node_name
 from optimization.optimize_graph import apply_transformations, check_transform
 from unit_test.helper import save_config
+from extra_layers.CustomObjects import extra_custom_objects
 # from unit_test.single_layer.Activation import model_list
 # from unit_test.single_layer.Conv2D import model_list
 # from unit_test.single_layer.DepthwiseConv2D import model_list
@@ -98,7 +99,7 @@ for keras_model_in in model_list:
     ex.set_num_threads(num_threads)
 
     if type(keras_model.input_shape) != list:
-        target_shape_list = [target_shape]
+        target_shape_list = [keras_model.input_shape]
     else:
         target_shape_list = keras_model.input_shape
 
