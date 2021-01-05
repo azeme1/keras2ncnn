@@ -24,7 +24,8 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
                       'Dense': 'InnerProduct',
-                      'Sqrt': 'UnaryOp'}
+                      'Sqrt': 'UnaryOp',
+                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -190,7 +191,30 @@ def get_unaryop_mapping(in_dict, optype):
     parameter_mapping = OrderedDict({0: optype})
     return parameter_mapping
 
+
 get_sqrt_mapping = partial(get_unaryop_mapping, optype=5)
+
+
+def get_binaryop_mapping(in_dict, optype):
+    # enum OperationType
+    # {
+    #     Operation_ADD = 0,
+    #     Operation_SUB = 1,
+    #     Operation_MUL = 2,
+    #     Operation_DIV = 3,
+    #     Operation_MAX = 4,
+    #     Operation_MIN = 5,
+    #     Operation_POW = 6,
+    #     Operation_RSUB = 7,
+    #     Operation_RDIV = 8
+    # };
+    parameter_mapping = OrderedDict({0: optype})
+    return parameter_mapping
+
+
+get_subtract_mapping = partial(get_binaryop_mapping, optype=1)
+
+get_div_mapping = partial(get_binaryop_mapping, optype=3)
 
 
 def get_inputlayer_mapping(in_dict):
@@ -237,7 +261,7 @@ get_zeropadding2d_mapping = partial(get_padding_mapping, pad_type=0)
 get_reflectpadding2d_mapping = partial(get_padding_mapping, pad_type=2)
 
 
-def get_pooling2d_mapping(in_dict, pooling_type, global_pooling = 0):
+def get_pooling2d_mapping(in_dict, pooling_type, global_pooling=0):
     #     Pooling  ::  from  C++   enum PoolMethod { PoolMethod_MAX = 0, PoolMethod_AVE = 1 };
     #       0	pooling_type	0
     #       1	kernel_w	0
@@ -258,8 +282,8 @@ def get_pooling2d_mapping(in_dict, pooling_type, global_pooling = 0):
         pad_left = pad_right = pad_bottom = pad_top = 0
         pad_mode = 0
         parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
-                                     4: global_pooling, 5: pad_mode,
-                                     11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
+                                         4: global_pooling, 5: pad_mode,
+                                         11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
     else:
         parameter_mapping = OrderedDict({0: pooling_type, 4: global_pooling})
     return parameter_mapping

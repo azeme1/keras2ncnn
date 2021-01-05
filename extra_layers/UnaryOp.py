@@ -13,5 +13,4 @@ class RSqrt(ReLU):
 @tf_export('keras.layers.Sqrt')
 class Sqrt(ReLU):
   def call(self, inputs):
-    epsilon = 1e-5
-    return K.sqrt(inputs + epsilon)
+    return K.sqrt(inputs)

@@ -24,13 +24,19 @@ from unit_test.helper import fix_none_in_shape
 # from unit_test.single_layer.Dense import model_list
 # from unit_test.single_layer.Merge import model_list
 # from unit_test.single_layer.Conv2DTranspose import model_list
-from unit_test.single_layer.UnaryOp import model_list
+# from unit_test.single_layer.UnaryOp import model_list
+# from unit_test.single_layer.BinaryOp import model_list
 
 # from unit_test.simple_model.EncoderDecoder import model_list
 # from unit_test.simple_model.UNet import model_list
 # from unit_test.simple_model.MultipleInput import model_list
-# model_list = [load_model('model_zoo/tmp/encoder.hdf5', custom_objects=extra_custom_objects)]
-# model_list = [load_model('model_zoo/tmp/decoder.hdf5', custom_objects=extra_custom_objects)]
+# from unit_test.simple_model.Adain import model_list
+
+# model_list = [load_model('unit_test_output/encoder.hdf5', custom_objects=extra_custom_objects),
+#               load_model('unit_test_output/decoder.hdf5', custom_objects=extra_custom_objects),
+#               load_model('unit_test_output/adain.hdf5', custom_objects=extra_custom_objects),
+#               ]
+model_list = [load_model('unit_test_output/keras_arbitrary_style_transfer_fixed.hdf5', custom_objects=extra_custom_objects)]
 # model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
@@ -121,8 +127,8 @@ for keras_model_in in model_list:
             mat_in.substract_mean_normalize(mean, std)
             keras_tensor = (frame[None, ...] - mean) * std
         else:
-            frame = np.random.uniform(-1., +1., size=fix_none_in_shape(target_shape)).astype(np.float32)
-            mat_in = ncnn.Mat(np.transpose(frame, (0, 3, 1, 2))[0])
+            frame = np.random.uniform(0., +1., size=fix_none_in_shape(target_shape))
+            mat_in = ncnn.Mat(np.transpose(frame, (0, 3, 1, 2))[0].astype(np.float32))
             keras_tensor = np.transpose(np.array(mat_in)[None, ...], (0, 2, 3, 1))
 
 
@@ -150,6 +156,7 @@ for keras_model_in in model_list:
             ex.extract(tensor_name, mat_out)
 
             tensor_exp = tensor4_ncnn2keras(mat_out)
+            print(tensor_true.shape, tensor_exp.shape)
             error_exp = np.abs(tensor_true - tensor_exp).mean()
             print(f'Layer - {layer_name} :: {error_exp} < {str(error_th)} {error_exp < error_th}')
             ...

@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import numpy as np
+from unit_test.helper import fix_none_in_shape
 from tensorflow.keras.models import Model
 
 from extra_layers.CustomObjects import extra_custom_objects
@@ -62,7 +63,7 @@ def check_transform(src_model, dst_model, debug=True):
     if debug:
         print("Checking Transfer :: Random value check")
     if type(src_model.input_shape) == list:
-        x_in = [np.random.uniform(size=(1,) + item[1:]) for item in src_model.input_shape]
+        x_in = [np.random.uniform(size=fix_none_in_shape(item)) for item in src_model.input_shape]
     else:
         _shape = tuple(32 if item is None else item for item in src_model.input_shape[1:])
         x_in = np.random.uniform(size=(1,) + _shape)
