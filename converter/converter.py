@@ -25,7 +25,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
                       'Dense': 'InnerProduct',
                       'Sqrt': 'UnaryOp',
-                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp'}
+                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp', 'Interp': 'Interp'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -279,7 +279,22 @@ def get_pooling2d_mapping(in_dict, pooling_type, global_pooling=0):
         kernel_h, kernel_w = layer_config['pool_size']
         stride_h, stride_w = layer_config['strides']
 
-        pad_left = pad_right = pad_bottom = pad_top = 0
+        layer = in_dict['layer']
+        layer_input_shape = get_valid_shape(layer.input_shape)
+        layer_output_shape = get_valid_shape(layer.output_shape)
+        input_y_size, input_x_size = layer_input_shape[0][1:3]
+        output_y_size, output_x_size = layer_output_shape[0][1:3]
+
+        if kernel_h == stride_h:
+            pad_bottom = pad_top = 0
+        else:
+            pad_top, pad_bottom = get_pooling_padding(input_y_size, output_y_size, kernel_h, stride_h, None)
+
+        if kernel_w == stride_w:
+            pad_left = pad_right = 0
+        else:
+            pad_left, pad_right = get_pooling_padding(input_x_size, output_x_size, kernel_w, stride_w, None)
+
         pad_mode = 0
         parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
                                          4: global_pooling, 5: pad_mode,
@@ -332,16 +347,48 @@ def get_upsampling2d_mapping(in_dict):
             resize_type = 2
 
     height_scale, width_scale = layer_config['size']
-    parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.2f}".format(height_scale)),
-                                     2: float("{0:.2f}".format(width_scale)),
+    parameter_mapping = OrderedDict({0: resize_type, 1: int(height_scale),
+                                     2: int(width_scale),
                                      # TODO :: Clarify lines below
                                      # 3: <>, 4: <>
                                      })
     return parameter_mapping
 
+def get_interp_mapping(in_dict):
+    #     Interp
+    #     0	resize_type	0	 #FIXED TO 1 (nearest), 2 (bilinear)
+    #     1	height_scale	1.f
+    #     2	width_scale	1.f
+    #     3	output_height	0
+    #     4	output_width	0
+    layer_config = in_dict['layer'].get_config()
+    # resize_type = 1
+    # print(layer_config)
+    # if 'interpolation' in layer_config:
+    #     if layer_config['interpolation'] == 'bilinear':
+    # height_scale, width_scale = layer_config['size']
+    resize_type = 2
+    new_height, new_width = list(layer_config['new_size'])
+    parameter_mapping = OrderedDict({0: resize_type, 3: float("{0:.2f}".format(new_height)),
+                                     4: float("{0:.2f}".format(new_width)),
+                                     })
+    return parameter_mapping
+
 
 def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
-    t_pad = kernel_size + stride_size * (output_size - 1) - input_size
+    effective_kernel = kernel_size + 2*(dilation_rate - 1)
+    # t_pad = effective_kernel + stride_size * (output_size - 1) - input_size
+    t_pad = stride_size * output_size - input_size + effective_kernel - stride_size
+    t_pad = max(t_pad, 0)
+    f_pad = s_pad = 0
+    if t_pad > 0:
+        f_pad = t_pad // 2
+        s_pad = t_pad - f_pad
+    return f_pad, s_pad
+
+
+def get_pooling_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
+    t_pad = stride_size * output_size - input_size + kernel_size - stride_size
     t_pad = max(t_pad, 0)
     f_pad = s_pad = 0
     if t_pad > 0:
@@ -522,7 +569,7 @@ def get_conv2d_mapping(in_dict):
     activation_type = activation_type_dict[layer_config['activation']]
     # "TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
-    assert dilation_h == dilation_w == 1
+    # assert dilation_h == dilation_w == 1, layer_config
 
     if layer_config['padding'] == 'same':
         input_y_size, input_x_size = layer_input_shape[0][1:3]
