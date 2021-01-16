@@ -36,7 +36,11 @@ from unit_test.helper import fix_none_in_shape
 #               load_model('unit_test_output/decoder.hdf5', custom_objects=extra_custom_objects),
 #               load_model('unit_test_output/adain.hdf5', custom_objects=extra_custom_objects),
 #               ]
-model_list = [load_model('unit_test_output/keras_arbitrary_style_transfer_fixed.hdf5', custom_objects=extra_custom_objects)]
+# model_list = [load_model('unit_test_output/keras_arbitrary_style_transfer.hdf5', custom_objects=extra_custom_objects)]
+# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_50_ADE_20K.hdf5',
+#                          custom_objects=extra_custom_objects)]
+# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_101_voc12.hdf5',
+#                          custom_objects=extra_custom_objects)]
 # model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
@@ -83,6 +87,7 @@ def tensor4_ncnn2keras(mat_array):
     elif mat_array.dims == 1:
         return tensor_nchw2nhwc_2(mat_to_numpy_2(mat_array))
     else:
+        print(f'tensor4_ncnn2keras :: {mat_array.dims}')
         raise NotImplemented
 
 
@@ -143,6 +148,7 @@ for keras_model_in in model_list:
     print('\n' + ('=' * 20) + 'Test mode from ./run_test.py' + ('=' * 20))
     print('\n' + ('=' * 20) + 'By Layer Comparison ' + ('=' * 20))
     mat_out = ncnn.Mat()
+    inference_sum = 0
     for layer in adapted_keras_model.layers:
         layer_name = layer.name
         layer_output = convert_blob(layer.output)
@@ -156,7 +162,15 @@ for keras_model_in in model_list:
             ex.extract(tensor_name, mat_out)
 
             tensor_exp = tensor4_ncnn2keras(mat_out)
-            print(tensor_true.shape, tensor_exp.shape)
-            error_exp = np.abs(tensor_true - tensor_exp).mean()
-            print(f'Layer - {layer_name} :: {error_exp} < {str(error_th)} {error_exp < error_th}')
+            inference_sum += np.prod(tensor_true.shape)
+            try:
+                error_exp = np.abs(tensor_true - tensor_exp).mean()
+                print(f'Layer - {layer_name} inference MAE :: {error_exp} < {str(error_th)} {error_exp < error_th} ' +
+                      f"Keras::{tensor_true.shape} / NCNN::{tensor_exp.shape}")
+            except Exception as e_item:
+                print('-' * 10, layer_name, '-' * 10)
+                print(layer_name, str(e_item))
             ...
+
+    inference_sum_float32 = int(0.5 + (inference_sum*4.)/(2**20))
+    print(f'Estimated float32 inference memory :: {inference_sum_float32} MB')

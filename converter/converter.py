@@ -248,7 +248,7 @@ def get_padding_mapping(in_dict, pad_type=0):
     layer_config = in_dict['layer'].get_config()
     per_channel_pad_data_size = 0
     front = behind = 0
-    pad_value = float("{0:.2f}".format(0.))
+    pad_value = float("{0:.7f}".format(0.))
     top_pad, bottom_pad, left_pad, right_pad = np.array(layer_config['padding']).flatten()
     parameter_mapping = OrderedDict({0: top_pad, 1: bottom_pad, 2: left_pad, 3: right_pad,
                                      4: pad_type, 5: pad_value, 6: per_channel_pad_data_size,
@@ -347,31 +347,50 @@ def get_upsampling2d_mapping(in_dict):
             resize_type = 2
 
     height_scale, width_scale = layer_config['size']
-    parameter_mapping = OrderedDict({0: resize_type, 1: int(height_scale),
-                                     2: int(width_scale),
+    parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.7f}".format(height_scale)),
+                                     2: float("{0:.7f}".format(width_scale)),
                                      # TODO :: Clarify lines below
                                      # 3: <>, 4: <>
                                      })
     return parameter_mapping
 
-def get_interp_mapping(in_dict):
+def get_interp_mapping(in_dict, use_scale=False):
     #     Interp
     #     0	resize_type	0	 #FIXED TO 1 (nearest), 2 (bilinear)
     #     1	height_scale	1.f
     #     2	width_scale	1.f
     #     3	output_height	0
     #     4	output_width	0
-    layer_config = in_dict['layer'].get_config()
-    # resize_type = 1
-    # print(layer_config)
-    # if 'interpolation' in layer_config:
-    #     if layer_config['interpolation'] == 'bilinear':
-    # height_scale, width_scale = layer_config['size']
-    resize_type = 2
-    new_height, new_width = list(layer_config['new_size'])
-    parameter_mapping = OrderedDict({0: resize_type, 3: float("{0:.2f}".format(new_height)),
-                                     4: float("{0:.2f}".format(new_width)),
-                                     })
+    layer = in_dict['layer']
+    layer_config = layer.get_config()
+
+    # TODO Bilinear interpolation is not working properly!
+    # resize_type = 2 #'bilinear'
+    resize_type = 1
+
+    if use_scale:
+        # This one is not preferable due to the rounding errors
+        layer_input_shape = get_valid_shape(layer.input_shape)
+        # layer_output_shape = get_valid_shape(layer.output_shape)
+
+        input_y_size, input_x_size = layer_input_shape[0][1:3]
+        # output_y_size, output_x_size = layer_output_shape[0][1:3]
+
+        new_height, new_width = list(layer_config['new_size'])
+
+        height_scale = new_height/input_y_size
+        width_scale = new_width/input_x_size
+
+        parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.7f}".format(height_scale)),
+                                         2: float("{0:.7f}".format(width_scale)),
+                                         # TODO :: Looks like not working properly
+                                         # 3: <>, 4: <>
+                                         })
+    else:
+        new_height, new_width = list(layer_config['new_size'])
+        parameter_mapping = OrderedDict({0: resize_type, 3: str(int(new_height)),
+                                         4: str(int(new_width)),
+                                         })
     return parameter_mapping
 
 
