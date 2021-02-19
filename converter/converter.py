@@ -22,11 +22,12 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'ReflectPadding2D': 'Padding',
                       'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
-                      'Softmax': 'Softmax',
+                      'Softmax': 'Softmax', 'Swish': 'Swish',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
                       'Dense': 'InnerProduct',
                       'Sqrt': 'UnaryOp',
-                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp', 'Interp': 'Interp'}
+                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp', 'Interp': 'Interp',
+                      'MultiplyBroadCasted': 'BinaryOp'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -70,6 +71,15 @@ def get_layer_type(layer):
         except Exception as e_item:
             print('Implicit Instance Normalization')
             print(str(e_item))
+    elif type_mapping == 'Multiply':
+        _first = layer.input_shape[0]
+        check = all([len(i) == len(_first) for i in layer.input_shape[1:]])
+        if check:
+            check = all([all([j == k for j, k in zip(i, _first)]) for i in layer.input_shape[1:]])
+        if not check:
+            type_mapping = 'MultiplyBroadCasted'
+            assert len(layer.input_shape) == 2, "Only BinaryOp supported"
+
     mapping_function_name = '_'.join(['get', str(type_mapping).lower(), 'mapping'])
     return layer_type_mapping[type_mapping], mapping_function_name
 
@@ -214,7 +224,7 @@ def get_binaryop_mapping(in_dict, optype):
 
 
 get_subtract_mapping = partial(get_binaryop_mapping, optype=1)
-
+get_multiplybroadcasted_mapping = partial(get_binaryop_mapping, optype=2)
 get_div_mapping = partial(get_binaryop_mapping, optype=3)
 
 
@@ -778,6 +788,14 @@ def get_leakyrelu_mapping(in_dict):
     layer_config = layer.get_config()
     slope = float("{0:.7f}".format(layer_config['alpha']))
     parameter_mapping = OrderedDict({0: slope})
+    return parameter_mapping
+
+def get_swish_mapping(in_dict):
+    # Softmax	0	axis	0
+    # Fix BUG
+    fix_bug = 1
+    # NCNN
+    parameter_mapping = OrderedDict({})
     return parameter_mapping
 
 

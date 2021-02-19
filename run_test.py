@@ -45,9 +45,14 @@ from unit_test.helper import fix_none_in_shape
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
 # model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
-from tensorflow.keras.losses import mae
-model_list = [load_model('model_zoo/variouse/issue_00011/weights.h5', custom_objects={'bce_dice_loss': mae,
-                                                                                      'IOU': mae})]  #issue 11
+# from tensorflow.keras.losses import mae
+# model_list = [load_model('model_zoo/variouse/issue_00011/weights.h5', custom_objects={'bce_dice_loss': mae,
+#                                                                                       'IOU': mae})]  #issue 11
+
+from tensorflow.keras.initializers import RandomNormal
+extra_custom_objects['EfficientConv2DKernelInitializer'] = RandomNormal
+model_list = [load_model('model_zoo/variouse/issue_00010/WHENet_fixed.h5', custom_objects=extra_custom_objects)]  #issue 10
+
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
