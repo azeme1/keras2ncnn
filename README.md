@@ -7,14 +7,19 @@
 * Clip
 * Reshape/Flatten(converted with NCNN::Reshape)
 * MaxPooling2D/AveragePooling2D/MaxPool2D/AvgPool2D
-* BatchNormalization
+* GlobalMaxPooling2D/GlobalAveragePooling2D/GlobalMaxPool2D/GlobalAvgPool2D
+* ZeroPadding2D/ReflectPadding2D
+* BatchNormalization/InstanceNormalization
 * Conv2D/DepthwiseConv2D/SeparableConv2D(converted with split into NCNN::ConvolutionDepthWise->NCNN::Convolution)
 * Concatenate/Add/Multiply
 * UpSampling2D(nearest neighbour/bilinear)
-* BatchNormalization(In Progress :: Fusion with Convolution)
-* BatchNormalization(In Progress :: Fusion with Convolution)
-* ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
 * Conv2DTranspose(only for the even strides)
+
+### Supported Keras Layer Optimization
+* Conv2D/DepthwiseConv2D/Conv2DTranspose with BatchNormalization
+* BatchNormalization with Conv2D/DepthwiseConv2D/Conv2DTranspose(In Progress) 
+* ZeroPadding2D(In Progress :: Fusion with Convolution/Pooling)
+
 
 ### Unit tests is written  
 * Unit tests with  [Python NCNN inference - pyncnn](https://github.com/caishanli/pyncnn) installed 

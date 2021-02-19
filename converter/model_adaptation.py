@@ -88,6 +88,8 @@ def get_outbound_nodes(keras_model_config):
 
     for in_node_name in keras_model_config['output_layers']:
         _in_node_name = in_node_name[0]
+        if _in_node_name in outbound_nodes_dict:
+            continue
         outbound_nodes_dict[_in_node_name] = []
 
     return outbound_nodes_dict, layer_index_dict
@@ -150,7 +152,7 @@ def adapt_keras_model(keras_model, model_name):
         print("WARNING :: Multi Output Detected!!!")
     if is_multi_output(keras_model_config):
         adapted_model_config = split_output_nodes(keras_model_config)
-        adapted_model_config = rename_layer(adapted_model_config, keras_model_config['input_layers'][0][0], 'data')
+        # adapted_model_config = rename_layer(adapted_model_config, keras_model_config['input_layers'][0][0], 'data')
         # adapted_model_config = rename_layer(adapted_model_config, keras_model_config['output_layers'][0][0], 'output')
         adapted_keras_model = Model.from_config(adapted_model_config,  custom_objects=extra_custom_objects)
     else:

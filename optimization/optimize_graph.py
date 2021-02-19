@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import numpy as np
+from unit_test.helper import fix_none_in_shape
 from tensorflow.keras.models import Model
 
 from extra_layers.CustomObjects import extra_custom_objects
@@ -9,6 +10,8 @@ from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchN
     apply_transform_Conv2DBatchNormalization, info_Conv2DBatchNormalization
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
+from optimization.graph.Conv2DSoftmax_split import check_Conv2DSoftmax_transfrom, \
+    apply_transform_Conv2DSoftmax, info_Conv2DSoftmax
 
 from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transform_Conv2DReLU, info_Conv2DReLU
 from optimization.graph.Conv2DSigmoid_merge import check_Conv2DSigmoid, apply_transform_Conv2DSigmoid, info_Conv2DSigmoid
@@ -18,6 +21,7 @@ from optimization.graph.ReLU_max_split import check_ReLU_max_transfrom, apply_tr
 from optimization.graph.DropLayer import check_DropLayer, \
     apply_transform_DropLayer, info_DropLayer
 
+
 info_list = [info_DropLayer,
              info_ReLU_max,
              info_SeparableConv2D,
@@ -26,6 +30,7 @@ info_list = [info_DropLayer,
              info_Conv2DReLU,
              info_Conv2DSigmoid,
              info_Conv2DActivation,
+             info_Conv2DSoftmax,
              ]
 check_transform_list = [check_DropLayer,
                         check_ReLU_max_transfrom,
@@ -35,6 +40,7 @@ check_transform_list = [check_DropLayer,
                         check_Conv2DReLU,
                         check_Conv2DSigmoid,
                         check_Conv2DActivation,
+                        check_Conv2DSoftmax_transfrom,
                         ]
 apply_transform_list = [apply_transform_DropLayer,
                         apply_transform_ReLU_max,
@@ -44,6 +50,7 @@ apply_transform_list = [apply_transform_DropLayer,
                         apply_transform_Conv2DReLU,
                         apply_transform_Conv2DSigmoid,
                         apply_transform_Conv2DActivation,
+                        apply_transform_Conv2DSoftmax,
                         ]
 
 
@@ -60,7 +67,11 @@ def transfer_weights(src_model, dst_model, weight_transfer_rule_dict):
 def check_transform(src_model, dst_model, debug=True):
     if debug:
         print("Checking Transfer :: Random value check")
-    x_in = np.random.uniform(size=(1,) + src_model.input_shape[1:])
+    if type(src_model.input_shape) == list:
+        x_in = [np.random.uniform(size=fix_none_in_shape(item)) for item in src_model.input_shape]
+    else:
+        _shape = tuple(32 if item is None else item for item in src_model.input_shape[1:])
+        x_in = np.random.uniform(size=(1,) + _shape)
     dst_output = dst_model.predict(x_in)
     src_output = src_model.predict(x_in)
     if isinstance(dst_output,list):
@@ -83,7 +94,7 @@ def apply_transformations(in_model):
         if check_func(src_model_config):
             if src_model is None:
                 print('Preparation for the transformation...\n')
-                src_model = Model.from_config(in_model.get_config())
+                src_model = Model.from_config(in_model.get_config(), custom_objects=extra_custom_objects)
                 transfer_weights(in_model, src_model, {})
                 check_transform(in_model, src_model)
 

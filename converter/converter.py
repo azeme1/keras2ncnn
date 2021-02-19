@@ -4,6 +4,7 @@
 
 import numpy as np
 from tqdm import tqdm
+from functools import partial
 from collections import OrderedDict
 
 from converter.model_adaptation import get_outbound_nodes, convert_blob, clean_node_name
@@ -13,13 +14,19 @@ activation_type_dict = {'linear': 0, 'relu': 1, 'sigmoid': 4, 'tanh': 5}
 layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'ReLU', 'LeakyReLU': 'ReLU',
                       'MaxPooling2D': 'Pooling', 'AveragePooling2D': 'Pooling',
                       'MaxPool2D': 'Pooling', 'AvgPool2D': 'Pooling',
+                      'GlobalMaxPooling2D': 'Pooling', 'GlobalAveragePooling2D': 'Pooling',
+                      'GlobalMaxPool2D': 'Pooling', 'GlobalAvgPool2D': 'Pooling',
                       'Conv2D': 'Convolution', 'Concatenate': 'Concat',
                       'UpSampling2D': 'Interp', 'Add': 'Eltwise', 'Multiply': 'Eltwise',
                       'DepthwiseConv2D': 'ConvolutionDepthWise', 'BatchNormalization': 'BatchNorm',
-                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'Reshape': 'Reshape',
+                      'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'ReflectPadding2D': 'Padding',
+                      'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
+                      'Softmax': 'Softmax',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
-                      'Dense': 'InnerProduct'}
+                      'Dense': 'InnerProduct',
+                      'Sqrt': 'UnaryOp',
+                      'Subtract': 'BinaryOp', 'Div': 'BinaryOp', 'Interp': 'Interp'}
 
 
 def fix_axis_value(in_dict, axis):
@@ -161,17 +168,73 @@ def get_flatten_mapping(in_dict):
     return parameter_mapping
 
 
+def get_unaryop_mapping(in_dict, optype):
+    # enum OperationType
+    # {
+    #     Operation_ABS = 0,
+    #     Operation_NEG = 1,
+    #     Operation_FLOOR = 2,
+    #     Operation_CEIL = 3,
+    #     Operation_SQUARE = 4,
+    #     Operation_SQRT = 5,
+    #     Operation_RSQRT = 6,
+    #     Operation_EXP = 7,
+    #     Operation_LOG = 8,
+    #     Operation_SIN = 9,
+    #     Operation_COS = 10,
+    #     Operation_TAN = 11,
+    #     Operation_ASIN = 12,
+    #     Operation_ACOS = 13,
+    #     Operation_ATAN = 14,
+    #     Operation_RECIPROCAL = 15,
+    #     Operation_TANH = 16
+    # };
+    parameter_mapping = OrderedDict({0: optype})
+    return parameter_mapping
+
+
+get_sqrt_mapping = partial(get_unaryop_mapping, optype=5)
+
+
+def get_binaryop_mapping(in_dict, optype):
+    # enum OperationType
+    # {
+    #     Operation_ADD = 0,
+    #     Operation_SUB = 1,
+    #     Operation_MUL = 2,
+    #     Operation_DIV = 3,
+    #     Operation_MAX = 4,
+    #     Operation_MIN = 5,
+    #     Operation_POW = 6,
+    #     Operation_RSUB = 7,
+    #     Operation_RDIV = 8
+    # };
+    parameter_mapping = OrderedDict({0: optype})
+    return parameter_mapping
+
+
+get_subtract_mapping = partial(get_binaryop_mapping, optype=1)
+
+get_div_mapping = partial(get_binaryop_mapping, optype=3)
+
+
 def get_inputlayer_mapping(in_dict):
     # Input	0   w	0
     #       1   h	0
     #       2	c	0
     layer_config = in_dict['layer'].get_config()
     N, H, W, C = layer_config['batch_input_shape']
-    parameter_mapping = OrderedDict({0: W, 1: H, 2: C})
+    parameter_mapping = OrderedDict()
+    if W is not None:
+        parameter_mapping[0] = W
+    if H is not None:
+        parameter_mapping[1] = H
+    if C is not None:
+        parameter_mapping[2] = C
     return parameter_mapping
 
 
-def get_zeropadding2d_mapping(in_dict):
+def get_padding_mapping(in_dict, pad_type=0):
     #   Padding
     #   0	top	0
     #	1	bottom	0
@@ -182,11 +245,11 @@ def get_zeropadding2d_mapping(in_dict):
     #   6	per_channel_pad_data_size	0
     #   7	front	0
     #   8	behind	0
+    # int type; -> pad_type // 0=CONSTANT 1=REPLICATE 2=REFLECT
     layer_config = in_dict['layer'].get_config()
     per_channel_pad_data_size = 0
     front = behind = 0
-    pad_type = 0
-    pad_value = float("{0:.2f}".format(0.))
+    pad_value = float("{0:.7f}".format(0.))
     top_pad, bottom_pad, left_pad, right_pad = np.array(layer_config['padding']).flatten()
     parameter_mapping = OrderedDict({0: top_pad, 1: bottom_pad, 2: left_pad, 3: right_pad,
                                      4: pad_type, 5: pad_value, 6: per_channel_pad_data_size,
@@ -194,7 +257,12 @@ def get_zeropadding2d_mapping(in_dict):
     return parameter_mapping
 
 
-def get_pooling2d_mapping(in_dict):
+get_zeropadding2d_mapping = partial(get_padding_mapping, pad_type=0)
+
+get_reflectpadding2d_mapping = partial(get_padding_mapping, pad_type=2)
+
+
+def get_pooling2d_mapping(in_dict, pooling_type, global_pooling=0):
     #     Pooling  ::  from  C++   enum PoolMethod { PoolMethod_MAX = 0, PoolMethod_AVE = 1 };
     #       0	pooling_type	0
     #       1	kernel_w	0
@@ -208,34 +276,42 @@ def get_pooling2d_mapping(in_dict):
     #       4	global_pooling	0
     #       5	pad_mode	0
     layer_config = in_dict['layer'].get_config()
-    kernel_h, kernel_w = layer_config['pool_size']
-    stride_h, stride_w = layer_config['strides']
+    if global_pooling == 0:
+        kernel_h, kernel_w = layer_config['pool_size']
+        stride_h, stride_w = layer_config['strides']
 
-    pad_left = pad_right = pad_bottom = pad_top = 0
+        layer = in_dict['layer']
+        layer_input_shape = get_valid_shape(layer.input_shape)
+        layer_output_shape = get_valid_shape(layer.output_shape)
+        input_y_size, input_x_size = layer_input_shape[0][1:3]
+        output_y_size, output_x_size = layer_output_shape[0][1:3]
 
-    pad_mode = 0
-    global_pooling = 0
-    # assert layer_config['padding'] == 'same'
-    if in_dict['layer'].__class__.__name__ in ['MaxPool2D', 'MaxPooling2D']:
-        pooling_type = 0
-    elif in_dict['layer'].__class__.__name__ in ['AvgPool2D', 'AveragePooling2D']:
-        # TODO :: Check AvgPool2d enum
-        pooling_type = 1
+        if kernel_h == stride_h:
+            pad_bottom = pad_top = 0
+        else:
+            pad_top, pad_bottom = get_pooling_padding(input_y_size, output_y_size, kernel_h, stride_h, None)
+
+        if kernel_w == stride_w:
+            pad_left = pad_right = 0
+        else:
+            pad_left, pad_right = get_pooling_padding(input_x_size, output_x_size, kernel_w, stride_w, None)
+
+        pad_mode = 0
+        parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
+                                         4: global_pooling, 5: pad_mode,
+                                         11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
     else:
-        assert False, f"Unsupported Layer {in_dict['layer']}"
-
-    parameter_mapping = OrderedDict({0: pooling_type, 1: kernel_w, 2: stride_w, 3: pad_left,
-                                     4: global_pooling, 5: pad_mode,
-                                     11: kernel_h, 12: stride_h, 13: pad_top, 14: pad_right, 15: pad_bottom})
+        parameter_mapping = OrderedDict({0: pooling_type, 4: global_pooling})
     return parameter_mapping
 
 
-def get_maxpooling2d_mapping(in_dict):
-    return get_pooling2d_mapping(in_dict)
+get_maxpooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=0, global_pooling=0)
 
+get_averagepooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=1, global_pooling=0)
 
-def get_averagepooling2d_mapping(in_dict):
-    return get_pooling2d_mapping(in_dict)
+get_globalmaxpooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=0, global_pooling=1)
+
+get_globalaveragepooling2d_mapping = partial(get_pooling2d_mapping, pooling_type=1, global_pooling=1)
 
 
 def get_multiply_mapping(in_dict):
@@ -272,16 +348,67 @@ def get_upsampling2d_mapping(in_dict):
             resize_type = 2
 
     height_scale, width_scale = layer_config['size']
-    parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.2f}".format(height_scale)),
-                                     2: float("{0:.2f}".format(width_scale)),
+    parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.7f}".format(height_scale)),
+                                     2: float("{0:.7f}".format(width_scale)),
                                      # TODO :: Clarify lines below
                                      # 3: <>, 4: <>
                                      })
     return parameter_mapping
 
+def get_interp_mapping(in_dict, use_scale=False):
+    #     Interp
+    #     0	resize_type	0	 #FIXED TO 1 (nearest), 2 (bilinear)
+    #     1	height_scale	1.f
+    #     2	width_scale	1.f
+    #     3	output_height	0
+    #     4	output_width	0
+    layer = in_dict['layer']
+    layer_config = layer.get_config()
+
+    # TODO Bilinear interpolation is not working properly!
+    # resize_type = 2 #'bilinear'
+    resize_type = 1
+
+    if use_scale:
+        # This one is not preferable due to the rounding errors
+        layer_input_shape = get_valid_shape(layer.input_shape)
+        # layer_output_shape = get_valid_shape(layer.output_shape)
+
+        input_y_size, input_x_size = layer_input_shape[0][1:3]
+        # output_y_size, output_x_size = layer_output_shape[0][1:3]
+
+        new_height, new_width = list(layer_config['new_size'])
+
+        height_scale = new_height/input_y_size
+        width_scale = new_width/input_x_size
+
+        parameter_mapping = OrderedDict({0: resize_type, 1: float("{0:.7f}".format(height_scale)),
+                                         2: float("{0:.7f}".format(width_scale)),
+                                         # TODO :: Looks like not working properly
+                                         # 3: <>, 4: <>
+                                         })
+    else:
+        new_height, new_width = list(layer_config['new_size'])
+        parameter_mapping = OrderedDict({0: resize_type, 3: str(int(new_height)),
+                                         4: str(int(new_width)),
+                                         })
+    return parameter_mapping
+
 
 def get_conv_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
-    t_pad = kernel_size + stride_size * (output_size - 1) - input_size
+    effective_kernel = kernel_size + 2*(dilation_rate - 1)
+    # t_pad = effective_kernel + stride_size * (output_size - 1) - input_size
+    t_pad = stride_size * output_size - input_size + effective_kernel - stride_size
+    t_pad = max(t_pad, 0)
+    f_pad = s_pad = 0
+    if t_pad > 0:
+        f_pad = t_pad // 2
+        s_pad = t_pad - f_pad
+    return f_pad, s_pad
+
+
+def get_pooling_padding(input_size, output_size, kernel_size, stride_size, dilation_rate):
+    t_pad = stride_size * output_size - input_size + kernel_size - stride_size
     t_pad = max(t_pad, 0)
     f_pad = s_pad = 0
     if t_pad > 0:
@@ -462,7 +589,7 @@ def get_conv2d_mapping(in_dict):
     activation_type = activation_type_dict[layer_config['activation']]
     # "TODO :: Support https://github.com/Tencent/ncnn/blob/master/tools/ncnnoptimize.cpp"
     assert len(layer_input_shape) == len(layer_output_shape) == 1
-    assert dilation_h == dilation_w == 1
+    # assert dilation_h == dilation_w == 1, layer_config
 
     if layer_config['padding'] == 'same':
         input_y_size, input_x_size = layer_input_shape[0][1:3]

@@ -54,8 +54,16 @@ ReLU_config_template = {'class_name': 'ReLU',
                                    'max_value': None,
                                    'negative_slope': 0.,
                                    'threshold': 0.},
-                                   'name': '_node_name',
-                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
+                        'name': '_node_name',
+                        'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
+
+Softmax_config_template = {'class_name': 'Softmax',
+                           'config': {'axis': -1,
+                                      'dtype': 'float32',
+                                      'name': 'softmax_1',
+                                      'trainable': True},
+                           'inbound_nodes': [[['_in_node_name', 0, 0, {}]]],
+                           'name': '_in_node_name'}
 
 Clip_config_template = {'class_name': 'Clip',
                         'config': {'name': '_node_name',
@@ -63,5 +71,5 @@ Clip_config_template = {'class_name': 'Clip',
                                    'dtype': 'float32',
                                    'min_value': -1.,
                                    'max_value': +1.},
-                                   'name': '_node_name',
-                                   'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
+                        'name': '_node_name',
+                        'inbound_nodes': [[['_in_node_name', 0, 0, {}]]]}
