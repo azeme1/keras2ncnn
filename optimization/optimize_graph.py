@@ -10,6 +10,8 @@ from optimization.graph.Conv2DBatchNormalization_merge import check_Conv2DBatchN
     apply_transform_Conv2DBatchNormalization, info_Conv2DBatchNormalization
 from optimization.graph.BatchNormalization_DepthwiseConv2D_transform import check_BatchNormalization_DepthwiseConv2D, \
     apply_transform_BatchNormalization_DepthwiseConv2D, info_BatchNormalization_DepthwiseConv2D
+from optimization.graph.Conv2DSoftmax_split import check_Conv2DSoftmax_transfrom, \
+    apply_transform_Conv2DSoftmax, info_Conv2DSoftmax
 
 from optimization.graph.Conv2DReLU_merge import check_Conv2DReLU, apply_transform_Conv2DReLU, info_Conv2DReLU
 from optimization.graph.Conv2DSigmoid_merge import check_Conv2DSigmoid, apply_transform_Conv2DSigmoid, info_Conv2DSigmoid
@@ -28,6 +30,7 @@ info_list = [info_DropLayer,
              info_Conv2DReLU,
              info_Conv2DSigmoid,
              info_Conv2DActivation,
+             info_Conv2DSoftmax,
              ]
 check_transform_list = [check_DropLayer,
                         check_ReLU_max_transfrom,
@@ -37,6 +40,7 @@ check_transform_list = [check_DropLayer,
                         check_Conv2DReLU,
                         check_Conv2DSigmoid,
                         check_Conv2DActivation,
+                        check_Conv2DSoftmax_transfrom,
                         ]
 apply_transform_list = [apply_transform_DropLayer,
                         apply_transform_ReLU_max,
@@ -46,6 +50,7 @@ apply_transform_list = [apply_transform_DropLayer,
                         apply_transform_Conv2DReLU,
                         apply_transform_Conv2DSigmoid,
                         apply_transform_Conv2DActivation,
+                        apply_transform_Conv2DSoftmax,
                         ]
 
 

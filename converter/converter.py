@@ -22,6 +22,7 @@ layer_type_mapping = {'OutputSplit': 'Split', 'InputLayer': 'Input', 'ReLU': 'Re
                       'Conv2DTranspose': 'Deconvolution', 'ZeroPadding2D': 'Padding', 'ReflectPadding2D': 'Padding',
                       'Reshape': 'Reshape',
                       'Clip': 'Clip', 'InstanceNormalization': 'InstanceNorm',
+                      'Softmax': 'Softmax',
                       'sigmoid': 'Sigmoid', 'softmax': 'Softmax', 'relu': 'ReLU', 'tanh': 'TanH', 'Flatten': 'Reshape',
                       'Dense': 'InnerProduct',
                       'Sqrt': 'UnaryOp',
