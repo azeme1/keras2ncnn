@@ -13,7 +13,7 @@ def transfer_DropLayer(src_model, dst_model, transfer_rule):
 def detect_transform_DropLayer(keras_config):
     index_list = []
     for i, item in enumerate(keras_config['layers']):
-        if item['class_name'] in ['Dropout']:
+        if item['class_name'] in ['Dropout', 'DropConnect']:
             index_list.append(i)
     return index_list
 

@@ -37,17 +37,22 @@ from unit_test.helper import fix_none_in_shape
 #               load_model('unit_test_output/adain.hdf5', custom_objects=extra_custom_objects),
 #               ]
 # model_list = [load_model('unit_test_output/keras_arbitrary_style_transfer.hdf5', custom_objects=extra_custom_objects)]
-# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_50_ADE_20K.hdf5',
+# model_list = [load_model('divamgupta/image-segmentation-keras/_adaptation/pspnet_50_ADE_20K.hdf5',
 #                          custom_objects=extra_custom_objects)]
-# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_101_voc12.hdf5',
+# model_list = [load_model('divamgupta/image-segmentation-keras/_adaptation/pspnet_101_voc12.hdf5',
 #                          custom_objects=extra_custom_objects)]
 # model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
 # model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
-from tensorflow.keras.losses import mae
-model_list = [load_model('model_zoo/variouse/issue_00011/weights.h5', custom_objects={'bce_dice_loss': mae,
-                                                                                      'IOU': mae})]  #issue 11
+# from tensorflow.keras.losses import mae
+# model_list = [load_model('model_zoo/variouse/issue_00011/weights.h5', custom_objects={'bce_dice_loss': mae,
+#                                                                                       'IOU': mae})]  #issue 11
+
+from tensorflow.keras.initializers import RandomNormal
+extra_custom_objects['EfficientConv2DKernelInitializer'] = RandomNormal
+model_list = [load_model('model_zoo/variouse/issue_00010/WHENet_fixed.h5', custom_objects=extra_custom_objects)]  #issue 10
+
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
