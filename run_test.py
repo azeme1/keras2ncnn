@@ -37,9 +37,9 @@ from unit_test.helper import fix_none_in_shape
 #               load_model('unit_test_output/adain.hdf5', custom_objects=extra_custom_objects),
 #               ]
 # model_list = [load_model('unit_test_output/keras_arbitrary_style_transfer.hdf5', custom_objects=extra_custom_objects)]
-# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_50_ADE_20K.hdf5',
+# model_list = [load_model('divamgupta/image-segmentation-keras/_adaptation/pspnet_50_ADE_20K.hdf5',
 #                          custom_objects=extra_custom_objects)]
-# model_list = [load_model('C:/Users/olga/projects/model_zoo/model_keras_ready/divamgupta/image-segmentation-keras/_adaptation/pspnet_101_voc12.hdf5',
+# model_list = [load_model('divamgupta/image-segmentation-keras/_adaptation/pspnet_101_voc12.hdf5',
 #                          custom_objects=extra_custom_objects)]
 # model_list = [load_model('model_privat/style_transfer/pix2pix/cats_v1.hdf5')] # code demo
 # model_list = [load_model('model_zoo/detection/AIZOOTech_I_FaceMaskDetection/face_mask_detection_optimized.hdf5')] #issue 1
