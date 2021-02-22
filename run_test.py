@@ -46,13 +46,16 @@ from unit_test.helper import fix_none_in_shape
 # model_list = [load_model('./model_zoo/variouse/issue_00003/fiop_dumb_model_fixed.h5')] #issue 3
 # model_list = [load_model('model_zoo/variouse/issue_00006/deconv_fin_munet.h5')] #issue 6
 # from tensorflow.keras.losses import mae
-# model_list = [load_model('model_zoo/variouse/issue_00011/weights.h5', custom_objects={'bce_dice_loss': mae,
+# model_list = [load_model('model_zoo/variouse/issue_00011/weights_v2.h5', custom_objects={'bce_dice_loss': mae,
 #                                                                                       'IOU': mae})]  #issue 11
-
-from tensorflow.keras.initializers import RandomNormal
-extra_custom_objects['EfficientConv2DKernelInitializer'] = RandomNormal
-model_list = [load_model('model_zoo/variouse/issue_00010/WHENet_fixed.h5', custom_objects=extra_custom_objects)]  #issue 10
-
+# from tensorflow.keras.initializers import RandomNormal
+# extra_custom_objects['EfficientConv2DKernelInitializer'] = RandomNormal
+# model_list = [load_model('model_zoo/variouse/issue_00010/WHENet_fixed.h5', custom_objects=extra_custom_objects)]  #issue 10
+from tensorflow.keras.losses import mae
+import tensorflow
+model_list = [load_model('model_zoo/variouse/issue_00014/weights_40.h5', custom_objects={'relu6': tensorflow.nn.relu6,
+                                                                                      'bce_dice_loss': mae,
+                                                                                      'IOU': mae})]  #issue 11
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -182,3 +185,4 @@ for keras_model_in in model_list:
 
     inference_sum_float32 = int(0.5 + (inference_sum*4.)/(2**20))
     print(f'Estimated float32 inference memory :: {inference_sum_float32} MB')
+    print(f'{export_path}')
