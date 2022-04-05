@@ -24,7 +24,7 @@ def is_multi_output(keras_model_config):
         if len(inbound_nodes) == 0:
             continue
         else:
-            inbound_node_list = [node_item[0] for node_item in inbound_nodes[0]]
+            inbound_node_list = get_inbound_node_list(layer_item)
             if len(inbound_node_list) > 1:
                 return True
     return False
@@ -64,6 +64,14 @@ def rename_layer(model_config, src_name, dst_name):
                     item[0] = dst_name
     return model_config
 
+def get_inbound_node_list(layer_item):
+    inbound_nodes = layer_item['inbound_nodes']
+    if layer_item['class_name'] == 'TFOpLambda':
+        inbound_node_list = [node_item[0] for node_item in inbound_nodes]
+    else:
+        inbound_node_list = [node_item[0] for node_item in inbound_nodes[0]]
+    return inbound_node_list
+
 
 def get_outbound_nodes(keras_model_config):
     outbound_nodes_dict = {}
@@ -77,7 +85,7 @@ def get_outbound_nodes(keras_model_config):
         if len(inbound_nodes) == 0:
             continue
         else:
-            inbound_node_list = [node_item[0] for node_item in inbound_nodes[0]]
+            inbound_node_list = get_inbound_node_list(layer_item)
 
         for in_node_name in inbound_node_list:
             # print(in_node_name, out_node_name)

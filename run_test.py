@@ -15,6 +15,7 @@ from unit_test.helper import save_config
 from extra_layers.CustomObjects import extra_custom_objects
 from unit_test.helper import fix_none_in_shape
 # from unit_test.single_layer.Activation import model_list
+from unit_test.single_layer.AdvancedActivation import model_list
 # from unit_test.single_layer.Conv2D import model_list
 # from unit_test.single_layer.DepthwiseConv2D import model_list
 # from unit_test.single_layer.Normalization import model_list
@@ -51,11 +52,14 @@ from unit_test.helper import fix_none_in_shape
 # from tensorflow.keras.initializers import RandomNormal
 # extra_custom_objects['EfficientConv2DKernelInitializer'] = RandomNormal
 # model_list = [load_model('model_zoo/variouse/issue_00010/WHENet_fixed.h5', custom_objects=extra_custom_objects)]  #issue 10
-from tensorflow.keras.losses import mae
-import tensorflow
-model_list = [load_model('model_zoo/variouse/issue_00014/weights_40.h5', custom_objects={'relu6': tensorflow.nn.relu6,
-                                                                                      'bce_dice_loss': mae,
-                                                                                      'IOU': mae})]  #issue 11
+# from tensorflow.keras.losses import mae
+# import tensorflow
+# model_list = [load_model('model_zoo/variouse/issue_00016/issue_model_20210324/weights_280-0.9868.h5', custom_objects={'relu6': tensorflow.nn.relu6,
+#                                                                                       'bce_dice_loss': mae,
+#                                                                                       'IOU': mae})]  #issue 11
+# from tensorflow.keras.applications import MobileNetV3Small
+# model_list = [MobileNetV3Small(input_shape=(160, 160, 3), alpha=0.75, include_top=False)]
+model_list = [load_model('model_zoo/segmentation/passport/model_003/passport_ru-0001-0.02340_acc_0.99155.hdf5')]
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)

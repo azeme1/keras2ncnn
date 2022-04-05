@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.util.tf_export import tf_export
 from tensorflow.keras.layers import ZeroPadding2D
+from tensorflow.keras.layers import Conv2D
 
 
 @tf_export('keras.layers.ZeroPadding2D')
