@@ -38,6 +38,8 @@ def fix_axis_value(in_dict, axis):
         magic_number = 2
     elif len(in_dict['layer'].output_shape) == 3:
         magic_number = 1
+    elif len(in_dict['layer'].output_shape) == 2:
+        magic_number = 1
     else:
         raise NotImplemented
 

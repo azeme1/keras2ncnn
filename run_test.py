@@ -1,8 +1,9 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+import tensorflow as tf
 from tensorflow.keras import backend as K
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, Model
 
 import ncnn
 import numpy as np
@@ -59,7 +60,9 @@ from unit_test.single_layer.AdvancedActivation import model_list
 #                                                                                       'IOU': mae})]  #issue 11
 # from tensorflow.keras.applications import MobileNetV3Small
 # model_list = [MobileNetV3Small(input_shape=(160, 160, 3), alpha=0.75, include_top=False)]
-model_list = [load_model('model_zoo/segmentation/passport/model_003/passport_ru-0001-0.02340_acc_0.99155.hdf5')]
+# model_list = [load_model('model_zoo/segmentation/passport/model_003/passport_ru-0001-0.02340_acc_0.99155.hdf5')]
+model_list = [load_model('model_zoo/classification/mnist/model_qg_exp_original.hdf5')]
+
 
 def mat_to_numpy_4(mat_array):
     np_array = np.array(mat_array)
@@ -104,6 +107,11 @@ def tensor4_ncnn2keras(mat_array):
     else:
         print(f'tensor4_ncnn2keras :: {mat_array.dims}')
         raise NotImplemented
+
+
+def prepare_test_model(in_model):
+    out_model = Model(in_model.inputs, in_model.get_layer(layer_name).output)
+    return out_model
 
 
 export_root = './unit_test_output/'
@@ -170,6 +178,8 @@ for keras_model_in in model_list:
 
         test_keras_model = K.function(adapted_keras_model.inputs, adapted_keras_model.get_layer(layer_name).output)
         keras_output = test_keras_model(keras_in_list)
+        # test_keras_model = prepare_test_model(adapted_keras_model)
+        # keras_output = test_keras_model.predict(keras_in_list)
 
         for item, tensor_true in zip(layer_output, convert_blob(keras_output)):
 
